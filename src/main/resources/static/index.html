@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Assembly — Панель управления</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: monospace; background: #0d0d0d; color: #e0e0e0; padding: 20px; }
+        h1 { color: #fff; margin-bottom: 4px; font-size: 20px; }
+        .subtitle { color: #888; margin-bottom: 20px; font-size: 13px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+        .card h2 { font-size: 13px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        input, textarea, select { width: 100%; background: #111; border: 1px solid #444; color: #fff; padding: 8px 12px; border-radius: 4px; font-family: monospace; font-size: 13px; margin-bottom: 10px; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #666; }
+        select option { background: #1a1a1a; }
+        button { width: 100%; background: #fff; color: #000; border: none; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 8px; transition: background 0.2s; }
+        button:hover { background: #ddd; }
+        button.secondary { background: #2a2a2a; color: #ccc; border: 1px solid #444; }
+        button.secondary:hover { background: #333; }
+        button.danger { background: #c0392b; color: #fff; }
+        button.danger:hover { background: #e74c3c; }
+        button.success { background: #27ae60; color: #fff; }
+        button.success:hover { background: #2ecc71; }
+        button.info { background: #1565c0; color: #fff; }
+        button.info:hover { background: #1976d2; }
+        .result { background: #111; border: 1px solid #333; border-radius: 4px; padding: 12px; font-size: 12px; min-height: 50px; white-space: pre-wrap; word-break: break-all; color: #4caf50; margin-top: 8px; }
+        .result.error { color: #e74c3c; }
+        .result.info { color: #aaa; }
+        label { font-size: 12px; color: #777; display: block; margin-bottom: 3px; }
+        .status-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 10px 14px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #e74c3c; }
+        .dot.active { background: #4caf50; }
+        .status-text { font-size: 13px; color: #aaa; }
+        .status-role { font-size: 12px; color: #666; margin-left: auto; }
+        .request-card { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+        .request-card:hover { border-color: #444; }
+        .request-name { font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 4px; }
+        .request-info { font-size: 12px; color: #777; margin-bottom: 2px; }
+        .request-motivation { font-size: 12px; color: #555; margin: 6px 0; font-style: italic; border-left: 2px solid #333; padding-left: 8px; }
+        .request-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .request-actions button { margin: 0; padding: 6px 12px; font-size: 12px; width: auto; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin-left: 6px; }
+        .badge.pending    { background: #2a2a00; color: #ffeb3b; border: 1px solid #ffeb3b44; }
+        .badge.approved   { background: #0a2a0a; color: #4caf50; border: 1px solid #4caf5044; }
+        .badge.rejected   { background: #2a0a0a; color: #e74c3c; border: 1px solid #e74c3c44; }
+        .badge.draft      { background: #1a1a2a; color: #90a4ae; border: 1px solid #90a4ae44; }
+        .badge.open       { background: #0a2a0a; color: #4caf50; border: 1px solid #4caf5044; }
+        .badge.closed     { background: #2a1a00; color: #ff9800; border: 1px solid #ff980044; }
+        .badge.in_progress{ background: #002a2a; color: #00bcd4; border: 1px solid #00bcd444; }
+        .badge.completed  { background: #1a1a1a; color: #666;    border: 1px solid #444; }
+        .badge.cancelled  { background: #2a0a0a; color: #e74c3c; border: 1px solid #e74c3c44; }
+        .badge.registered { background: #002a1a; color: #69f0ae; border: 1px solid #69f0ae44; }
+        .empty-state { color: #555; text-align: center; padding: 20px; font-size: 13px; }
+        .full-width { grid-column: 1 / -1; }
+        .event-card { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 14px; margin-bottom: 10px; }
+        .event-card:hover { border-color: #444; }
+        .event-title { font-size: 14px; color: #fff; font-weight: bold; margin-bottom: 6px; }
+        .event-meta { font-size: 12px; color: #777; margin-bottom: 2px; }
+        .event-desc { font-size: 12px; color: #555; margin: 6px 0; font-style: italic; border-left: 2px solid #333; padding-left: 8px; }
+        .event-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .event-actions button { margin: 0; padding: 7px 14px; font-size: 12px; width: auto; }
+        .section-nav { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .section-btn { background: #1a1a1a; border: 1px solid #333; color: #aaa; padding: 8px 16px; border-radius: 4px; font-family: monospace; font-size: 12px; cursor: pointer; transition: all 0.2s; width: auto; margin: 0; }
+        .section-btn:hover { border-color: #666; color: #fff; background: #222; }
+        .section-btn.active { background: #fff; color: #000; border-color: #fff; }
+        .section-btn.hr-only { border-color: #d35400; color: #d35400; }
+        .section-btn.hr-only.active { background: #d35400; color: #fff; border-color: #d35400; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; overflow-y: auto; }
+        .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+        .modal { background: #1a1a1a; border: 1px solid #444; border-radius: 8px; padding: 24px; width: 100%; max-width: 720px; }
+        .modal h3 { color: #fff; margin-bottom: 16px; font-size: 15px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .modal-actions button { margin: 0; }
+    </style>
+</head>
+<body>
+
+<h1>⚙ Smart Assembly</h1>
+<p class="subtitle">Панель управления</p>
+
+<div class="status-bar">
+    <div id="statusDot" class="dot"></div>
+    <span id="statusText" class="status-text">Не авторизован</span>
+    <span id="statusRole" class="status-role"></span>
+</div>
+
+<div class="section-nav">
+    <button class="section-btn active"  onclick="showSection('auth', this)">🔐 Авторизация</button>
+    <button class="section-btn"         onclick="showSection('register', this)">📋 Заявка</button>
+    <button class="section-btn"         onclick="showSection('volunteer', this)">🙋 Мероприятия</button>
+    <button class="section-btn hr-only" onclick="showSection('hrRequests', this)">👔 HR — Заявки</button>
+    <button class="section-btn hr-only" onclick="showSection('hrEvents', this)">📅 HR — Мероприятия</button>
+    <button class="section-btn hr-only" onclick="showSection('createEvent', this)">➕ Создать</button>
+</div>
+
+<!-- АВТОРИЗАЦИЯ -->
+<div id="section-auth" class="section active">
+    <div class="grid">
+        <div class="card">
+            <h2>🔐 Авторизация</h2>
+            <label>Телефон</label>
+            <input id="loginPhone" type="text" placeholder="+77071384322" />
+            <button onclick="sendCode()">Отправить SMS код</button>
+            <label>Код из SMS</label>
+            <input id="loginCode" type="text" placeholder="1234" maxlength="4" />
+            <button onclick="verifyCode()">Войти</button>
+            <button class="secondary" onclick="doLogout()">Выйти</button>
+            <div id="loginResult" class="result info">Введите телефон и запросите код</div>
+        </div>
+        <div class="card">
+            <h2>ℹ️ Как пользоваться</h2>
+            <div class="result info" style="min-height:auto; color:#aaa; line-height:1.9;">
+                1. Войдите → вкладки появятся автоматически
+
+                Волонтёр видит:
+                🙋 Мероприятия — только OPEN
+                → кнопка "Откликнуться" / "Отозваться"
+                → блок "Мои отклики"
+
+                HR видит дополнительно (оранжевые вкладки):
+                👔 HR — Заявки: одобрять/отклонять
+                📅 HR — Мероприятия: все + управление
+                ➕ Создать: форма создания
+
+                DEV SMS: смотрите терминал → [DEV SMS]
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ЗАЯВКА -->
+<div id="section-register" class="section">
+    <div class="grid">
+        <div class="card">
+            <h2>📋 Подать заявку на вступление</h2>
+            <label>Имя</label><input id="regFirstName" placeholder="Айгерим" />
+            <label>Фамилия</label><input id="regLastName" placeholder="Сейткали" />
+            <label>Email</label><input id="regEmail" placeholder="email@example.com" />
+            <label>Телефон</label><input id="regPhone" placeholder="+77071234567" />
+            <label>Мотивация</label><input id="regMotivation" placeholder="Хочу помогать людям..." />
+            <button onclick="submitRegistration()">Подать заявку</button>
+            <div id="regResult" class="result info">Заполните форму и нажмите кнопку</div>
+        </div>
+    </div>
+</div>
+
+<!-- ВОЛОНТЁР: МЕРОПРИЯТИЯ -->
+<div id="section-volunteer" class="section">
+    <div class="grid">
+        <div class="card full-width">
+            <h2>🙋 Доступные мероприятия</h2>
+            <button onclick="loadVolunteerEvents()">🔄 Загрузить мероприятия</button>
+            <div id="volunteerEventsList"><div class="empty-state">Нажмите "Загрузить" (нужна авторизация)</div></div>
+        </div>
+        <div class="card full-width">
+            <h2>📌 Мои отклики</h2>
+            <button onclick="loadMyResponses()">🔄 Загрузить мои отклики</button>
+            <div id="myResponsesList"><div class="empty-state">Нажмите "Загрузить мои отклики"</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- HR: ЗАЯВКИ -->
+<div id="section-hrRequests" class="section">
+    <div class="grid">
+        <div class="card full-width">
+            <h2>👔 HR — Заявки на вступление</h2>
+            <button onclick="loadPendingRequests()">🔄 Загрузить заявки</button>
+            <div id="requestsList"><div class="empty-state">Нажмите "Загрузить заявки"</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- HR: МЕРОПРИЯТИЯ -->
+<div id="section-hrEvents" class="section">
+    <div class="grid">
+        <div class="card full-width">
+            <h2>📅 HR — Все мероприятия отделения</h2>
+            <button onclick="loadHrEvents()">🔄 Загрузить мероприятия</button>
+            <div id="hrEventsList"><div class="empty-state">Нажмите "Загрузить мероприятия"</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- СОЗДАТЬ МЕРОПРИЯТИЕ -->
+<div id="section-createEvent" class="section">
+    <div class="grid">
+        <div class="card">
+            <h2>➕ Новое мероприятие</h2>
+            <label>Название *</label><input id="evName" placeholder="Субботник в парке" />
+            <label>Тип *</label>
+            <select id="evType">
+                <option value="CONFERENCE">Конференция</option>
+                <option value="ROUNDTABLE">Круглый стол</option>
+                <option value="WORKSHOP">Воркшоп</option>
+                <option value="CHARITY" selected>Благотворительность</option>
+                <option value="CULTURAL">Культурное</option>
+                <option value="EDUCATIONAL">Образовательное</option>
+                <option value="OTHER">Другое</option>
+            </select>
+            <label>Описание</label><textarea id="evDescription" rows="2" placeholder="Краткое описание..."></textarea>
+            <label>Дата *</label><input id="evDate" type="date" />
+            <label>Время начала *</label><input id="evStartTime" type="time" />
+            <label>Время окончания</label><input id="evEndTime" type="time" />
+        </div>
+        <div class="card">
+            <h2>📍 Детали</h2>
+            <label>Место *</label><input id="evLocation" placeholder="Парк Горького, Астана" />
+            <label>Дресс-код</label><input id="evDressCode" placeholder="Спортивная одежда" />
+            <label>Цели</label><textarea id="evObjectives" rows="2" placeholder="Цели..."></textarea>
+            <label>Задачи</label><textarea id="evTasks" rows="2" placeholder="Задачи..."></textarea>
+            <label>Спикеры (через запятую)</label><input id="evSpeakers" placeholder="Айгерим, Данияр" />
+            <label>Макс. участников *</label><input id="evMaxParticipants" type="number" placeholder="30" min="1" />
+            <button onclick="submitCreateEvent()">📤 Создать черновик</button>
+            <button class="success" onclick="submitCreateAndPublish()">🚀 Создать и опубликовать</button>
+            <div id="createEventResult" class="result info">Заполните форму и нажмите кнопку</div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ -->
+<div id="editModal" class="modal-overlay">
+    <div class="modal">
+        <h3>✏️ Редактировать черновик <span id="editEventId" style="color:#666;font-size:13px"></span></h3>
+        <div class="modal-grid">
+            <div>
+                <label>Название *</label><input id="editName" />
+                <label>Тип *</label>
+                <select id="editType">
+                    <option value="CONFERENCE">Конференция</option><option value="ROUNDTABLE">Круглый стол</option>
+                    <option value="WORKSHOP">Воркшоп</option><option value="CHARITY">Благотворительность</option>
+                    <option value="CULTURAL">Культурное</option><option value="EDUCATIONAL">Образовательное</option>
+                    <option value="OTHER">Другое</option>
+                </select>
+                <label>Описание</label><textarea id="editDescription" rows="2"></textarea>
+                <label>Дата *</label><input id="editDate" type="date" />
+                <label>Время начала *</label><input id="editStartTime" type="time" />
+                <label>Время окончания</label><input id="editEndTime" type="time" />
+            </div>
+            <div>
+                <label>Место *</label><input id="editLocation" />
+                <label>Дресс-код</label><input id="editDressCode" />
+                <label>Цели</label><textarea id="editObjectives" rows="2"></textarea>
+                <label>Задачи</label><textarea id="editTasks" rows="2"></textarea>
+                <label>Спикеры (через запятую)</label><input id="editSpeakers" />
+                <label>Макс. участников *</label><input id="editMaxParticipants" type="number" min="1" />
+            </div>
+        </div>
+        <div id="editResult" class="result info" style="margin-top:12px;">Внесите изменения и сохраните</div>
+        <div class="modal-actions">
+            <button class="success" onclick="saveEditEvent()">💾 Сохранить</button>
+            <button class="secondary" onclick="closeEditModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const BASE = 'http://localhost:8080/api';
+    let token = localStorage.getItem('sa_token') || null;
+    let currentUser = JSON.parse(localStorage.getItem('sa_user') || 'null');
+    let editingEventId = null;
+
+    window.onload = () => updateAuthStatus();
+
+    function showSection(name, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.section-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('section-' + name).classList.add('active');
+        if (btn) btn.classList.add('active');
+    }
+
+    function updateAuthStatus() {
+        const dot = document.getElementById('statusDot');
+        const text = document.getElementById('statusText');
+        const role = document.getElementById('statusRole');
+        if (token && currentUser) {
+            dot.className = 'dot active';
+            text.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            role.textContent = `Роль: ${currentUser.role} | ID: ${currentUser.uniqueId || '—'}`;
+        } else {
+            dot.className = 'dot';
+            text.textContent = 'Не авторизован';
+            role.textContent = '';
+        }
+    }
+
+    function headers() {
+        const h = { 'Content-Type': 'application/json' };
+        if (token) h['Authorization'] = 'Bearer ' + token;
+        return h;
+    }
+
+    async function safeJson(res) {
+        const text = await res.text();
+        if (!text || text.trim() === '') return { error: `Пустой ответ (статус ${res.status})` };
+        try { return JSON.parse(text); } catch (e) { return { error: `Не JSON: ${text.substring(0, 200)}` }; }
+    }
+
+    function statusLabel(s) {
+        return { DRAFT:'Черновик', OPEN:'Открыта запись', CLOSED:'Запись закрыта',
+            IN_PROGRESS:'Идёт сейчас', COMPLETED:'Завершено', CANCELLED:'Отменено' }[s] || s;
+    }
+    function respLabel(s) {
+        return { REGISTERED:'Записан', CONFIRMED:'Подтверждён', ATTENDED:'Присутствовал', MISSED:'Не пришёл' }[s] || s;
+    }
+
+    // ── Авторизация ───────────────────────────────────────────────────────────
+    async function sendCode() {
+        const phone = document.getElementById('loginPhone').value.trim();
+        const el = document.getElementById('loginResult');
+        if (!phone) { el.className='result error'; el.textContent='Введите номер'; return; }
+        el.className='result info'; el.textContent='Отправляем...';
+        try {
+            const res = await fetch(`${BASE}/auth/send-code`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone}) });
+            const data = await safeJson(res);
+            el.className = res.ok ? 'result' : 'result error';
+            el.textContent = res.ok ? `✅ ${data.message||'Код отправлен'}\n\n💡 DEV: смотрите терминал [DEV SMS]` : `❌ ${data.message||data.error||JSON.stringify(data)}`;
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    async function verifyCode() {
+        const phone = document.getElementById('loginPhone').value.trim();
+        const code  = document.getElementById('loginCode').value.trim();
+        const el    = document.getElementById('loginResult');
+        if (!phone||!code) { el.className='result error'; el.textContent='Введите телефон и код'; return; }
+        el.className='result info'; el.textContent='Проверяем...';
+        try {
+            const res  = await fetch(`${BASE}/auth/verify-code`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({phone,code}) });
+            const data = await safeJson(res);
+            if (res.ok && data.token) {
+                token = data.token;
+                currentUser = { firstName:data.firstName, lastName:data.lastName, role:data.role, uniqueId:data.uniqueId, userId:data.userId };
+                localStorage.setItem('sa_token', token);
+                localStorage.setItem('sa_user', JSON.stringify(currentUser));
+                updateAuthStatus();
+                el.className='result';
+                el.textContent=`✅ Добро пожаловать, ${data.firstName}!\nРоль: ${data.role}`;
+            } else { el.className='result error'; el.textContent=`❌ ${data.message||data.error||JSON.stringify(data)}`; }
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    function doLogout() {
+        token=null; currentUser=null;
+        localStorage.removeItem('sa_token'); localStorage.removeItem('sa_user');
+        updateAuthStatus();
+        document.getElementById('loginResult').className='result info';
+        document.getElementById('loginResult').textContent='Вышли из системы';
+    }
+
+    // ── Заявка ────────────────────────────────────────────────────────────────
+    async function submitRegistration() {
+        const el = document.getElementById('regResult');
+        const body = { firstName:document.getElementById('regFirstName').value.trim(), lastName:document.getElementById('regLastName').value.trim(),
+            email:document.getElementById('regEmail').value.trim(), phone:document.getElementById('regPhone').value.trim(),
+            motivation:document.getElementById('regMotivation').value.trim(), assemblyId:1 };
+        if (!body.firstName||!body.lastName||!body.email||!body.phone) { el.className='result error'; el.textContent='❌ Заполните все поля'; return; }
+        el.className='result info'; el.textContent='Отправляем...';
+        try {
+            const res  = await fetch(`${BASE}/registration/submit`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+            const data = await safeJson(res);
+            el.className = res.ok ? 'result' : 'result error';
+            el.textContent = res.ok ? `✅ ${data.message}\nID заявки: ${data.requestId}` : `❌ ${data.message||data.error||JSON.stringify(data)}`;
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    // ── Волонтёр: мероприятия ─────────────────────────────────────────────────
+    async function loadVolunteerEvents() {
+        const c = document.getElementById('volunteerEventsList');
+        if (!token) { c.innerHTML='<div class="empty-state">❌ Нужна авторизация</div>'; return; }
+        c.innerHTML='<div class="empty-state">Загружаем...</div>';
+        try {
+            const res  = await fetch(`${BASE}/events`, { headers:headers() });
+            const data = await safeJson(res);
+            if (!res.ok) { c.innerHTML=`<div class="empty-state">❌ ${data.message||data.error}</div>`; return; }
+            if (!Array.isArray(data)||data.length===0) { c.innerHTML='<div class="empty-state">Нет доступных мероприятий</div>'; return; }
+            c.innerHTML = data.map(e => {
+                const reg = e.isRegistered;
+                return `<div class="event-card" id="vev-${e.id}">
+                    <div class="event-title">${e.eventName}
+                        <span class="badge ${e.status.toLowerCase()}">${statusLabel(e.status)}</span>
+                        ${reg ? '<span class="badge registered">Вы записаны</span>' : ''}
+                    </div>
+                    <div class="event-meta">📅 ${e.eventDate} в ${e.startTime?e.startTime.substring(0,5):'—'}</div>
+                    <div class="event-meta">📍 ${e.location}</div>
+                    <div class="event-meta">👥 ${e.currentParticipants} / ${e.maxParticipants} участников</div>
+                    ${e.dressCode?`<div class="event-meta">👔 ${e.dressCode}</div>`:''}
+                    ${e.description?`<div class="event-desc">${e.description}</div>`:''}
+                    <div class="event-actions">
+                        ${!reg && e.status==='OPEN' ? `<button class="success" onclick="doRegister(${e.id})">🙋 Откликнуться</button>` : ''}
+                        ${reg ? `<button class="danger" onclick="doCancelReg(${e.id})">✖ Отозваться</button>` : ''}
+                    </div>
+                    <div id="vev-r-${e.id}" style="font-size:12px;margin-top:6px;color:#aaa;"></div>
+                </div>`;
+            }).join('');
+        } catch(e) { c.innerHTML=`<div class="empty-state">❌ ${e.message}</div>`; }
+    }
+
+    async function doRegister(id) {
+        const el = document.getElementById(`vev-r-${id}`);
+        el.style.color='#aaa'; el.textContent='Записываемся...';
+        try {
+            const res  = await fetch(`${BASE}/events/${id}/register`, { method:'POST', headers:headers() });
+            const data = await safeJson(res);
+            if (res.ok) { el.style.color='#4caf50'; el.textContent=`✅ ${data.message}`; setTimeout(loadVolunteerEvents,600); }
+            else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function doCancelReg(id) {
+        if (!confirm('Отозвать регистрацию?')) return;
+        const el = document.getElementById(`vev-r-${id}`);
+        el.style.color='#aaa'; el.textContent='Отзываем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${id}/register`, { method:'DELETE', headers:headers() });
+            const data = await safeJson(res);
+            if (res.ok) { el.style.color='#e74c3c'; el.textContent=`✅ ${data.message}`; setTimeout(loadVolunteerEvents,600); }
+            else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function loadMyResponses() {
+        const c = document.getElementById('myResponsesList');
+        if (!token) { c.innerHTML='<div class="empty-state">❌ Нужна авторизация</div>'; return; }
+        c.innerHTML='<div class="empty-state">Загружаем...</div>';
+        try {
+            const res  = await fetch(`${BASE}/events/my-responses`, { headers:headers() });
+            const data = await safeJson(res);
+            if (!res.ok) { c.innerHTML=`<div class="empty-state">❌ ${data.message||data.error}</div>`; return; }
+            if (!Array.isArray(data)||data.length===0) { c.innerHTML='<div class="empty-state">Вы ещё ни на что не откликались</div>'; return; }
+            c.innerHTML = data.map(r => `
+                <div class="request-card">
+                    <div class="request-name">${r.eventName}
+                        <span class="badge ${r.status.toLowerCase()}">${respLabel(r.status)}</span>
+                    </div>
+                    <div class="request-info">📅 ${r.eventDate}</div>
+                    <div class="request-info" style="color:#444;font-size:11px">ID: ${r.eventId}</div>
+                </div>`).join('');
+        } catch(e) { c.innerHTML=`<div class="empty-state">❌ ${e.message}</div>`; }
+    }
+
+    // ── HR: заявки ────────────────────────────────────────────────────────────
+    async function loadPendingRequests() {
+        const c = document.getElementById('requestsList');
+        if (!token) { c.innerHTML='<div class="empty-state">❌ Нужна авторизация HR</div>'; return; }
+        c.innerHTML='<div class="empty-state">Загружаем...</div>';
+        try {
+            const res  = await fetch(`${BASE}/registration/pending`, { headers:headers() });
+            if (res.status===403) { c.innerHTML='<div class="empty-state">❌ Нет прав HR</div>'; return; }
+            const data = await safeJson(res);
+            if (!res.ok) { c.innerHTML=`<div class="empty-state">❌ ${data.message||data.error}</div>`; return; }
+            if (!Array.isArray(data)||data.length===0) { c.innerHTML='<div class="empty-state">✅ Нет новых заявок</div>'; return; }
+            c.innerHTML = data.map(r => `
+                <div class="request-card" id="req-${r.id}">
+                    <div class="request-name">${r.lastName} ${r.firstName} ${r.middleName||''}
+                        <span class="badge ${r.status.toLowerCase()}">${r.status}</span>
+                    </div>
+                    <div class="request-info">📧 ${r.email}</div>
+                    <div class="request-info">📱 ${r.phone}</div>
+                    <div class="request-info">🏢 ${r.assemblyName}</div>
+                    ${r.motivation?`<div class="request-motivation">"${r.motivation}"</div>`:''}
+                    <div class="request-info" style="color:#444;font-size:11px;margin-top:4px">Заявка #${r.id} от ${new Date(r.createdAt).toLocaleDateString('ru-RU')}</div>
+                    <div class="request-actions">
+                        <button class="success" onclick="approveReq(${r.id})">✅ Принять</button>
+                        <button class="danger"  onclick="rejectReq(${r.id})">❌ Отклонить</button>
+                    </div>
+                    <div id="req-r-${r.id}" style="font-size:12px;margin-top:6px;color:#aaa;"></div>
+                </div>`).join('');
+        } catch(e) { c.innerHTML=`<div class="empty-state">❌ ${e.message}</div>`; }
+    }
+
+    async function approveReq(id) {
+        const el = document.getElementById(`req-r-${id}`);
+        el.textContent='Обрабатываем...';
+        try {
+            const res  = await fetch(`${BASE}/registration/${id}/approve`, { method:'POST', headers:headers() });
+            const data = await safeJson(res);
+            if (res.ok) {
+                el.style.color='#4caf50'; el.textContent=`✅ ${data.message} | ID: ${data.uniqueId}`;
+                document.getElementById(`req-${id}`).querySelector('.request-actions').remove();
+                const b = document.getElementById(`req-${id}`).querySelector('.badge'); b.className='badge approved'; b.textContent='APPROVED';
+            } else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function rejectReq(id) {
+        const comment = prompt('Причина отклонения:')||'Не прошёл отбор';
+        const el = document.getElementById(`req-r-${id}`);
+        el.textContent='Обрабатываем...';
+        try {
+            const res  = await fetch(`${BASE}/registration/${id}/reject`, { method:'POST', headers:headers(), body:JSON.stringify({comment}) });
+            const data = await safeJson(res);
+            if (res.ok) {
+                el.style.color='#e74c3c'; el.textContent='❌ Отклонено';
+                document.getElementById(`req-${id}`).querySelector('.request-actions').remove();
+                const b = document.getElementById(`req-${id}`).querySelector('.badge'); b.className='badge rejected'; b.textContent='REJECTED';
+            } else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    // ── HR: мероприятия ───────────────────────────────────────────────────────
+    async function loadHrEvents() {
+        const c = document.getElementById('hrEventsList');
+        if (!token) { c.innerHTML='<div class="empty-state">❌ Нужна авторизация HR</div>'; return; }
+        c.innerHTML='<div class="empty-state">Загружаем...</div>';
+        try {
+            const res  = await fetch(`${BASE}/events/hr`, { headers:headers() });
+            if (res.status===403) { c.innerHTML='<div class="empty-state">❌ Нет прав HR</div>'; return; }
+            const data = await safeJson(res);
+            if (!res.ok) { c.innerHTML=`<div class="empty-state">❌ ${data.message||data.error}</div>`; return; }
+            if (!Array.isArray(data)||data.length===0) { c.innerHTML='<div class="empty-state">Нет мероприятий. Создайте во вкладке "Создать"</div>'; return; }
+            c.innerHTML = data.map(e => `
+                <div class="event-card" id="ev-${e.id}">
+                    <div class="event-title">${e.eventName}
+                        <span class="badge ${e.status.toLowerCase()}">${statusLabel(e.status)}</span>
+                    </div>
+                    <div class="event-meta">📅 ${e.eventDate} в ${e.startTime?e.startTime.substring(0,5):'—'}</div>
+                    <div class="event-meta">📍 ${e.location}</div>
+                    <div class="event-meta">👥 ${e.currentParticipants} / ${e.maxParticipants} | ${e.eventType}</div>
+                    ${e.description?`<div class="event-desc">${e.description}</div>`:''}
+                    <div class="event-meta" style="color:#444;font-size:11px;margin-top:4px">ID: ${e.id}</div>
+                    <div class="event-actions">
+                        ${e.status==='DRAFT' ? `
+                            <button class="success" onclick="hrPublish(${e.id})">🚀 Опубликовать</button>
+                            <button class="info"    onclick="openEdit(${e.id})">✏️ Редактировать</button>` : ''}
+                        ${e.status!=='COMPLETED'&&e.status!=='CANCELLED' ? `<button class="danger" onclick="hrCancel(${e.id})">🚫 Отменить</button>` : ''}
+                        <button class="secondary" onclick="showAttendees(${e.id})">👥 Участники</button>
+                    </div>
+                    <div id="ev-r-${e.id}" style="font-size:12px;margin-top:6px;color:#aaa;"></div>
+                    <div id="ev-att-${e.id}"></div>
+                </div>`).join('');
+        } catch(e) { c.innerHTML=`<div class="empty-state">❌ ${e.message}</div>`; }
+    }
+
+    async function hrPublish(id) {
+        const el = document.getElementById(`ev-r-${id}`);
+        el.style.color='#aaa'; el.textContent='Публикуем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${id}/publish`, { method:'POST', headers:headers() });
+            const data = await safeJson(res);
+            if (res.ok) { el.style.color='#4caf50'; el.textContent='✅ Опубликовано'; setTimeout(loadHrEvents,500); }
+            else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function hrCancel(id) {
+        if (!confirm('Отменить мероприятие?')) return;
+        const el = document.getElementById(`ev-r-${id}`);
+        el.style.color='#aaa'; el.textContent='Отменяем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${id}/cancel`, { method:'POST', headers:headers() });
+            const data = await safeJson(res);
+            if (res.ok) { el.style.color='#e74c3c'; el.textContent='🚫 Отменено'; setTimeout(loadHrEvents,500); }
+            else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function showAttendees(id) {
+        const c = document.getElementById(`ev-att-${id}`);
+        if (c.innerHTML.trim()) { c.innerHTML=''; return; } // toggle
+        c.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">Загружаем...</div>';
+        try {
+            const res  = await fetch(`${BASE}/events/${id}/attendees`, { headers:headers() });
+            const data = await safeJson(res);
+            if (!Array.isArray(data)||data.length===0) { c.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">Нет участников</div>'; return; }
+            c.innerHTML=`<div style="margin-top:10px;border-top:1px solid #222;padding-top:10px;">
+                <div style="font-size:12px;color:#777;margin-bottom:6px;">👥 Участники (${data.length}):</div>
+                ${data.map(u=>`<div style="font-size:12px;color:#aaa;padding:4px 0;border-bottom:1px solid #1a1a1a;">
+                    ${u.name} | ${u.phone} | ${u.uniqueId||'—'}
+                    <span class="badge ${u.status.toLowerCase()}">${respLabel(u.status)}</span>
+                </div>`).join('')}
+            </div>`;
+        } catch(e) { c.innerHTML=`<div style="font-size:12px;color:#e74c3c;">❌ ${e.message}</div>`; }
+    }
+
+    // ── Редактирование ────────────────────────────────────────────────────────
+    function openEdit(id) {
+        fetch(`${BASE}/events/${id}`, { headers:headers() }).then(r=>r.json()).then(e => {
+            editingEventId = id;
+            document.getElementById('editEventId').textContent = `#${id}`;
+            document.getElementById('editName').value          = e.eventName||'';
+            document.getElementById('editType').value          = e.eventType||'OTHER';
+            document.getElementById('editDescription').value   = e.description||'';
+            document.getElementById('editDate').value          = e.eventDate||'';
+            document.getElementById('editStartTime').value     = e.startTime?e.startTime.substring(0,5):'';
+            document.getElementById('editEndTime').value       = e.endTime?e.endTime.substring(0,5):'';
+            document.getElementById('editLocation').value      = e.location||'';
+            document.getElementById('editDressCode').value     = e.dressCode||'';
+            document.getElementById('editObjectives').value    = e.objectives||'';
+            document.getElementById('editTasks').value         = e.tasks||'';
+            document.getElementById('editSpeakers').value      = Array.isArray(e.speakers)?e.speakers.join(', '):'';
+            document.getElementById('editMaxParticipants').value = e.maxParticipants||'';
+            document.getElementById('editResult').className    = 'result info';
+            document.getElementById('editResult').textContent  = 'Внесите изменения и сохраните';
+            document.getElementById('editModal').classList.add('open');
+        });
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.remove('open');
+        editingEventId = null;
+    }
+
+    async function saveEditEvent() {
+        const el  = document.getElementById('editResult');
+        const raw = document.getElementById('editSpeakers').value.trim();
+        const body = {
+            eventName:       document.getElementById('editName').value.trim(),
+            eventType:       document.getElementById('editType').value,
+            description:     document.getElementById('editDescription').value.trim(),
+            eventDate:       document.getElementById('editDate').value,
+            startTime:       document.getElementById('editStartTime').value+':00',
+            endTime:         document.getElementById('editEndTime').value ? document.getElementById('editEndTime').value+':00' : null,
+            location:        document.getElementById('editLocation').value.trim(),
+            dressCode:       document.getElementById('editDressCode').value.trim(),
+            objectives:      document.getElementById('editObjectives').value.trim(),
+            tasks:           document.getElementById('editTasks').value.trim(),
+            speakers:        raw ? raw.split(',').map(s=>s.trim()) : [],
+            maxParticipants: parseInt(document.getElementById('editMaxParticipants').value)||1
+        };
+        el.className='result info'; el.textContent='Сохраняем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${editingEventId}`, { method:'PUT', headers:headers(), body:JSON.stringify(body) });
+            const data = await safeJson(res);
+            if (res.ok) { el.className='result'; el.textContent=`✅ Сохранено: ${data.eventName}`; setTimeout(()=>{closeEditModal();loadHrEvents();},1000); }
+            else { el.className='result error'; el.textContent=`❌ ${data.message||data.error}`; }
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    // ── Создать мероприятие ───────────────────────────────────────────────────
+    function buildBody() {
+        const raw = document.getElementById('evSpeakers').value.trim();
+        return {
+            eventName:       document.getElementById('evName').value.trim(),
+            eventType:       document.getElementById('evType').value,
+            description:     document.getElementById('evDescription').value.trim(),
+            eventDate:       document.getElementById('evDate').value,
+            startTime:       document.getElementById('evStartTime').value+':00',
+            endTime:         document.getElementById('evEndTime').value ? document.getElementById('evEndTime').value+':00' : null,
+            location:        document.getElementById('evLocation').value.trim(),
+            dressCode:       document.getElementById('evDressCode').value.trim(),
+            objectives:      document.getElementById('evObjectives').value.trim(),
+            tasks:           document.getElementById('evTasks').value.trim(),
+            speakers:        raw ? raw.split(',').map(s=>s.trim()) : [],
+            maxParticipants: parseInt(document.getElementById('evMaxParticipants').value)||0
+        };
+    }
+
+    async function submitCreateEvent() {
+        const el = document.getElementById('createEventResult');
+        const body = buildBody();
+        if (!body.eventName||!body.eventDate||!body.startTime||!body.location||!body.maxParticipants) {
+            el.className='result error'; el.textContent='❌ Заполните обязательные поля (*)'; return;
+        }
+        el.className='result info'; el.textContent='Создаём...';
+        try {
+            const res  = await fetch(`${BASE}/events`, { method:'POST', headers:headers(), body:JSON.stringify(body) });
+            const data = await safeJson(res);
+            el.className = res.ok ? 'result' : 'result error';
+            el.textContent = res.ok ? `✅ Черновик создан!\nID: ${data.id} | ${data.eventName}` : `❌ ${data.message||data.error||JSON.stringify(data)}`;
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    async function submitCreateAndPublish() {
+        const el = document.getElementById('createEventResult');
+        const body = buildBody();
+        if (!body.eventName||!body.eventDate||!body.startTime||!body.location||!body.maxParticipants) {
+            el.className='result error'; el.textContent='❌ Заполните обязательные поля (*)'; return;
+        }
+        el.className='result info'; el.textContent='Создаём и публикуем...';
+        try {
+            const r1 = await fetch(`${BASE}/events`, { method:'POST', headers:headers(), body:JSON.stringify(body) });
+            const d1 = await safeJson(r1);
+            if (!r1.ok) { el.className='result error'; el.textContent=`❌ ${d1.message||d1.error}`; return; }
+            const r2 = await fetch(`${BASE}/events/${d1.id}/publish`, { method:'POST', headers:headers() });
+            const d2 = await safeJson(r2);
+            el.className = r2.ok ? 'result' : 'result error';
+            el.textContent = r2.ok ? `🚀 Создано и опубликовано!\nID: ${d2.id} | ${d2.eventName}\nСтатус: ${statusLabel(d2.status)}` : `✅ Создано (ID: ${d1.id}), ошибка публикации: ${d2.message||d2.error}`;
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+</script>
+</body>
+</html>
