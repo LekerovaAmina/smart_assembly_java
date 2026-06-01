@@ -30,22 +30,28 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
+        System.out.println("[JWT] URI: " + request.getRequestURI());
+        System.out.println("[JWT] Auth header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+            boolean valid = jwtUtil.validateToken(token);
+            System.out.println("[JWT] Token valid: " + valid);
 
-            if (jwtUtil.validateToken(token)) {
+            if (valid) {
                 String phone = jwtUtil.extractPhone(token);
+                System.out.println("[JWT] Phone extracted: '" + phone + "'");
 
                 User user = userRepository.findByPhone(phone).orElse(null);
+                System.out.println("[JWT] User found: " + (user != null ? user.getPhone() + " role=" + user.getRole() + " active=" + user.getIsActive() : "NULL"));
 
                 if (user != null && user.getIsActive()) {
-                    // Устанавливаем роль пользователя
                     var authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
                     var auth = new UsernamePasswordAuthenticationToken(
                             user, null, List.of(authority)
                     );
                     SecurityContextHolder.getContext().setAuthentication(auth);
+                    System.out.println("[JWT] Auth set: ROLE_" + user.getRole().name());
                 }
             }
         }

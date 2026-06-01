@@ -2,6 +2,8 @@ package com.smartassembly.backend.repository;
 
 import com.smartassembly.backend.entity.Event;
 import com.smartassembly.backend.enums.EventStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying; // Добавь этот импорт
 import org.springframework.data.jpa.repository.Query;    // Добавь этот импорт
@@ -23,6 +25,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByAssemblyIdAndStatusIn(Long assemblyId, List<EventStatus> statuses);
 
     List<Event> findByAssemblyIdOrderByEventDateDesc(Long assemblyId);
+
+    Page<Event> findByAssemblyId(Long assemblyId, Pageable pageable);
+
+    Page<Event> findByAssemblyIdAndStatusIn(Long assemblyId, List<EventStatus> statuses, Pageable pageable);
 
     Optional<Event> findByQrCodeData(String qrCodeData);
 

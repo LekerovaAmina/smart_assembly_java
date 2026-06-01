@@ -1,5 +1,6 @@
 package com.smartassembly.backend.entity;
 
+import com.smartassembly.backend.enums.StrikeSeverity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,11 @@ public class Strike {
     @Column(name = "reason", columnDefinition = "TEXT")
     @Builder.Default
     private String reason = "Не явился на мероприятие";
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "severity", nullable = false)
+    @Builder.Default
+    private StrikeSeverity severity = StrikeSeverity.STRIKE;
 
     @Column(name = "is_active")
     @Builder.Default

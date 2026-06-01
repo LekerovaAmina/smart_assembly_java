@@ -24,6 +24,8 @@
         button.success:hover { background: #2ecc71; }
         button.info { background: #1565c0; color: #fff; }
         button.info:hover { background: #1976d2; }
+        button.sheets { background: #0f7b3e; color: #fff; border: 1px solid #1a9e50; }
+        button.sheets:hover { background: #1a9e50; }
         .result { background: #111; border: 1px solid #333; border-radius: 4px; padding: 12px; font-size: 12px; min-height: 50px; white-space: pre-wrap; word-break: break-all; color: #4caf50; margin-top: 8px; }
         .result.error { color: #e74c3c; }
         .result.info { color: #aaa; }
@@ -48,7 +50,7 @@
         .badge.open       { background: #0a2a0a; color: #4caf50; border: 1px solid #4caf5044; }
         .badge.closed     { background: #2a1a00; color: #ff9800; border: 1px solid #ff980044; }
         .badge.in_progress{ background: #002a2a; color: #00bcd4; border: 1px solid #00bcd444; }
-        .badge.completed  { background: #1a1a1a; color: #666;    border: 1px solid #444; }
+        .badge.completed  { background: #0a3d0a; color: #a5d6a7; border: 1px solid #2e7d32; }
         .badge.cancelled  { background: #2a0a0a; color: #e74c3c; border: 1px solid #e74c3c44; }
         .badge.registered { background: #002a1a; color: #69f0ae; border: 1px solid #69f0ae44; }
         .empty-state { color: #555; text-align: center; padding: 20px; font-size: 13px; }
@@ -75,6 +77,33 @@
         .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
         .modal-actions button { margin: 0; }
+        /* Sheets migration block */
+        .sheets-block { background: #0a1a0f; border: 1px solid #1a4a2a; border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+        .sheets-block-title { font-size: 12px; color: #4caf50; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .migrate-log { background: #050f08; border: 1px solid #1a4a2a; border-radius: 4px; padding: 12px; font-size: 12px; min-height: 60px; white-space: pre-wrap; word-break: break-all; color: #4caf50; margin-top: 8px; max-height: 200px; overflow-y: auto; }
+        .migrate-log.error { color: #e74c3c; }
+        .migrate-log.loading { color: #888; }
+        .spinner { display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .hours-total { font-size: 42px; font-weight: bold; color: #4caf50; text-align: center; margin: 16px 0; }
+        .hours-breakdown-card { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .hours-breakdown-title { font-size: 13px; color: #fff; font-weight: bold; }
+        .hours-breakdown-meta { font-size: 11px; color: #666; margin-top: 4px; }
+        .hours-breakdown-value { font-size: 16px; font-weight: bold; white-space: nowrap; margin-left: 12px; }
+        .hours-breakdown-value.positive { color: #4caf50; }
+        .hours-breakdown-value.negative { color: #e74c3c; }
+        .attendee-row { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+        .attendee-hours-form { display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 8px; align-items: end; margin-top: 10px; }
+        .attendee-hours-form input { margin-bottom: 0; }
+        .attendee-hours-form button { margin-bottom: 0; width: auto; padding: 8px 12px; }
+        @media (max-width: 700px) { .attendee-hours-form { grid-template-columns: 1fr 1fr; } }
+        #dev-testing-panel { margin-top: 24px; border: 1px dashed #444; border-radius: 8px; padding: 16px; background: #12121a; }
+        #dev-testing-panel h2 { font-size: 12px; color: #9c27b0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        #dev-testing-panel .dev-hint { font-size: 11px; color: #666; margin-bottom: 12px; line-height: 1.6; }
+        #dev-testing-panel .dev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        #dev-testing-panel textarea { min-height: 120px; font-size: 11px; }
+        #dev-testing-panel button { width: auto; padding: 8px 14px; }
+        @media (max-width: 800px) { #dev-testing-panel .dev-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -92,9 +121,12 @@
     <button class="section-btn active"  onclick="showSection('auth', this)">🔐 Авторизация</button>
     <button class="section-btn"         onclick="showSection('register', this)">📋 Заявка</button>
     <button class="section-btn"         onclick="showSection('volunteer', this)">🙋 Мероприятия</button>
+    <button class="section-btn"         onclick="showSection('checkin', this)">📱 QR Чекин</button>
     <button class="section-btn hr-only" onclick="showSection('hrRequests', this)">👔 HR — Заявки</button>
     <button class="section-btn hr-only" onclick="showSection('hrEvents', this)">📅 HR — Мероприятия</button>
     <button class="section-btn hr-only" onclick="showSection('createEvent', this)">➕ Создать</button>
+    <button class="section-btn hr-only" onclick="showSection('hrSheets', this)">🟢 Google Sheets</button>
+    <button class="section-btn" onclick="showSection('devApi', this)">🧪 Dev API</button>
 </div>
 
 <!-- АВТОРИЗАЦИЯ -->
@@ -125,6 +157,7 @@
                 👔 HR — Заявки: одобрять/отклонять
                 📅 HR — Мероприятия: все + управление
                 ➕ Создать: форма создания
+                🟢 Google Sheets: импорт участников
 
                 DEV SMS: смотрите терминал → [DEV SMS]
             </div>
@@ -160,6 +193,35 @@
             <h2>📌 Мои отклики</h2>
             <button onclick="loadMyResponses()">🔄 Загрузить мои отклики</button>
             <div id="myResponsesList"><div class="empty-state">Нажмите "Загрузить мои отклики"</div></div>
+        </div>
+        <div class="card full-width">
+            <h2>⏱ Мои волонтёрские часы</h2>
+            <button onclick="loadMyHours()">🔄 Обновить часы</button>
+            <div id="myHoursPanel">
+                <div class="empty-state">Нажмите «Обновить часы» (нужна авторизация)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QR ЧЕКИН -->
+<div id="section-checkin" class="section">
+    <div class="grid">
+        <div class="card">
+            <h2>📱 Я пришёл</h2>
+            <label>ID мероприятия</label>
+            <input id="checkinEventIdSelf" type="number" placeholder="1" />
+            <button class="success" onclick="doSelfCheckin()">✅ Отметить прибытие</button>
+            <div id="checkinSelfResult" class="result info">Пустой POST — userId берётся из JWT</div>
+        </div>
+        <div class="card">
+            <h2>👔 HR: отметить участника</h2>
+            <label>ID мероприятия</label>
+            <input id="checkinEventIdHr" type="number" placeholder="1" />
+            <label>ID пользователя</label>
+            <input id="checkinUserIdHr" type="number" placeholder="5" />
+            <button class="info" onclick="doHrCheckin()">✅ Отметить участника</button>
+            <div id="checkinHrResult" class="result info">POST с телом { userId }</div>
         </div>
     </div>
 </div>
@@ -218,6 +280,131 @@
             <button onclick="submitCreateEvent()">📤 Создать черновик</button>
             <button class="success" onclick="submitCreateAndPublish()">🚀 Создать и опубликовать</button>
             <div id="createEventResult" class="result info">Заполните форму и нажмите кнопку</div>
+        </div>
+    </div>
+</div>
+
+<!-- HR: GOOGLE SHEETS -->
+<div id="section-hrSheets" class="section">
+    <div class="grid">
+        <div class="card full-width">
+            <h2>🟢 Импорт участников из Google Sheets</h2>
+
+            <div class="sheets-block">
+                <div class="sheets-block-title">📥 Одноразовая миграция — импорт всех существующих участников</div>
+                <p style="font-size:12px;color:#666;margin-bottom:12px;line-height:1.7;">
+                    Читает все строки из Google Sheets и сохраняет участников в базу данных PostgreSQL.<br>
+                    Дубликаты по email/iin пропускаются автоматически. Статус определяется по цвету строки в таблице.<br>
+                    <span style="color:#888;">🟢 Зелёный → ACTIVE &nbsp;|&nbsp; 🟣 Фиолетовый → ECO_YOUTH &nbsp;|&nbsp; 🔵 Синий → BOARD_MEMBER &nbsp;|&nbsp; 🔴 Красный → LEFT &nbsp;|&nbsp; ⬜ Белый → REMOTE</span>
+                </p>
+                <button class="sheets" onclick="runMigration()" id="migrateBtn">
+                    📥 Запустить импорт из Google Sheets → PostgreSQL
+                </button>
+                <div id="migrateLog" class="migrate-log loading">Нажмите кнопку чтобы начать импорт...</div>
+            </div>
+
+            <div class="sheets-block">
+                <div class="sheets-block-title">🔗 Webhook — автоматическое добавление новых участников</div>
+                <p style="font-size:12px;color:#666;line-height:1.7;">
+                    Новые записи из Google Forms автоматически попадают в БД через Google Apps Script.<br>
+                    Убедитесь что в Apps Script триггер <code style="color:#4caf50;">onFormSubmit</code> настроен и URL сервера прописан верно.
+                </p>
+                <div style="margin-top:10px;">
+                    <label style="color:#555;">Webhook endpoint (для Apps Script):</label>
+                    <div style="background:#050f08;border:1px solid #1a4a2a;border-radius:4px;padding:10px;font-size:12px;color:#4caf50;margin-top:4px;word-break:break-all;">
+                        POST <span id="webhookUrl">http://localhost:8080/api/webhook/sheets</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- DEV: непокрытые эндпоинты -->
+<div id="section-devApi" class="section">
+    <div id="dev-testing-panel">
+        <h2>🧪 Dev API — ручное тестирование</h2>
+        <p class="dev-hint">Эндпоинты, для которых нет отдельной вкладки в UI. Публичные вызовы работают без токена; остальные — после входа (HR для корректировки часов).</p>
+        <div class="dev-grid">
+            <div class="card">
+                <h2>GET /api/events/{id}</h2>
+                <label>ID мероприятия</label>
+                <input id="devEventId" type="number" placeholder="1" />
+                <button class="info" onclick="devGetEventById()">Запросить</button>
+                <div id="devEventResult" class="result info">—</div>
+            </div>
+            <div class="card">
+                <h2>GET /api/events/{id}/attendees</h2>
+                <label>ID мероприятия</label>
+                <input id="devAttendeesEventId" type="number" placeholder="1" />
+                <button class="secondary" onclick="devGetAttendees()">Список участников</button>
+                <div id="devAttendeesResult" class="result info">—</div>
+            </div>
+            <div class="card">
+                <h2>POST /api/volunteers/{id}/hours/adjust</h2>
+                <label>ID волонтёра</label>
+                <input id="devAdjustVolunteerId" type="number" placeholder="2" />
+                <label>hoursDelta</label>
+                <input id="devAdjustDelta" type="number" step="0.5" value="1.5" />
+                <label>reason</label>
+                <input id="devAdjustReason" type="text" value="Тестовая корректировка" />
+                <label>eventId (опционально)</label>
+                <input id="devAdjustEventId" type="number" placeholder="" />
+                <button class="success" onclick="devAdjustHours()">Создать корректировку (HR)</button>
+                <div id="devAdjustResult" class="result info">—</div>
+            </div>
+            <div class="card">
+                <h2>POST /api/webhook/sheets</h2>
+                <p class="dev-hint" style="margin:0 0 8px">Публичный webhook (без JWT). JSON — SheetsWebhookDto.</p>
+                <textarea id="devWebhookJson">{
+  "timestamp": "29.05.2026 12:00:00",
+  "fullName": "Тестов Тест Тестович",
+  "birthDate": "01.01.2000",
+  "phone": "+77070000099",
+  "iin": "990101300999",
+  "email": "dev.webhook.test@example.com",
+  "instagram": "@test",
+  "studyPlace": "Тест ВУЗ",
+  "workPlace": "Тест работа",
+  "volunteeringExperience": "Нет",
+  "hobbies": "Код",
+  "freeDays": "Сб",
+  "languages": "RU",
+  "photoUrl": "",
+  "interestedEvents": "Субботники",
+  "discoverySource": "Instagram",
+  "joinReason": "Хочу помогать",
+  "rowColorHex": "#00FF00"
+}</textarea>
+                <button class="sheets" onclick="devWebhookSheets()">Отправить webhook</button>
+                <div id="devWebhookResult" class="result info">—</div>
+            </div>
+            <div class="card full-width">
+                <h2>POST /api/v1/public/registration/google-sheets</h2>
+                <p class="dev-hint" style="margin:0 0 8px">Требует JWT (не в permitAll). JSON — GoogleSheetRegistrationDto.</p>
+                <textarea id="devPublicRegJson">{
+  "timestamp": "29.05.2026",
+  "fullName": "Паблик Тест Тестович",
+  "birthDate": "15.06.1999",
+  "phone": "+77070000088",
+  "iin": "990615300888",
+  "email": "dev.public.reg@example.com",
+  "instagram": "@public",
+  "studyPlace": "ВУЗ",
+  "workPlace": "Офис",
+  "experience": "1 год",
+  "hobbies": "Спорт",
+  "freeDays": "Вс",
+  "languages": "KZ, RU",
+  "photoUrl": "",
+  "interests": "Эко",
+  "discoverySource": "Друзья",
+  "joinReason": "Мотивация тест"
+}</textarea>
+                <button class="info" onclick="devPublicGoogleSheets()">Импорт из JSON (JWT)</button>
+                <div id="devPublicRegResult" class="result info">—</div>
+            </div>
         </div>
     </div>
 </div>
@@ -302,7 +489,13 @@
 
     function statusLabel(s) {
         return { DRAFT:'Черновик', OPEN:'Открыта запись', CLOSED:'Запись закрыта',
-            IN_PROGRESS:'Идёт сейчас', COMPLETED:'Завершено', CANCELLED:'Отменено' }[s] || s;
+            IN_PROGRESS:'Идёт сейчас', COMPLETED:'Завершено ✓', CANCELLED:'Отменено' }[s] || s;
+    }
+    function formatHours(h) {
+        const n = parseFloat(h);
+        if (isNaN(n)) return '0 ч';
+        const sign = n >= 0 ? '+' : '';
+        return `${sign}${n.toFixed(1)} ч`;
     }
     function respLabel(s) {
         return { REGISTERED:'Записан', CONFIRMED:'Подтверждён', ATTENDED:'Присутствовал', MISSED:'Не пришёл' }[s] || s;
@@ -527,6 +720,7 @@
                             <button class="success" onclick="hrPublish(${e.id})">🚀 Опубликовать</button>
                             <button class="info"    onclick="openEdit(${e.id})">✏️ Редактировать</button>` : ''}
                         ${e.status!=='COMPLETED'&&e.status!=='CANCELLED' ? `<button class="danger" onclick="hrCancel(${e.id})">🚫 Отменить</button>` : ''}
+                        ${['OPEN','CLOSED','IN_PROGRESS'].includes(e.status) ? `<button class="success" onclick="hrComplete(${e.id})">🏁 Завершить и начислить часы</button>` : ''}
                         <button class="secondary" onclick="showAttendees(${e.id})">👥 Участники</button>
                     </div>
                     <div id="ev-r-${e.id}" style="font-size:12px;margin-top:6px;color:#aaa;"></div>
@@ -560,20 +754,184 @@
 
     async function showAttendees(id) {
         const c = document.getElementById(`ev-att-${id}`);
-        if (c.innerHTML.trim()) { c.innerHTML=''; return; } // toggle
+        if (c.innerHTML.trim()) { c.innerHTML=''; return; }
         c.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">Загружаем...</div>';
         try {
             const res  = await fetch(`${BASE}/events/${id}/attendees`, { headers:headers() });
             const data = await safeJson(res);
+            if (!res.ok) { c.innerHTML=`<div style="font-size:12px;color:#e74c3c;">❌ ${data.message||data.error}</div>`; return; }
             if (!Array.isArray(data)||data.length===0) { c.innerHTML='<div style="font-size:12px;color:#555;padding:8px 0">Нет участников</div>'; return; }
             c.innerHTML=`<div style="margin-top:10px;border-top:1px solid #222;padding-top:10px;">
-                <div style="font-size:12px;color:#777;margin-bottom:6px;">👥 Участники (${data.length}):</div>
-                ${data.map(u=>`<div style="font-size:12px;color:#aaa;padding:4px 0;border-bottom:1px solid #1a1a1a;">
-                    ${u.name} | ${u.phone} | ${u.uniqueId||'—'}
-                    <span class="badge ${u.status.toLowerCase()}">${respLabel(u.status)}</span>
-                </div>`).join('')}
+                <div style="font-size:12px;color:#777;margin-bottom:10px;">👥 Участники (${data.length}):</div>
+                ${data.map(u => {
+                    const checkinLabel = u.checkInTime
+                        ? `🕐 Чекин: ${u.checkInTime.replace('T',' ').substring(0,16)}`
+                        : '⚠️ QR не сканировал';
+                    const earlyTime = u.earlyLeaveTime ? u.earlyLeaveTime.substring(11,16) : '';
+                    return `<div class="attendee-row" id="att-${id}-${u.userId}">
+                        <div style="font-size:13px;color:#fff;font-weight:bold;">${u.name}
+                            <span class="badge ${u.status.toLowerCase()}">${respLabel(u.status)}</span>
+                        </div>
+                        <div style="font-size:12px;color:#777;margin-top:4px;">${u.phone} | ${u.uniqueId||'—'}</div>
+                        <div style="font-size:12px;color:${u.checkInTime?'#4caf50':'#ff9800'};margin-top:4px;">${checkinLabel}</div>
+                        ${u.calculatedHours != null ? `<div style="font-size:12px;color:#4caf50;margin-top:4px;">Начислено: ${formatHours(u.calculatedHours)}</div>` : ''}
+                        <div class="attendee-hours-form">
+                            <div>
+                                <label>Уход (время)</label>
+                                <input type="time" id="leave-${id}-${u.userId}" value="${earlyTime}" />
+                            </div>
+                            <div>
+                                <label>Доп. часы</label>
+                                <input type="number" step="0.25" id="extra-${id}-${u.userId}" value="${u.extraHours!=null?u.extraHours:0}" />
+                            </div>
+                            <div>
+                                <label>Комментарий</label>
+                                <input type="text" id="note-${id}-${u.userId}" value="${u.hoursNote||''}" placeholder="Примечание..." />
+                            </div>
+                            <button class="info" onclick="saveAttendeeHours(${id},${u.userId})">💾 Сохранить</button>
+                        </div>
+                        <div id="att-r-${id}-${u.userId}" style="font-size:11px;color:#666;margin-top:6px;"></div>
+                    </div>`;
+                }).join('')}
             </div>`;
         } catch(e) { c.innerHTML=`<div style="font-size:12px;color:#e74c3c;">❌ ${e.message}</div>`; }
+    }
+
+    async function saveAttendeeHours(eventId, userId) {
+        const el = document.getElementById(`att-r-${eventId}-${userId}`);
+        const leaveVal = document.getElementById(`leave-${eventId}-${userId}`).value;
+        const extraVal = document.getElementById(`extra-${eventId}-${userId}`).value;
+        const noteVal  = document.getElementById(`note-${eventId}-${userId}`).value;
+        const body = {
+            earlyLeaveTime: leaveVal || '',
+            extraHours: extraVal !== '' ? parseFloat(extraVal) : 0,
+            hoursNote: noteVal
+        };
+        el.style.color='#aaa'; el.textContent='Сохраняем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${eventId}/attendees/${userId}/hours`, {
+                method:'PATCH', headers:headers(), body:JSON.stringify(body)
+            });
+            const data = await safeJson(res);
+            if (res.ok) { el.style.color='#4caf50'; el.textContent='✅ Сохранено'; }
+            else { el.style.color='#e74c3c'; el.textContent=`❌ ${data.message||data.error||JSON.stringify(data)}`; }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function hrComplete(id) {
+        if (!confirm('Завершить мероприятие и начислить часы всем участникам?')) return;
+        const el = document.getElementById(`ev-r-${id}`);
+        el.style.color='#aaa'; el.textContent='Завершаем и считаем часы...';
+        try {
+            const res  = await fetch(`${BASE}/events/${id}/complete`, { method:'POST', headers:headers() });
+            const data = await safeJson(res);
+            if (res.ok) {
+                el.style.color='#4caf50';
+                el.textContent=`✅ ${data.message} (обработано: ${data.attendeesProcessed})`;
+                setTimeout(loadHrEvents, 600);
+            } else {
+                el.style.color='#e74c3c';
+                el.textContent=`❌ ${data.message||data.error||JSON.stringify(data)}`;
+            }
+        } catch(e) { el.style.color='#e74c3c'; el.textContent='❌ '+e.message; }
+    }
+
+    async function loadMyHours() {
+        const c = document.getElementById('myHoursPanel');
+        if (!token) { c.innerHTML='<div class="empty-state">❌ Нужна авторизация</div>'; return; }
+        c.innerHTML='<div class="empty-state">Загружаем...</div>';
+        try {
+            const res  = await fetch(`${BASE}/volunteers/me/hours`, { headers:headers() });
+            const data = await safeJson(res);
+            if (!res.ok) { c.innerHTML=`<div class="empty-state">❌ ${data.message||data.error}</div>`; return; }
+            const total = data.totalHours != null ? parseFloat(data.totalHours).toFixed(1) : '0.0';
+            const items = Array.isArray(data.breakdown) ? data.breakdown : [];
+            c.innerHTML = `
+                <div class="hours-total">${total} ч</div>
+                ${items.length === 0 ? '<div class="empty-state">Пока нет начислений</div>' : items.map(item => {
+                    const h = parseFloat(item.hours);
+                    const cls = h >= 0 ? 'positive' : 'negative';
+                    const dateStr = item.date ? new Date(item.date).toLocaleDateString('ru-RU') : '—';
+                    return `<div class="hours-breakdown-card">
+                        <div>
+                            <div class="hours-breakdown-title">${item.title||'—'}</div>
+                            <div class="hours-breakdown-meta">${dateStr}${item.note ? ' · '+item.note : ''}</div>
+                        </div>
+                        <div class="hours-breakdown-value ${cls}">${formatHours(item.hours)}</div>
+                    </div>`;
+                }).join('')}`;
+        } catch(e) { c.innerHTML=`<div class="empty-state">❌ ${e.message}</div>`; }
+    }
+
+    async function doSelfCheckin() {
+        const eventId = document.getElementById('checkinEventIdSelf').value;
+        const el = document.getElementById('checkinSelfResult');
+        if (!eventId) { el.className='result error'; el.textContent='❌ Укажите ID мероприятия'; return; }
+        if (!token) { el.className='result error'; el.textContent='❌ Нужна авторизация'; return; }
+        el.className='result info'; el.textContent='Отправляем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${eventId}/checkin`, { method:'POST', headers:headers(), body:'{}' });
+            const data = await safeJson(res);
+            el.className = res.ok ? 'result' : 'result error';
+            el.textContent = res.ok ? `✅ ${data.message}\n${JSON.stringify(data,null,2)}` : `❌ ${data.message||data.error||JSON.stringify(data)}`;
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    async function doHrCheckin() {
+        const eventId = document.getElementById('checkinEventIdHr').value;
+        const userId  = document.getElementById('checkinUserIdHr').value;
+        const el = document.getElementById('checkinHrResult');
+        if (!eventId||!userId) { el.className='result error'; el.textContent='❌ Укажите ID мероприятия и пользователя'; return; }
+        if (!token) { el.className='result error'; el.textContent='❌ Нужна авторизация'; return; }
+        el.className='result info'; el.textContent='Отправляем...';
+        try {
+            const res  = await fetch(`${BASE}/events/${eventId}/checkin`, {
+                method:'POST', headers:headers(), body:JSON.stringify({ userId: parseInt(userId) })
+            });
+            const data = await safeJson(res);
+            el.className = res.ok ? 'result' : 'result error';
+            el.textContent = res.ok ? `✅ ${data.message}\n${JSON.stringify(data,null,2)}` : `❌ ${data.message||data.error||JSON.stringify(data)}`;
+        } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    // ── HR: Google Sheets миграция ────────────────────────────────────────────
+    async function runMigration() {
+        const log = document.getElementById('migrateLog');
+        const btn = document.getElementById('migrateBtn');
+
+        if (!token) {
+            log.className = 'migrate-log error';
+            log.textContent = '❌ Нужна авторизация. Войдите как HR во вкладке "Авторизация".';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = '⏳ Импортируем...';
+        log.className = 'migrate-log loading';
+        log.textContent = '⏳ Подключаемся к Google Sheets...\nЭто может занять 10-30 секунд.';
+
+        try {
+            const res  = await fetch(`${BASE}/admin/sheets/migrate-users`, { method:'POST', headers:headers() });
+            const data = await safeJson(res);
+
+            if (res.ok) {
+                log.className = 'migrate-log';
+                const msg = data.message || JSON.stringify(data, null, 2);
+                log.textContent = `✅ Импорт завершён!\n\n${msg}`;
+            } else if (res.status === 403) {
+                log.className = 'migrate-log error';
+                log.textContent = '❌ Нет прав доступа.\nТребуется роль HR или ADMIN.';
+            } else {
+                log.className = 'migrate-log error';
+                log.textContent = `❌ Ошибка (${res.status}):\n${data.message || data.error || JSON.stringify(data, null, 2)}`;
+            }
+        } catch(e) {
+            log.className = 'migrate-log error';
+            log.textContent = `❌ Не удалось подключиться к серверу:\n${e.message}\n\nПроверьте что Spring Boot запущен на порту 8080.`;
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '📥 Запустить импорт из Google Sheets → PostgreSQL';
+        }
     }
 
     // ── Редактирование ────────────────────────────────────────────────────────
@@ -662,6 +1020,95 @@
             el.className = res.ok ? 'result' : 'result error';
             el.textContent = res.ok ? `✅ Черновик создан!\nID: ${data.id} | ${data.eventName}` : `❌ ${data.message||data.error||JSON.stringify(data)}`;
         } catch(e) { el.className='result error'; el.textContent='❌ '+e.message; }
+    }
+
+    function devShowResult(elId, res, data) {
+        const el = document.getElementById(elId);
+        el.className = res.ok ? 'result' : 'result error';
+        el.textContent = res.ok
+            ? `✅ HTTP ${res.status}\n${JSON.stringify(data, null, 2)}`
+            : `❌ HTTP ${res.status}\n${data.message || data.error || JSON.stringify(data, null, 2)}`;
+    }
+
+    async function devGetEventById() {
+        const id = document.getElementById('devEventId').value;
+        const el = document.getElementById('devEventResult');
+        if (!id) { el.className='result error'; el.textContent='❌ Укажите ID'; return; }
+        if (!token) { el.className='result error'; el.textContent='❌ Нужен JWT'; return; }
+        el.className='result info'; el.textContent='Загружаем...';
+        try {
+            const res = await fetch(`${BASE}/events/${id}`, { headers: headers() });
+            devShowResult('devEventResult', res, await safeJson(res));
+        } catch (e) { el.className='result error'; el.textContent='❌ ' + e.message; }
+    }
+
+    async function devGetAttendees() {
+        const id = document.getElementById('devAttendeesEventId').value;
+        const el = document.getElementById('devAttendeesResult');
+        if (!id) { el.className='result error'; el.textContent='❌ Укажите ID'; return; }
+        if (!token) { el.className='result error'; el.textContent='❌ Нужен JWT'; return; }
+        el.className='result info'; el.textContent='Загружаем...';
+        try {
+            const res = await fetch(`${BASE}/events/${id}/attendees`, { headers: headers() });
+            devShowResult('devAttendeesResult', res, await safeJson(res));
+        } catch (e) { el.className='result error'; el.textContent='❌ ' + e.message; }
+    }
+
+    async function devAdjustHours() {
+        const el = document.getElementById('devAdjustResult');
+        const volunteerId = document.getElementById('devAdjustVolunteerId').value;
+        if (!volunteerId) { el.className='result error'; el.textContent='❌ Укажите ID волонтёра'; return; }
+        if (!token) { el.className='result error'; el.textContent='❌ Нужен JWT (роль HR)'; return; }
+        const body = {
+            hoursDelta: parseFloat(document.getElementById('devAdjustDelta').value) || 0,
+            reason: document.getElementById('devAdjustReason').value.trim() || 'Тест'
+        };
+        const eventId = document.getElementById('devAdjustEventId').value;
+        if (eventId) body.eventId = parseInt(eventId);
+        el.className='result info'; el.textContent='Отправляем...';
+        try {
+            const res = await fetch(`${BASE}/volunteers/${volunteerId}/hours/adjust`, {
+                method: 'POST', headers: headers(), body: JSON.stringify(body)
+            });
+            devShowResult('devAdjustResult', res, await safeJson(res));
+        } catch (e) { el.className='result error'; el.textContent='❌ ' + e.message; }
+    }
+
+    async function devWebhookSheets() {
+        const el = document.getElementById('devWebhookResult');
+        let body;
+        try { body = JSON.parse(document.getElementById('devWebhookJson').value); }
+        catch (e) { el.className='result error'; el.textContent='❌ Невалидный JSON'; return; }
+        el.className='result info'; el.textContent='Отправляем (без JWT)...';
+        try {
+            const res = await fetch(`${BASE}/webhook/sheets`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            let data;
+            try { data = JSON.parse(text); } catch { data = { raw: text }; }
+            devShowResult('devWebhookResult', res, data);
+        } catch (e) { el.className='result error'; el.textContent='❌ ' + e.message; }
+    }
+
+    async function devPublicGoogleSheets() {
+        const el = document.getElementById('devPublicRegResult');
+        if (!token) { el.className='result error'; el.textContent='❌ Нужен JWT'; return; }
+        let body;
+        try { body = JSON.parse(document.getElementById('devPublicRegJson').value); }
+        catch (e) { el.className='result error'; el.textContent='❌ Невалидный JSON'; return; }
+        el.className='result info'; el.textContent='Отправляем...';
+        try {
+            const res = await fetch(`${BASE}/v1/public/registration/google-sheets`, {
+                method: 'POST', headers: headers(), body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            let data;
+            try { data = JSON.parse(text); } catch { data = { raw: text || '(пустой ответ — 204/void)' }; }
+            devShowResult('devPublicRegResult', res, data);
+        } catch (e) { el.className='result error'; el.textContent='❌ ' + e.message; }
     }
 
     async function submitCreateAndPublish() {

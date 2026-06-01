@@ -43,7 +43,23 @@ public class EventResponse {
     private LocalDateTime responseTime; // Когда откликнулся
 
     @Column(name = "arrival_time")
-    private LocalDateTime arrivalTime; // Когда отсканировал QR
+    private LocalDateTime arrivalTime; // Когда отсканировал QR (legacy)
+
+    @Column(name = "check_in_time")
+    private LocalDateTime checkInTime;
+
+    @Column(name = "early_leave_time")
+    private LocalDateTime earlyLeaveTime;
+
+    @Column(name = "extra_hours", precision = 4, scale = 2)
+    @Builder.Default
+    private BigDecimal extraHours = BigDecimal.ZERO;
+
+    @Column(name = "calculated_hours", precision = 4, scale = 2)
+    private BigDecimal calculatedHours;
+
+    @Column(name = "hours_note", length = 255)
+    private String hoursNote;
 
     // Волонтёрские часы за это мероприятие
     @Column(name = "volunteer_hours", precision = 10, scale = 2)
