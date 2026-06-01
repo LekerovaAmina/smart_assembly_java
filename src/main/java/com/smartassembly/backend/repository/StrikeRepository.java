@@ -15,4 +15,8 @@ public interface StrikeRepository extends JpaRepository<Strike, Long> {
 
     // Проверка — уже есть страйк за это мероприятие?
     boolean existsByUserIdAndEventId(Long userId, Long eventId);
+
+    long countByUserIdAndIsActiveTrue(Long userId);
+
+    List<Strike> findByUserIdOrderByIssuedAtDesc(Long userId);
 }

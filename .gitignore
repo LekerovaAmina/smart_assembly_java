@@ -32,4 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/smart-assembly-492708-3bd3f8ffb35b.json
+src/main/resources/service-account.json
+src/main/resources/*service-account*.json
+src/main/resources/smart-assembly-*.json

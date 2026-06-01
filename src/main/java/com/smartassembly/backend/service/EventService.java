@@ -6,15 +6,20 @@ import com.smartassembly.backend.entity.Event;
 import com.smartassembly.backend.entity.User;
 import com.smartassembly.backend.enums.EventStatus;
 import com.smartassembly.backend.enums.UserRole;
+import com.smartassembly.backend.exception.EntityNotFoundException;
 import com.smartassembly.backend.repository.EventRepository;
 import com.smartassembly.backend.repository.EventResponseRepository;
 import com.smartassembly.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -25,6 +30,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final EventResponseRepository eventResponseRepository;
+    private final QrCodeService qrCodeService;
 
     // ── Создать мероприятие (только HR) ──────────────────────────────────────
     @Transactional
@@ -113,38 +119,82 @@ public class EventService {
 
     // ── Список мероприятий для HR (все статусы своего отделения) ─────────────
     @Transactional(readOnly = true)
-    public List<EventResponseDto> getEventsForHr(String hrPhone) {
+    public Page<EventResponseDto> getEventsForHr(String hrPhone, Pageable pageable) {
         User hr = userRepository.findByPhone(hrPhone)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         return eventRepository
-                .findByAssemblyIdOrderByEventDateDesc(hr.getAssembly().getId())
-                .stream()
-                .map(EventResponseDto::from)
-                .toList();
+                .findByAssemblyId(hr.getAssembly().getId(), pageable)
+                .map(EventResponseDto::from);
     }
 
     // ── Список мероприятий для волонтёров (только OPEN и IN_PROGRESS) ──────────
     @Transactional(readOnly = true)
-    public List<EventResponseDto> getEventsForVolunteer(String phone) {
+    public Page<EventResponseDto> getEventsForVolunteer(String phone, Pageable pageable) {
         User user = userRepository.findByPhone(phone)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         return eventRepository
                 .findByAssemblyIdAndStatusIn(
                         user.getAssembly().getId(),
-                        List.of(EventStatus.OPEN, EventStatus.IN_PROGRESS)
+                        List.of(EventStatus.OPEN, EventStatus.IN_PROGRESS),
+                        pageable
                 )
-                .stream()
                 .map(event -> {
                     EventResponseDto dto = EventResponseDto.from(event);
-                    // Помечаем — уже записан или нет
                     dto.setIsRegistered(
                             eventResponseRepository.existsByEventIdAndUserId(event.getId(), user.getId())
                     );
                     return dto;
-                })
-                .toList();
+                });
+    }
+
+    @Transactional
+    public EventResponseDto startEvent(Long eventId, String hrPhone) {
+        Event event = getEventOrThrow(eventId);
+        checkHrAccess(hrPhone, event);
+        if (event.getStatus() != EventStatus.OPEN) {
+            throw new IllegalStateException("Запустить можно только мероприятие в статусе OPEN");
+        }
+        event.setStatus(EventStatus.IN_PROGRESS);
+        event.setActualStartTime(LocalDateTime.now());
+        return EventResponseDto.from(eventRepository.save(event));
+    }
+
+    @Transactional
+    public EventResponseDto closeEvent(Long eventId, String hrPhone) {
+        Event event = getEventOrThrow(eventId);
+        checkHrAccess(hrPhone, event);
+        if (event.getStatus() != EventStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Закрыть можно только мероприятие в статусе IN_PROGRESS");
+        }
+        event.setStatus(EventStatus.CLOSED);
+        return EventResponseDto.from(eventRepository.save(event));
+    }
+
+    @Transactional
+    public void deleteDraftEvent(Long eventId, String hrPhone) {
+        Event event = getEventOrThrow(eventId);
+        checkHrAccess(hrPhone, event);
+        if (event.getStatus() != EventStatus.DRAFT) {
+            throw new IllegalStateException("Удалить можно только черновик (DRAFT)");
+        }
+        eventResponseRepository.deleteAll(eventResponseRepository.findByEventId(eventId));
+        eventRepository.delete(event);
+        log.info("Draft event {} deleted", eventId);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, String> getEventQrBase64(Long eventId, String phone) {
+        Event event = getEventOrThrow(eventId);
+        User user = userRepository.findByPhone(phone)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        if (user.getRole() == UserRole.HR
+                && !event.getAssembly().getId().equals(user.getAssembly().getId())) {
+            throw new RuntimeException("Нет доступа к мероприятию");
+        }
+        String payload = event.getQrCodeData() != null ? event.getQrCodeData() : String.valueOf(event.getId());
+        return Map.of("qrBase64", qrCodeService.generateBase64Png(payload));
     }
 
     // ── Получить одно мероприятие по ID ───────────────────────────────────────
@@ -189,7 +239,7 @@ public class EventService {
     // ── Вспомогательные методы ────────────────────────────────────────────────
     private Event getEventOrThrow(Long eventId) {
         return eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Мероприятие с ID " + eventId + " не найдено"));
+                .orElseThrow(() -> new EntityNotFoundException("Мероприятие с ID " + eventId + " не найдено"));
     }
 
     private void checkHrAccess(String phone, Event event) {

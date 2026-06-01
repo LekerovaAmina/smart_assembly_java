@@ -4,6 +4,7 @@ import com.smartassembly.backend.entity.User;
 import com.smartassembly.backend.enums.UserRole;
 import com.smartassembly.backend.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -11,17 +12,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
     Optional<User> findByPhone(String phone);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByIin(String iin);
 
     Optional<User> findByUniqueId(String uniqueId);
 
     boolean existsByPhone(String phone);
 
     boolean existsByEmail(String email);
+
+    boolean existsByIin(String iin);
 
     // Все активные пользователи отделения
     List<User> findByAssemblyIdAndIsActiveTrue(Long assemblyId);

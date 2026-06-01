@@ -1,10 +1,14 @@
 package com.smartassembly.backend.repository;
 
 import com.smartassembly.backend.entity.EventResponse;
+import com.smartassembly.backend.enums.EventStatus;
 import com.smartassembly.backend.enums.ResponseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +29,14 @@ public interface EventResponseRepository extends JpaRepository<EventResponse, Lo
     // Подсчёт участников по статусу
     long countByEventId(Long eventId);
     long countByEventIdAndStatus(Long eventId, ResponseStatus status);
+
+    @Query("SELECT COALESCE(SUM(er.calculatedHours), 0) FROM EventResponse er JOIN er.event e " +
+            "WHERE er.user.id = :userId AND e.status = :status")
+    BigDecimal sumCalculatedHoursByUserIdAndEventStatus(
+            @Param("userId") Long userId, @Param("status") EventStatus status);
+
+    @Query("SELECT er FROM EventResponse er JOIN er.event e " +
+            "WHERE er.user.id = :userId AND e.status = :status ORDER BY e.eventDate DESC")
+    List<EventResponse> findByUserIdAndEventStatus(
+            @Param("userId") Long userId, @Param("status") EventStatus status);
 }

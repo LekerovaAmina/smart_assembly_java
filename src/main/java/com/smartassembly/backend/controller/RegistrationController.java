@@ -7,6 +7,12 @@ import com.smartassembly.backend.entity.User;
 import com.smartassembly.backend.service.RegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import com.smartassembly.backend.enums.RegistrationStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/registration")
@@ -27,25 +32,36 @@ public class RegistrationController {
     @PostMapping("/submit")
     public ResponseEntity<?> submit(@Valid @RequestBody RegistrationRequestDto dto) {
         RegistrationRequest request = registrationService.submitRequest(dto);
-        return ResponseEntity.ok(Map.of(
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "message", "Заявка успешно подана! HR рассмотрит её в ближайшее время.",
                 "requestId", request.getId()
         ));
     }
 
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('HR', 'SUPER_ADMIN')")
+    public ResponseEntity<Page<RegistrationRequestResponseDto>> getAll(
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam(required = false) List<RegistrationStatus> status,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(registrationService.getAllRequests(currentUser, status, pageable));
+    }
+
     // HR видит ВСЕ pending заявки своего отделения (возвращает DTO)
     @GetMapping("/pending")
     @PreAuthorize("hasAnyRole('HR', 'SUPER_ADMIN')")
-    public ResponseEntity<List<RegistrationRequestResponseDto>> getPending(
+    public ResponseEntity<Page<RegistrationRequestResponseDto>> getPending(
+            @AuthenticationPrincipal User currentUser,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(registrationService.getPendingRequestsPage(currentUser, pageable));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('HR', 'SUPER_ADMIN')")
+    public ResponseEntity<RegistrationRequestResponseDto> getById(
+            @PathVariable Long id,
             @AuthenticationPrincipal User currentUser) {
-        List<RegistrationRequest> requests =
-                registrationService.getPendingRequests(currentUser.getAssembly().getId());
-
-        List<RegistrationRequestResponseDto> dtos = requests.stream()
-                .map(RegistrationRequestResponseDto::from)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(registrationService.getRequestById(id, currentUser));
     }
 
     // HR одобряет заявку

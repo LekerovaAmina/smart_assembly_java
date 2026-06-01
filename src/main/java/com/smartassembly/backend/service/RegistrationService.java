@@ -11,12 +11,19 @@ import com.smartassembly.backend.enums.UserStatus;
 import com.smartassembly.backend.repository.AssemblyRepository;
 import com.smartassembly.backend.repository.RegistrationRequestRepository;
 import com.smartassembly.backend.repository.UserRepository;
+import com.smartassembly.backend.dto.response.RegistrationRequestResponseDto;
+import com.smartassembly.backend.exception.EntityNotFoundException;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -92,6 +99,47 @@ public class RegistrationService {
     // HR видит все заявки своего отделения
     public List<RegistrationRequest> getPendingRequests(Long assemblyId) {
         return requestRepository.findByAssemblyIdAndStatus(assemblyId, RegistrationStatus.PENDING);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RegistrationRequestResponseDto> getPendingRequestsPage(User hrUser, Pageable pageable) {
+        Long assemblyId = hrUser.getRole() == UserRole.SUPER_ADMIN ? null : hrUser.getAssembly().getId();
+        return requestRepository
+                .findAll(buildAssemblySpec(assemblyId, List.of(RegistrationStatus.PENDING)), pageable)
+                .map(RegistrationRequestResponseDto::from);
+    }
+
+    @Transactional(readOnly = true)
+    public RegistrationRequestResponseDto getRequestById(Long id, User hrUser) {
+        RegistrationRequest request = requestRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Заявка не найдена"));
+        if (hrUser.getRole() == UserRole.HR
+                && !request.getAssembly().getId().equals(hrUser.getAssembly().getId())) {
+            throw new RuntimeException("Нет доступа к заявкам другого отделения");
+        }
+        return RegistrationRequestResponseDto.from(request);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RegistrationRequestResponseDto> getAllRequests(
+            User hrUser, List<RegistrationStatus> statuses, Pageable pageable) {
+        Long assemblyId = hrUser.getRole() == UserRole.SUPER_ADMIN ? null : hrUser.getAssembly().getId();
+        Specification<RegistrationRequest> spec = buildAssemblySpec(assemblyId, statuses);
+        return requestRepository.findAll(spec, pageable).map(RegistrationRequestResponseDto::from);
+    }
+
+    private Specification<RegistrationRequest> buildAssemblySpec(
+            Long assemblyId, List<RegistrationStatus> statuses) {
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (assemblyId != null) {
+                predicates.add(cb.equal(root.get("assembly").get("id"), assemblyId));
+            }
+            if (statuses != null && !statuses.isEmpty()) {
+                predicates.add(root.get("status").in(statuses));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
     // HR одобряет заявку → создаётся пользователь → отправляется SMS

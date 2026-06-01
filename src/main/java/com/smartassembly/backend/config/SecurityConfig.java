@@ -32,15 +32,23 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Публичные эндпоинты — без токена
+                        // 1. Публичные эндпоинты — без токена
                         .requestMatchers(
                                 "/api/auth/**",          // Авторизация
                                 "/api/registration/**",  // Подача заявки
+                                "/api/webhook/**",       // Google Apps Script webhooks
                                 "/",                     // Главная страница
                                 "/*.html",               // HTML файлы
                                 "/static/**"             // Статика
                         ).permitAll()
-                        // Всё остальное — нужен токен
+
+                        // 2. Доступ к миграции Google Sheets — разрешаем ADMIN и HR
+                        .requestMatchers("/api/admin/sheets/**").hasAnyRole("ADMIN", "HR")
+
+                        // 3. Любые другие эндпоинты админки (если они есть) — только для ADMIN
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // 4. Всё остальное — нужен просто любой валидный токен
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -52,7 +60,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

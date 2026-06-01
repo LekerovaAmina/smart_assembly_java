@@ -2,6 +2,7 @@ package com.smartassembly.backend.entity;
 
 import com.smartassembly.backend.enums.EventStatus;
 import com.smartassembly.backend.enums.EventType;
+import com.smartassembly.backend.enums.converter.EventStatusConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -78,8 +79,8 @@ public class Event {
     @Builder.Default
     private Integer currentParticipants = 0;
 
-    // Статус
-    @Enumerated(EnumType.STRING)
+    // Статус (в БД хранится в нижнем регистре: draft, open, completed)
+    @Convert(converter = EventStatusConverter.class)
     @Column(name = "status", nullable = false)
     @Builder.Default
     private EventStatus status = EventStatus.DRAFT;

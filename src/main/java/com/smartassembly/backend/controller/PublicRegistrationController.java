@@ -3,6 +3,7 @@ package com.smartassembly.backend.controller;
 import com.smartassembly.backend.dto.request.GoogleSheetRegistrationDto;
 import com.smartassembly.backend.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +14,10 @@ public class PublicRegistrationController {
     private final RegistrationService registrationService;
 
     // Этот эндпоинт прописываем в Google Apps Script
+    @Deprecated
     @PostMapping("/google-sheets")
-    public void registerFromSheet(@RequestBody GoogleSheetRegistrationDto dto) {
+    public ResponseEntity<Void> registerFromSheet(@RequestBody GoogleSheetRegistrationDto dto) {
         registrationService.importFromGoogleSheet(dto);
+        return ResponseEntity.ok().header("X-Deprecated", "true").build();
     }
 }
