@@ -34,21 +34,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 1. Публичные эндпоинты — без токена
                         .requestMatchers(
-                                "/api/auth/**",          // Авторизация
-                                "/api/registration/**",  // Подача заявки
-                                "/api/webhook/**",       // Google Apps Script webhooks
-                                "/",                     // Главная страница
-                                "/*.html",               // HTML файлы
-                                "/static/**"             // Статика
+                                "/api/auth/**",
+                                "/api/registration/submit",
+                                "/api/webhook/**",
+                                "/",
+                                "/*.html",
+                                "/static/**"
                         ).permitAll()
 
-                        // 2. Доступ к миграции Google Sheets — разрешаем ADMIN и HR
-                        .requestMatchers("/api/admin/sheets/**").hasAnyRole("ADMIN", "HR")
+                        // 2. Миграция из Google Sheets — HR и SUPER_ADMIN
+                        // ИСПРАВЛЕНО: было hasAnyRole("ADMIN", "HR") — роль ADMIN не существует в UserRole
+                        .requestMatchers("/api/admin/sheets/**").hasAnyRole("SUPER_ADMIN", "HR")
 
-                        // 3. Любые другие эндпоинты админки (если они есть) — только для ADMIN
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // 3. Остальные admin эндпоинты — только SUPER_ADMIN
+                        .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
 
-                        // 4. Всё остальное — нужен просто любой валидный токен
+                        // 4. Всё остальное — любой валидный токен
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

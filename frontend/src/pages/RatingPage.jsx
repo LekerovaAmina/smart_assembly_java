@@ -4,35 +4,26 @@ import { useAuth } from '../context/AuthContext';
 
 const ROLE_COLORS = {
   VOLUNTEER: 'bg-green-100 text-green-700',
+  MEMBER: 'bg-gray-100 text-gray-600',
   HR: 'bg-orange-100 text-orange-700',
-  ADMIN: 'bg-purple-100 text-purple-700',
-  ACTIVIST: 'bg-orange-100 text-orange-700',
+  COORDINATOR: 'bg-blue-100 text-blue-700',
+  SUPER_ADMIN: 'bg-purple-100 text-purple-700',
 };
 
 const ROLE_LABELS = {
   VOLUNTEER: 'Волонтёр',
+  MEMBER: 'Участник',
   HR: 'HR',
-  ADMIN: 'Администратор',
-  ACTIVIST: 'Активист',
+  COORDINATOR: 'Координатор',
+  SUPER_ADMIN: 'Администратор',
 };
 
-function MedalIcon({ place }) {
-  if (place === 1) return <span className="text-yellow-500 font-bold text-base">1</span>;
-  if (place === 2) return <span className="text-gray-400 font-bold text-base">2</span>;
-  if (place === 3) return <span className="text-amber-600 font-bold text-base">3</span>;
-  return <span className="font-medium text-text-secondary text-sm">{place}</span>;
-}
-
 function PlaceBadge({ place }) {
-  const base = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold';
-  if (place === 1) return <div className={`${base} bg-yellow-100 text-yellow-600`}><MedalIcon place={place} /></div>;
-  if (place === 2) return <div className={`${base} bg-gray-100 text-gray-500`}><MedalIcon place={place} /></div>;
-  if (place === 3) return <div className={`${base} bg-amber-50 text-amber-600`}><MedalIcon place={place} /></div>;
-  return (
-    <div className={`${base} bg-transparent`}>
-      <span className="text-sm text-text-muted font-medium">{place}</span>
-    </div>
-  );
+  const base = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0';
+  if (place === 1) return <div className={`${base} bg-yellow-100 text-yellow-600`}>1</div>;
+  if (place === 2) return <div className={`${base} bg-gray-100 text-gray-500`}>2</div>;
+  if (place === 3) return <div className={`${base} bg-amber-50 text-amber-600`}>3</div>;
+  return <div className={`${base} bg-transparent`}><span className="text-sm text-text-muted font-medium">{place}</span></div>;
 }
 
 const UserCircle = () => (
@@ -56,10 +47,9 @@ export default function RatingPage() {
       setError(null);
       try {
         const res = await getRating();
-        const data = Array.isArray(res.data) ? res.data : (res.data?.content ?? []);
-        // Sort by totalHours descending
-        const sorted = [...data].sort((a, b) => (b.totalHours ?? 0) - (a.totalHours ?? 0));
-        setVolunteers(sorted);
+        // /api/rating возвращает List<RatingEntryDto> — уже отсортированный массив
+        const data = Array.isArray(res.data) ? res.data : [];
+        setVolunteers(data);
       } catch (err) {
         setError('Не удалось загрузить рейтинг');
         console.error(err);
@@ -70,13 +60,12 @@ export default function RatingPage() {
     fetchRating();
   }, []);
 
+  // Ищем себя по id из JWT-данных
   const myPlace = currentUser
-    ? volunteers.findIndex(v => v.id === currentUser.id || v.uniqueId === currentUser.uniqueId) + 1
+    ? volunteers.findIndex(v => String(v.id) === String(currentUser.userId)) + 1
     : 0;
 
-  const myName = currentUser
-    ? [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || 'Вы'
-    : 'Вы';
+  const myEntry = myPlace > 0 ? volunteers[myPlace - 1] : null;
 
   return (
     <div>
@@ -92,10 +81,9 @@ export default function RatingPage() {
           )}
 
           <div className="bg-surface rounded-card border border-border overflow-hidden">
-            {/* Table header */}
-            <div className="grid grid-cols-12 gap-2 px-4 py-3 border-b border-border">
+            <div className="grid grid-cols-12 gap-2 px-4 py-3 border-b border-border bg-gray-50">
               <div className="col-span-1 text-xs text-text-muted font-medium">Место</div>
-              <div className="col-span-5 text-xs text-text-muted font-medium">ФИО</div>
+              <div className="col-span-5 text-xs text-text-muted font-medium">Участник</div>
               <div className="col-span-4 text-xs text-text-muted font-medium">Роль</div>
               <div className="col-span-2 text-xs text-text-muted font-medium text-right">Часы</div>
             </div>
@@ -122,20 +110,23 @@ export default function RatingPage() {
               <div className="divide-y divide-border">
                 {volunteers.map((volunteer, index) => {
                   const place = index + 1;
-                  const isMe = volunteer.id === currentUser?.id || volunteer.uniqueId === currentUser?.uniqueId;
+                  const isMe = String(volunteer.id) === String(currentUser?.userId);
                   const roleKey = volunteer.role?.toUpperCase() ?? '';
                   const roleLabel = ROLE_LABELS[roleKey] ?? volunteer.role ?? 'Волонтёр';
                   const roleColor = ROLE_COLORS[roleKey] ?? 'bg-gray-100 text-gray-600';
-                  const name = isMe
+
+                  const displayName = isMe
                     ? 'Вы'
-                    : [volunteer.firstName, volunteer.lastName?.charAt(0) ? `${volunteer.lastName.charAt(0)}.` : ''].filter(Boolean).join(' ')
-                      || volunteer.fullName
-                      || 'Участник';
+                    : [volunteer.firstName, volunteer.lastName]
+                        .filter(Boolean)
+                        .join(' ') || 'Участник';
 
                   return (
                     <div
                       key={volunteer.id ?? index}
-                      className={`grid grid-cols-12 gap-2 px-4 py-3 items-center ${isMe ? 'bg-orange-50' : 'hover:bg-gray-50'} transition-colors`}
+                      className={`grid grid-cols-12 gap-2 px-4 py-3 items-center transition-colors ${
+                        isMe ? 'bg-orange-50' : 'hover:bg-gray-50'
+                      }`}
                     >
                       <div className="col-span-1 flex items-center justify-center">
                         <PlaceBadge place={place} />
@@ -143,7 +134,7 @@ export default function RatingPage() {
                       <div className="col-span-5 flex items-center gap-2.5">
                         <UserCircle />
                         <span className={`text-sm font-medium ${isMe ? 'text-primary' : 'text-text-primary'}`}>
-                          {name}
+                          {displayName}
                         </span>
                       </div>
                       <div className="col-span-4">
@@ -153,7 +144,7 @@ export default function RatingPage() {
                       </div>
                       <div className="col-span-2 text-right">
                         <span className={`text-sm font-semibold ${isMe ? 'text-primary' : 'text-text-primary'}`}>
-                          {volunteer.totalHours ?? 0}ч
+                          {parseFloat(volunteer.totalHours ?? 0).toFixed(1)}ч
                         </span>
                       </div>
                     </div>
@@ -164,24 +155,69 @@ export default function RatingPage() {
           </div>
         </div>
 
-        {/* Sidebar info */}
+        {/* Sidebar */}
         <div className="space-y-4">
-          {myPlace > 0 && (
+          {myPlace > 0 && myEntry && (
             <div className="bg-surface rounded-card border border-border p-4">
-              <h3 className="text-sm font-semibold text-text-primary mb-2">
-                Поздравляем вас!
-              </h3>
-              <p className="text-sm text-text-secondary">
-                Вы на{' '}
-                <span className="text-primary font-semibold">{myPlace} месте</span>{' '}
-                в рейтинге этого месяца
-              </p>
+              <h3 className="text-sm font-semibold text-text-primary mb-3">Ваша позиция</h3>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-primary font-bold text-lg">
+                  {myPlace}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-text-primary">
+                    {myPlace} место из {volunteers.length}
+                  </p>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    {parseFloat(myEntry.totalHours ?? 0).toFixed(1)} часов всего
+                  </p>
+                </div>
+              </div>
+
+              {myPlace > 1 && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <p className="text-xs text-text-muted">
+                    До {myPlace - 1} места:
+                    <span className="font-semibold text-primary ml-1">
+                      {(parseFloat(volunteers[myPlace - 2]?.totalHours ?? 0) - parseFloat(myEntry.totalHours ?? 0)).toFixed(1)}ч
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
           <div className="bg-surface rounded-card border border-border p-4">
-            <h3 className="text-sm font-semibold text-text-primary mb-2">Мои часы</h3>
-            <p className="text-sm text-text-muted">Статистика часов в разработке</p>
+            <h3 className="text-sm font-semibold text-text-primary mb-3">Топ-3</h3>
+            {loading ? (
+              <div className="space-y-2 animate-pulse">
+                {[1, 2, 3].map(i => <div key={i} className="h-8 bg-gray-100 rounded" />)}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {volunteers.slice(0, 3).map((v, i) => {
+                  const medals = ['🥇', '🥈', '🥉'];
+                  return (
+                    <div key={v.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span>{medals[i]}</span>
+                        <span className="text-sm text-text-primary truncate max-w-[100px]">
+                          {[v.firstName, v.lastName].filter(Boolean).join(' ') || 'Участник'}
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-text-secondary">
+                        {parseFloat(v.totalHours ?? 0).toFixed(1)}ч
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-surface rounded-card border border-border p-4">
+            <h3 className="text-sm font-semibold text-text-primary mb-1">Всего участников</h3>
+            <p className="text-3xl font-bold text-primary">{volunteers.length}</p>
           </div>
         </div>
       </div>

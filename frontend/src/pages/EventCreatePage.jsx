@@ -2,14 +2,23 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createEvent } from '../api';
 
+// ИСПРАВЛЕНО: Список типов приведён в соответствие с бэком (EventType enum)
+// Убран SPORT (не существует), убран дубль VOLUNTEERING
+const EVENT_TYPES = [
+  { value: 'CONFERENCE',  label: 'Конференция' },
+  { value: 'ROUNDTABLE',  label: 'Круглый стол' },
+  { value: 'WORKSHOP',    label: 'Воркшоп' },
+  { value: 'CHARITY',     label: 'Благотворительность' },
+  { value: 'CULTURAL',    label: 'Культурное' },
+  { value: 'EDUCATIONAL', label: 'Образовательное' },
+  { value: 'OTHER',       label: 'Другое' },
+];
+
 export default function EventCreatePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null); // Состояние для уведомления успеха
-
-  // Запоминаем, какую кнопку нажал пользователь перед сабмитом формы
-  const [clickedStatus, setClickedStatus] = useState('DRAFT');
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const [formData, setFormData] = useState({
     eventName: '',
@@ -18,8 +27,8 @@ export default function EventCreatePage() {
     eventDate: '',
     startTime: '',
     endTime: '',
-    location: 'Дом Дружбы',
-    dressCode: 'Классика',
+    location: '',
+    dressCode: '',
     objectives: '',
     tasks: '',
     speakers: '',
@@ -34,19 +43,24 @@ export default function EventCreatePage() {
     }));
   };
 
-// Теперь это единый обработчик для всей формы
-  const handleSubmit = async (e, targetStatus) => {
-    if (e) e.preventDefault(); // Отменяем стандартный сабмит HTML
+  const cleanTime = (timeStr) => {
+    if (!timeStr || timeStr.trim() === '') return null;
+    const parts = timeStr.trim().split(':');
+    const hours   = (parts[0] || '00').substring(0, 2).padStart(2, '0');
+    const minutes = (parts[1] || '00').substring(0, 2).padStart(2, '0');
+    const seconds = (parts[2] || '00').substring(0, 2).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
 
-    // Проверяем обязательные поля вручную только для публикации
-    if (targetStatus === 'OPEN' && (!formData.eventName || !formData.eventDate || !formData.startTime)) {
-      setError('Для публикации мероприятия обязательно заполните Название, Дату и Время начала!');
+  const handleSubmit = async (e, targetStatus) => {
+    if (e) e.preventDefault();
+
+    if (!formData.eventName.trim()) {
+      setError('Введите название мероприятия.');
       return;
     }
-
-    // Для черновика обязательным сделаем только название
-    if (targetStatus === 'DRAFT' && !formData.eventName) {
-      setError('Введите хотя бы название мероприятия, чтобы сохранить его в черновики.');
+    if (targetStatus === 'OPEN' && (!formData.eventDate || !formData.startTime || !formData.location.trim())) {
+      setError('Для публикации заполните: Дату, Время начала и Место проведения.');
       return;
     }
 
@@ -54,257 +68,252 @@ export default function EventCreatePage() {
     setError(null);
     setSuccessMessage(null);
 
-    // Идеальный нормализатор времени под java.time.LocalTime (строго HH:mm:ss)
-    const cleanTime = (timeStr) => {
-      if (!timeStr || timeStr.trim() === '') return null;
-
-      const parts = timeStr.trim().split(':');
-      let hours = parts[0] || '00';
-      let minutes = parts[1] || '00';
-      let seconds = parts[2] || '00';
-
-      hours = hours.substring(0, 2).padStart(2, '0');
-      minutes = minutes.substring(0, 2).padStart(2, '0');
-      seconds = seconds.substring(0, 2).padStart(2, '0');
-
-      return `${hours}:${minutes}:${seconds}`;
-    };
-
-    // Если поля даты/времени пустые, отправляем null или отформатированное время
     const payload = {
-      ...formData,
-      eventDate: formData.eventDate || null,
-      startTime: cleanTime(formData.startTime),
-      endTime: cleanTime(formData.endTime),
-      status: targetStatus, // "DRAFT" или "OPEN"
-      speakers: formData.speakers ? formData.speakers.split(',').map(s => s.trim()).filter(Boolean) : [],
-      currentParticipants: 0,
-      qrCodeData: null,
+      eventName:       formData.eventName.trim(),
+      eventType:       formData.eventType,
+      description:     formData.description.trim() || null,
+      eventDate:       formData.eventDate || null,
+      startTime:       cleanTime(formData.startTime),
+      endTime:         cleanTime(formData.endTime),
+      location:        formData.location.trim() || null,
+      dressCode:       formData.dressCode.trim() || null,
+      objectives:      formData.objectives.trim() || null,
+      tasks:           formData.tasks.trim() || null,
+      speakers:        formData.speakers
+                         ? formData.speakers.split(',').map(s => s.trim()).filter(Boolean)
+                         : [],
+      maxParticipants: formData.maxParticipants || 1,
+      status:          targetStatus,
     };
-
-    console.log("Фронтенд отправляет JSON в БД на создание:", payload);
 
     try {
       await createEvent(payload);
-
-      const textStatus = targetStatus === 'DRAFT' ? 'в черновики' : 'и успешно опубликовано';
-      setSuccessMessage(`Мероприятие "${formData.eventName}" сохранено ${textStatus}!`);
-
-      setTimeout(() => {
-        const targetTab = targetStatus === 'DRAFT' ? 'drafts' : 'published';
-        navigate('/events', { state: { defaultTab: targetTab } });
-      }, 2000);
-
+      const textStatus = targetStatus === 'DRAFT' ? 'сохранено в черновики' : 'опубликовано';
+      setSuccessMessage(`Мероприятие «${formData.eventName}» ${textStatus}!`);
+      setTimeout(() => navigate('/events'), 1800);
     } catch (err) {
-      console.error("Ошибка запроса:", err);
-      setError(err.response?.data?.message || 'Ошибка бэкенда при сохранении. Проверь консоль Spring Boot.');
+      console.error(err);
+      const msg = err.response?.data?.message
+        || err.response?.data?.errors?.map(e => e.message).join(', ')
+        || 'Ошибка при сохранении';
+      setError(msg);
     } finally {
       setLoading(false);
     }
   };
-  return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-card border border-border shadow-sm relative">
 
-      {/* УВЕДОМЛЕНИЕ ОБ УСПЕХЕ */}
+  return (
+    <div className="max-w-2xl mx-auto">
+      {/* Уведомление об успехе */}
       {successMessage && (
-        <div className="fixed top-6 right-6 z-50 bg-green-50 border border-green-200 text-green-700 rounded-card px-4 py-3 text-sm shadow-xl flex items-center gap-2 animate-fade-in">
-          <span className="w-2 h-2 rounded-full bg-green-500" />
+        <div className="fixed top-6 right-6 z-50 bg-green-50 border border-green-200 text-green-700 rounded-card px-4 py-3 text-sm shadow-xl flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
-      {/* УВЕДОМЛЕНИЕ ОБ ОШИБКЕ */}
-      {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded text-sm">
-          {error}
-        </div>
-      )}
+      <div className="bg-white p-6 rounded-card border border-border shadow-sm">
+        <h1 className="text-2xl font-bold text-text-primary mb-6">Создание мероприятия</h1>
 
-      <h1 className="text-2xl font-bold text-text-primary mb-6">Создание нового мероприятия</h1>
+        {error && (
+          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded text-sm">
+            {error}
+          </div>
+        )}
 
-      {/* Навешиваем onSubmit на саму форму! */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="col-span-2 sm:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Название мероприятия *</label>
-            <input
-              type="text"
-              name="eventName"
-              required
-              placeholder="например, Тест-12"
-              value={formData.eventName}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          {/* Название + Тип */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 sm:col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Название <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="eventName"
+                placeholder="например, Субботник в парке"
+                value={formData.eventName}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Тип мероприятия</label>
+              <select
+                name="eventType"
+                value={formData.eventType}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              >
+                {EVENT_TYPES.map(({ value, label }) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="col-span-2 sm:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Тип события</label>
-            <select
-              name="eventType"
-              value={formData.eventType}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            >
-              <option value="EDUCATIONAL">EDUCATIONAL</option>
-              <option value="CULTURAL">CULTURAL</option>
-              <option value="VOLUNTEER">VOLUNTEER</option>
-              <option value="SPORT">SPORT</option>
-            </select>
-          </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
-          <textarea
-            name="description"
-            rows="3"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-          />
-        </div>
+          {/* Описание */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+            <textarea
+              name="description"
+              rows="3"
+              value={formData.description}
+              onChange={handleChange}
+              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Дата *</label>
-            <input
-              type="date"
-              name="eventDate"
-              required
-              value={formData.eventDate}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
+          {/* Дата + Время */}
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Дата <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                name="eventDate"
+                value={formData.eventDate}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Начало <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="time"
+                name="startTime"
+                step="60"
+                value={formData.startTime}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Окончание</label>
+              <input
+                type="time"
+                name="endTime"
+                step="60"
+                value={formData.endTime}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Время начала *</label>
-            <input
-              type="time"
-              name="startTime"
-              step="1"
-              required
-              value={formData.startTime}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Время окончания *</label>
-            <input
-              type="time"
-              name="endTime"
-              step="1"
-              required
-              value={formData.endTime}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Место проведения</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
+          {/* Место + Дресс-код */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Место проведения <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="location"
+                placeholder="Дом Дружбы, Астана"
+                value={formData.location}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Дресс-код</label>
+              <input
+                type="text"
+                name="dressCode"
+                placeholder="Деловой стиль"
+                value={formData.dressCode}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Дресс-код</label>
-            <input
-              type="text"
-              name="dressCode"
-              value={formData.dressCode}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Цели</label>
-            <input
-              type="text"
-              name="objectives"
-              value={formData.objectives}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
+          {/* Цели + Задачи */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Цели</label>
+              <input
+                type="text"
+                name="objectives"
+                value={formData.objectives}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Задачи</label>
+              <input
+                type="text"
+                name="tasks"
+                value={formData.tasks}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Задачи</label>
-            <input
-              type="text"
-              name="tasks"
-              value={formData.tasks}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Спикеры (через запятую)</label>
-            <input
-              type="text"
-              name="speakers"
-              placeholder="Лариса, Димаш"
-              value={formData.speakers}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
+          {/* Спикеры + Макс. участников */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Спикеры (через запятую)</label>
+              <input
+                type="text"
+                name="speakers"
+                placeholder="Айгерим, Данияр"
+                value={formData.speakers}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Макс. участников <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                name="maxParticipants"
+                min="1"
+                value={formData.maxParticipants}
+                onChange={handleChange}
+                className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Макс. участников</label>
-            <input
-              type="number"
-              name="maxParticipants"
-              value={formData.maxParticipants}
-              onChange={handleChange}
-              className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
-        </div>
 
-        {/* НИЖНЯЯ ПАНЕЛЬ С КНОПКАМИ */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-6 border-t border-border mt-6">
-          <button
-            type="button"
-            onClick={() => navigate('/events')}
-            className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
-          >
-            Отмена
-          </button>
-
-          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            {/* КНОПКА ЧЕРНОВИКА */}
+          {/* Кнопки */}
+          <div className="flex items-center justify-between pt-4 border-t border-border">
             <button
               type="button"
-              disabled={loading}
-              onClick={() => handleSubmit(null, 'DRAFT')}
-              className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-primary border border-primary hover:bg-blue-50 rounded-btn transition-colors disabled:opacity-50 cursor-pointer text-center"
+              onClick={() => navigate('/events')}
+              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
             >
-              {loading ? 'Сохранение...' : 'В черновики'}
+              Отмена
             </button>
-
-            {/* КНОПКА ПУБЛИКАЦИИ */}
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => handleSubmit(null, 'OPEN')}
-              className="w-full sm:w-auto px-5 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-btn transition-colors shadow-sm disabled:opacity-50 cursor-pointer text-center"
-            >
-              {loading ? 'Публикация...' : 'Опубликовать'}
-            </button>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleSubmit(null, 'DRAFT')}
+                className="px-4 py-2 text-sm font-medium text-primary border border-primary hover:bg-orange-50 rounded-btn transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? 'Сохранение...' : 'В черновики'}
+              </button>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleSubmit(null, 'OPEN')}
+                className="px-5 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-btn shadow-sm transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? 'Публикация...' : 'Опубликовать'}
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
