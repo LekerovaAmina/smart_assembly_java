@@ -76,7 +76,7 @@ public class EventService {
                 .speakers(speakersStr)
                 .coordinator(coordinator)
                 .maxParticipants(request.getMaxParticipants())
-                .status(EventStatus.DRAFT) // по умолчанию черновик
+                .status(request.getStatus() != null ? request.getStatus() : EventStatus.DRAFT)
                 .qrCodeData(qrCodeData)
                 .createdBy(creator)
                 .build();
@@ -197,10 +197,21 @@ public class EventService {
         return Map.of("qrBase64", qrCodeService.generateBase64Png(payload));
     }
 
-    // ── Получить одно мероприятие по ID ───────────────────────────────────────
+    // ── Получить одно мероприятие по ID с проверкой регистрации волонтёра ─────
     @Transactional(readOnly = true)
-    public EventResponseDto getEventById(Long eventId) {
-        return EventResponseDto.from(getEventOrThrow(eventId));
+    public EventResponseDto getEventById(Long eventId, String phone) {
+        Event event = getEventOrThrow(eventId);
+        EventResponseDto dto = EventResponseDto.from(event);
+
+        if (phone != null && !phone.equals("anonymousUser")) {
+            userRepository.findByPhone(phone).ifPresent(user -> {
+                dto.setIsRegistered(
+                        eventResponseRepository.existsByEventIdAndUserId(event.getId(), user.getId())
+                );
+            });
+        }
+
+        return dto;
     }
 
     // ── Редактировать мероприятие (только черновик) ───────────────────────────

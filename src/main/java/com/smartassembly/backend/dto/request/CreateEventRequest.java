@@ -1,5 +1,6 @@
 package com.smartassembly.backend.dto.request;
 
+import com.smartassembly.backend.enums.EventStatus;
 import com.smartassembly.backend.enums.EventType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -51,4 +52,7 @@ public class CreateEventRequest {
     @NotNull(message = "Максимальное количество участников обязательно")
     @Min(value = 1, message = "Минимум 1 участник")
     private Integer maxParticipants;
+
+    private EventStatus status;
+
 }
