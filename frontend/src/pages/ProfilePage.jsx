@@ -11,8 +11,7 @@ const UserIcon = () => (
 const BuildingIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="3" y="3" width="18" height="18" rx="2" />
-    <path d="M9 3v18" />
-    <path d="M3 9h18" />
+    <path d="M9 3v18" /><path d="M3 9h18" />
   </svg>
 );
 
@@ -29,29 +28,41 @@ const MailIcon = () => (
   </svg>
 );
 
-const EditIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+const ClockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
   </svg>
 );
 
 function formatDate(dateStr) {
-  if (!dateStr) return '';
+  if (!dateStr) return '—';
   try {
     const d = new Date(dateStr);
-    return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+    return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
   } catch { return dateStr; }
 }
 
-function StatBox({ label, value, accent = false }) {
+function StatBox({ label, value, accent = false, sub }) {
   return (
-    <div className="bg-surface rounded-card border border-border p-4 text-center flex-1">
-      <p className="text-xs text-text-secondary mb-1">{label}</p>
-      <p className={`text-3xl font-bold ${accent ? 'text-primary' : 'text-primary'}`}>{value ?? '—'}</p>
+    <div className="bg-surface rounded-card border border-border p-4 text-center flex-1 flex flex-col justify-center gap-1">
+      <p className="text-xs text-text-secondary">{label}</p>
+      <p className={`text-3xl font-bold ${accent ? 'text-primary' : 'text-primary'}`}>
+        {value ?? '—'}
+      </p>
+      {sub && <p className="text-xs text-text-muted">{sub}</p>}
     </div>
   );
 }
+
+const TYPE_COLORS = {
+  EVENT: 'bg-blue-50 text-blue-600',
+  ADJUSTMENT: 'bg-green-50 text-green-600',
+};
+
+const TYPE_LABELS = {
+  EVENT: 'Мероприятие',
+  ADJUSTMENT: 'Корректировка',
+};
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -85,7 +96,7 @@ export default function ProfilePage() {
           <div className="h-64 bg-gray-100 rounded-card" />
           <div className="col-span-2 space-y-4">
             <div className="flex gap-4">
-              {[1,2,3].map(i => <div key={i} className="h-24 flex-1 bg-gray-100 rounded-card" />)}
+              {[1, 2, 3].map(i => <div key={i} className="h-24 flex-1 bg-gray-100 rounded-card" />)}
             </div>
             <div className="h-48 bg-gray-100 rounded-card" />
           </div>
@@ -106,11 +117,24 @@ export default function ProfilePage() {
     ? [user.firstName, user.lastName].filter(Boolean).join(' ') || 'Пользователь'
     : 'Пользователь';
 
-  const totalHours = hours?.totalHours ?? user?.totalHours ?? 0;
-  const monthlyHours = hours?.breakdown?.currentMonth ?? hours?.monthlyHours ?? 0;
+  // Правильный маппинг из VolunteerHoursResponse { totalHours, breakdown: HourBreakdownItemDto[] }
+  const totalHours = hours?.totalHours ?? 0;
+
+  // Считаем часы за текущий месяц из breakdown
+  const now = new Date();
+  const currentMonthHours = (hours?.breakdown ?? [])
+    .filter(item => {
+      if (!item.date) return false;
+      const d = new Date(item.date);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    })
+    .reduce((sum, item) => sum + (parseFloat(item.hours) || 0), 0)
+    .toFixed(1);
+
   const strikeCount = user?.strikeCount ?? 0;
 
-  const eventHistory = hours?.breakdown?.events ?? hours?.events ?? [];
+  // История: берём breakdown напрямую (это уже готовый список событий и корректировок)
+  const eventHistory = hours?.breakdown ?? [];
 
   return (
     <div>
@@ -119,46 +143,33 @@ export default function ProfilePage() {
       <div className="grid grid-cols-3 gap-6">
         {/* Left — user card */}
         <div className="bg-surface rounded-card border border-border p-5 relative">
-          <button className="absolute top-4 right-4 text-text-muted hover:text-primary transition-colors">
-            <EditIcon />
-          </button>
-
           {/* Avatar */}
           <div className="w-20 h-20 rounded-full bg-gray-100 border border-border flex items-center justify-center text-text-muted mx-auto mb-4">
             <UserIcon />
           </div>
 
-          {/* Name */}
           <h2 className="text-base font-semibold text-text-primary text-center">{fullName}</h2>
           <p className="text-xs text-text-muted text-center mt-1">
-            ID: {user?.uniqueId || user?.id || 'User_id'}
+            ID: {user?.uniqueId || '—'}
           </p>
 
-          {/* Status badge */}
           <div className="flex justify-center mt-3 mb-5">
             <span className="text-xs font-medium bg-orange-100 text-orange-700 px-3 py-1 rounded-badge">
-              {user?.status === 'ACTIVE' ? 'Активист' : user?.status === 'INACTIVE' ? 'Неактивен' : user?.status ?? 'Активист'}
+              {user?.role === 'HR' ? 'HR-менеджер'
+                : user?.role === 'SUPER_ADMIN' ? 'Администратор'
+                : 'Волонтёр'}
             </span>
           </div>
 
-          {/* Contact info */}
           <div className="space-y-2.5 border-t border-border pt-4">
-            {user?.departmentName && (
-              <div className="flex items-center gap-2.5 text-sm text-text-secondary">
-                <BuildingIcon />
-                {user.departmentName}
-              </div>
-            )}
             {user?.phone && (
               <div className="flex items-center gap-2.5 text-sm text-text-secondary">
-                <PhoneIcon />
-                {user.phone}
+                <PhoneIcon />{user.phone}
               </div>
             )}
             {user?.email && (
               <div className="flex items-center gap-2.5 text-sm text-text-secondary">
-                <MailIcon />
-                {user.email}
+                <MailIcon />{user.email}
               </div>
             )}
           </div>
@@ -168,52 +179,58 @@ export default function ProfilePage() {
         <div className="col-span-2 flex flex-col gap-5">
           {/* Stats row */}
           <div className="flex gap-4">
-            <StatBox label="Всего часов" value={totalHours} />
-            <StatBox label="Часы за месяц" value={monthlyHours} />
-            <StatBox label="Страйки" value={strikeCount} />
+            <StatBox label="Всего часов" value={parseFloat(totalHours).toFixed(1)} />
+            <StatBox label="Часы за месяц" value={currentMonthHours} sub="текущий месяц" />
+            <StatBox label="Активных страйков" value={strikeCount} />
           </div>
 
           {/* Event history */}
           <div className="bg-surface rounded-card border border-border p-5 flex-1">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-text-primary">История мероприятий</h3>
-              <button className="text-xs text-primary hover:text-primary-hover font-medium transition-colors">
-                Смотреть все
-              </button>
+              <h3 className="text-sm font-semibold text-text-primary">История активности</h3>
+              <span className="text-xs text-text-muted">{eventHistory.length} записей</span>
             </div>
 
             {eventHistory.length > 0 ? (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-xs text-text-muted font-medium text-left pb-2">Дата</th>
-                    <th className="text-xs text-text-muted font-medium text-left pb-2">Название</th>
-                    <th className="text-xs text-text-muted font-medium text-left pb-2">Роль</th>
-                    <th className="text-xs text-text-muted font-medium text-right pb-2">Часы</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {eventHistory.slice(0, 6).map((ev, i) => (
-                    <tr key={i} className="border-b border-border last:border-0">
-                      <td className="py-2.5 text-text-secondary text-xs">{formatDate(ev.date || ev.startDate)}</td>
-                      <td className="py-2.5 text-text-primary font-medium">{ev.eventName || ev.name}</td>
-                      <td className="py-2.5 text-text-secondary text-xs">{ev.role || 'Волонтер'}</td>
-                      <td className="py-2.5 text-text-secondary text-xs text-right">{ev.hours || ev.hoursDelta || 0}ч</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="space-y-2">
+                {eventHistory.slice(0, 8).map((item, i) => {
+                  const hours = parseFloat(item.hours);
+                  const isPositive = hours >= 0;
+                  const typeColor = TYPE_COLORS[item.type] || 'bg-gray-50 text-gray-600';
+                  const typeLabel = TYPE_LABELS[item.type] || item.type;
+
+                  return (
+                    <div key={i} className="flex items-center justify-between py-2.5 border-b border-border last:border-0">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-badge flex-shrink-0 ${typeColor}`}>
+                          {typeLabel}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-text-primary truncate">
+                            {item.title || '—'}
+                          </p>
+                          {item.note && (
+                            <p className="text-xs text-text-muted truncate">{item.note}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0 ml-4">
+                        <span className="text-xs text-text-muted flex items-center gap-1">
+                          <ClockIcon />{formatDate(item.date)}
+                        </span>
+                        <span className={`text-sm font-semibold ${isPositive ? 'text-green-600' : 'text-red-500'}`}>
+                          {isPositive ? '+' : ''}{hours.toFixed(1)}ч
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <p className="text-sm text-text-muted text-center py-8">
-                История мероприятий пуста
+                История активности пуста
               </p>
             )}
-          </div>
-
-          {/* Analytics stub */}
-          <div className="bg-surface rounded-card border border-border p-5">
-            <h3 className="text-sm font-semibold text-text-primary mb-3">Аналитика</h3>
-            <p className="text-sm text-text-muted text-center py-4">В разработке</p>
           </div>
         </div>
       </div>

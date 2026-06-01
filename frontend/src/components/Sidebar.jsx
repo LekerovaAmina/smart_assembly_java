@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext';
 const CalendarIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-    <line x1="16" y1="2" x2="16" y2="6" />
-    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
     <line x1="3" y1="10" x2="21" y2="10" />
   </svg>
 );
@@ -22,11 +21,9 @@ const TrophyIcon = () => (
 
 const ListIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="8" y1="6" x2="21" y2="6" />
-    <line x1="8" y1="12" x2="21" y2="12" />
+    <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" />
     <line x1="8" y1="18" x2="21" y2="18" />
-    <line x1="3" y1="6" x2="3.01" y2="6" />
-    <line x1="3" y1="12" x2="3.01" y2="12" />
+    <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" />
     <line x1="3" y1="18" x2="3.01" y2="18" />
   </svg>
 );
@@ -41,10 +38,8 @@ const AlertIcon = () => (
 
 const BarChartIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="20" x2="18" y2="10" />
-    <line x1="12" y1="20" x2="12" y2="4" />
-    <line x1="6" y1="20" x2="6" y2="14" />
-    <line x1="2" y1="20" x2="22" y2="20" />
+    <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" />
+    <line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
   </svg>
 );
 
@@ -59,9 +54,15 @@ const ScaleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="12" y1="3" x2="12" y2="21" />
     <path d="M5 6l7-3 7 3" />
-    <path d="M5 6l-2 9h4l-2-9z" />
-    <path d="M19 6l-2 9h4l-2-9z" />
+    <path d="M5 6l-2 9h4l-2-9z" /><path d="M19 6l-2 9h4l-2-9z" />
     <path d="M5 21h14" />
+  </svg>
+);
+
+const ClipboardIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
   </svg>
 );
 
@@ -72,7 +73,8 @@ const SettingsIcon = () => (
   </svg>
 );
 
-const navItems = [
+// Навигация для волонтёра
+const volunteerNavItems = [
   { to: '/events', label: 'Мероприятия', Icon: CalendarIcon },
   { to: '/rating', label: 'Рейтинг', Icon: TrophyIcon },
   { to: '/my-events', label: 'Мои мероприятия', Icon: ListIcon },
@@ -80,10 +82,38 @@ const navItems = [
   { to: '/statistics', label: 'Статистика', Icon: BarChartIcon },
 ];
 
+// Дополнительная навигация для HR
 const hrNavItems = [
+  { to: '/registration', label: 'Заявки', Icon: ClipboardIcon },
   { to: '/analytics', label: 'Аналитика', Icon: TrendingUpIcon },
   { to: '/appeals', label: 'Апелляции', Icon: ScaleIcon },
+  { to: '/hr/volunteers', label: 'Волонтёры', Icon: ListIcon },
 ];
+
+function NavItem({ to, label, Icon, badge }) {
+  return (
+    <li>
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
+            isActive
+              ? 'bg-orange-50 text-primary border-l-4 border-primary pl-2'
+              : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+          }`
+        }
+      >
+        <Icon />
+        <span className="flex-1">{label}</span>
+        {badge && (
+          <span className="text-xs bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
+            {badge}
+          </span>
+        )}
+      </NavLink>
+    </li>
+  );
+}
 
 export default function Sidebar() {
   const { isHr } = useAuth();
@@ -106,48 +136,23 @@ export default function Sidebar() {
       {/* Nav */}
       <nav className="flex-1 py-3 overflow-y-auto">
         <ul className="space-y-0.5 px-2">
-          {navItems.map(({ to, label, Icon }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
-                    isActive
-                      ? 'bg-orange-50 text-primary border-l-4 border-primary pl-2'
-                      : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
-                  }`
-                }
-              >
-                <Icon />
-                {label}
-              </NavLink>
-            </li>
+          {volunteerNavItems.map(item => (
+            <NavItem key={item.to} {...item} />
           ))}
         </ul>
 
         {isHr && (
-          <ul className="space-y-0.5 px-2 mt-2 pt-2 border-t border-border">
-            {hrNavItems.map(({ to, label, Icon }) => (
-              <li key={to}>
-                <NavLink
-                  to={to}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
-                      isActive
-                        ? 'bg-orange-50 text-primary border-l-4 border-primary pl-2'
-                        : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
-                    }`
-                  }
-                >
-                  <Icon />
-                  {label}
-                  <span className="ml-auto text-xs bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
-                    HR
-                  </span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+          <>
+            <div className="mx-4 my-2 border-t border-border" />
+            <p className="px-4 py-1 text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+              HR-панель
+            </p>
+            <ul className="space-y-0.5 px-2">
+              {hrNavItems.map(item => (
+                <NavItem key={item.to} {...item} badge="HR" />
+              ))}
+            </ul>
+          </>
         )}
       </nav>
 

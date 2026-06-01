@@ -52,7 +52,10 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
+        // ИСПРАВЛЕНО: добавлена проверка на null для assembly
         if (currentUser.getRole() == UserRole.HR
+                && currentUser.getAssembly() != null
+                && user.getAssembly() != null
                 && !user.getAssembly().getId().equals(currentUser.getAssembly().getId())) {
             throw new RuntimeException("Нет доступа к пользователям другого отделения");
         }
@@ -99,7 +102,8 @@ public class UserService {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (currentUser.getRole() == UserRole.HR) {
+            // ИСПРАВЛЕНО: null-check для assembly у currentUser
+            if (currentUser.getRole() == UserRole.HR && currentUser.getAssembly() != null) {
                 predicates.add(cb.equal(root.get("assembly").get("id"), currentUser.getAssembly().getId()));
             }
 
@@ -114,9 +118,9 @@ public class UserService {
             if (search != null && !search.isBlank()) {
                 String pattern = "%" + search.trim().toLowerCase() + "%";
                 Predicate firstName = cb.like(cb.lower(root.get("firstName")), pattern);
-                Predicate lastName = cb.like(cb.lower(root.get("lastName")), pattern);
-                Predicate phone = cb.like(root.get("phone"), "%" + search.trim() + "%");
-                Predicate uniqueId = cb.like(cb.lower(root.get("uniqueId")), pattern);
+                Predicate lastName  = cb.like(cb.lower(root.get("lastName")), pattern);
+                Predicate phone     = cb.like(root.get("phone"), "%" + search.trim() + "%");
+                Predicate uniqueId  = cb.like(cb.lower(root.get("uniqueId")), pattern);
                 predicates.add(cb.or(firstName, lastName, phone, uniqueId));
             }
 
@@ -144,13 +148,16 @@ public class UserService {
     private UserRole mapApiRole(UserApiRole apiRole) {
         return switch (apiRole) {
             case VOLUNTEER -> UserRole.VOLUNTEER;
-            case HR -> UserRole.HR;
-            case ADMIN -> UserRole.SUPER_ADMIN;
+            case HR        -> UserRole.HR;
+            case ADMIN     -> UserRole.SUPER_ADMIN;
         };
     }
 
     private UserResponseDto toDto(User user) {
         long strikeCount = strikeRepository.countByUserIdAndIsActiveTrue(user.getId());
+
+        // ИСПРАВЛЕНО: безопасное получение ID отделения — если assembly == null, возвращаем null
+        Long departmentId = (user.getAssembly() != null) ? user.getAssembly().getId() : null;
 
         return UserResponseDto.builder()
                 .id(user.getId())
@@ -162,7 +169,7 @@ public class UserService {
                 .status(user.getStatus())
                 .totalHours(volunteerHoursService.getTotalHoursForUser(user.getId()))
                 .strikeCount((int) strikeCount)
-                .departmentId(user.getAssembly().getId())
+                .departmentId(departmentId)
                 .createdAt(user.getCreatedAt())
                 .build();
     }
@@ -175,7 +182,7 @@ public class UserService {
 
     private void requireAdmin(User user) {
         if (user.getRole() != UserRole.SUPER_ADMIN) {
-            throw new RuntimeException("Только ADMIN может выполнить это действие");
+            throw new RuntimeException("Только SUPER_ADMIN может выполнить это действие");
         }
     }
 }

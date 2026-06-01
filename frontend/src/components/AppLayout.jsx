@@ -1,34 +1,26 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 export default function AppLayout() {
+  const { token } = useAuth();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
-      {/* Сайдбар */}
-      <aside className="sidebar-container">
-        <div className="flex flex-col gap-2">
-          <div className="px-4 py-4 text-xl font-bold text-primary">
-            Ассамблея Жастары
-          </div>
-          <nav className="flex flex-col gap-1">
-            <a href="#" className="sidebar-link sidebar-link-active">Главная</a>
-            <a href="#" className="sidebar-link">Мероприятия</a>
-            <a href="#" className="sidebar-link">Волонтеры</a>
-          </nav>
+      <Sidebar />
+      <Header />
+      <main
+        className="pt-[70px] pb-8 px-8"
+        style={{ marginLeft: '240px' }}
+      >
+        <div className="max-w-7xl mx-auto pt-6">
+          <Outlet />
         </div>
-      </aside>
-
-      {/* Хедер */}
-      <header className="header-panel">
-        <h1 className="text-lg font-semibold text-sidebar-text">Панель управления</h1>
-        <div className="flex items-center gap-4">
-          <span className="badge-management">Администратор</span>
-        </div>
-      </header>
-
-      {/* Основной контент */}
-      <main className="main-content-layout">
-        <Outlet /> {}
       </main>
     </div>
   );
