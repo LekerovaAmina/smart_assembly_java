@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getEventById, registerEvent, unregisterEvent } from '../api';
+import { getEventById, registerEvent, unregisterEvent, publishEvent, deleteEvent } from '../api';
 import Badge from '../components/Badge';
 
 const STATUS_LABEL = {
@@ -12,17 +12,12 @@ const STATUS_LABEL = {
   CLOSED: 'Запись закрыта',
 };
 
-function formatDate(dateStr) {
+function formatDate(dateStr, timeStr) {
   if (!dateStr) return '';
   try {
-    const d = new Date(dateStr);
-    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const day = d.getDate();
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-    return `${day} ${month} ${year} · ${hh}:${mm}`;
+    const [year, month, day] = dateStr.split('-');
+    const timeFormatted = timeStr ? ` · ${timeStr.substring(0, 5)}` : '';
+    return `${day}.${month}.${year}${timeFormatted}`;
   } catch {
     return dateStr;
   }
@@ -40,19 +35,6 @@ const UserCircle = ({ size = 40 }) => (
   </div>
 );
 
-const EmailIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-    <polyline points="22,6 12,13 2,6" />
-  </svg>
-);
-
-const PhoneIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.61 4.56 2 2 0 0 1 3.58 2.37h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-  </svg>
-);
-
 const UsersIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -68,29 +50,6 @@ const ShirtIcon = () => (
   </svg>
 );
 
-const QrIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="3" width="7" height="7" />
-    <rect x="14" y="3" width="7" height="7" />
-    <rect x="3" y="14" width="7" height="7" />
-    <line x1="14" y1="14" x2="14" y2="14" />
-    <line x1="17" y1="14" x2="17" y2="14" />
-    <line x1="20" y1="14" x2="20" y2="14" />
-    <line x1="14" y1="17" x2="14" y2="17" />
-    <line x1="17" y1="17" x2="20" y2="17" />
-    <line x1="20" y1="20" x2="20" y2="20" />
-  </svg>
-);
-
-function Section({ title, children }) {
-  return (
-    <div className="mb-6">
-      <h2 className="text-base font-semibold text-text-primary mb-2">{title}</h2>
-      <div className="text-sm text-text-secondary leading-relaxed">{children}</div>
-    </div>
-  );
-}
-
 export default function EventDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -98,7 +57,7 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [regLoading, setRegLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [registered, setRegistered] = useState(false);
 
   useEffect(() => {
@@ -108,7 +67,10 @@ export default function EventDetailPage() {
       try {
         const res = await getEventById(id);
         setEvent(res.data);
-        setRegistered(res.data?.isRegistered ?? false);
+
+        const localRegistered = JSON.parse(localStorage.getItem('my_registered_events') || '[]');
+        const isReg = (res.data?.isRegistered ?? false) || localRegistered.includes(Number(id));
+        setRegistered(isReg);
       } catch (err) {
         setError('Не удалось загрузить мероприятие');
         console.error(err);
@@ -120,19 +82,60 @@ export default function EventDetailPage() {
   }, [id]);
 
   const handleRegister = async () => {
-    setRegLoading(true);
+    setActionLoading(true);
     try {
+      const localRegistered = JSON.parse(localStorage.getItem('my_registered_events') || '[]');
+      const eventIdNum = Number(id);
+
       if (registered) {
         await unregisterEvent(id);
         setRegistered(false);
+        const updated = localRegistered.filter(item => item !== eventIdNum);
+        localStorage.setItem('my_registered_events', JSON.stringify(updated));
+        setEvent(prev => prev ? { ...prev, currentParticipants: Math.max(0, (prev.currentParticipants ?? 0) - 1) } : null);
       } else {
         await registerEvent(id);
         setRegistered(true);
+        if (!localRegistered.includes(eventIdNum)) {
+          localRegistered.push(eventIdNum);
+          localStorage.setItem('my_registered_events', JSON.stringify(localRegistered));
+        }
+        setEvent(prev => prev ? { ...prev, currentParticipants: (prev.currentParticipants ?? 0) + 1 } : null);
       }
     } catch (err) {
       console.error(err);
     } finally {
-      setRegLoading(false);
+      setActionLoading(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!window.confirm('Вы уверены, что хотите опубликовать это мероприятие?')) return;
+    setActionLoading(true);
+    try {
+      await publishEvent(id);
+      alert('Мероприятие успешно опубликовано!');
+      navigate('/events');
+    } catch (err) {
+      console.error(err);
+      alert(`Ошибка при публикации: ${err.response?.data?.message || 'Проверьте заполнение всех полей черновика (Координатор, Количество участников и т.д.)'}`);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Вы точно хотите безвозвратно удалить этот черновик?')) return;
+    setActionLoading(true);
+    try {
+      await deleteEvent(id);
+      alert('Черновик успешно удален!');
+      navigate('/events');
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка при удалении черновика');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -141,14 +144,6 @@ export default function EventDetailPage() {
       <div className="animate-pulse space-y-4">
         <div className="h-8 w-64 bg-gray-200 rounded" />
         <div className="h-5 w-96 bg-gray-100 rounded" />
-        <div className="grid grid-cols-3 gap-6 mt-6">
-          <div className="col-span-2 space-y-3">
-            {[1,2,3].map(i => <div key={i} className="h-20 bg-gray-100 rounded-card" />)}
-          </div>
-          <div className="space-y-3">
-            {[1,2].map(i => <div key={i} className="h-32 bg-gray-100 rounded-card" />)}
-          </div>
-        </div>
       </div>
     );
   }
@@ -163,99 +158,105 @@ export default function EventDetailPage() {
 
   if (!event) return null;
 
-  const coordinator = event.coordinator || event.organizer;
-  const speakers = event.speakers || event.guests || [];
+  // Безопасное приведение спикеров к массиву строк
+  let speakersList = [];
+  if (event.speakers) {
+    if (typeof event.speakers === 'string') {
+      speakersList = event.speakers.split(',').map(s => s.trim()).filter(Boolean);
+    } else if (Array.isArray(event.speakers)) {
+      speakersList = event.speakers.map(s => (typeof s === 'object' ? (s.name || s.firstName) : s)).filter(Boolean);
+    }
+  }
 
   return (
     <div>
-      {/* Top header */}
       <div className="flex items-start justify-between mb-2 gap-4">
         <div>
           <button
-            onClick={() => navigate(-1)}
-            className="text-xs text-text-muted hover:text-primary mb-2 inline-flex items-center gap-1 transition-colors"
+            onClick={() => navigate('/events')}
+            className="text-xs text-text-muted hover:text-primary mb-2 inline-flex items-center gap-1 transition-colors cursor-pointer"
           >
-            ← Назад
+            ← Назад к списку
           </button>
-          <h1 className="text-2xl font-bold text-text-primary">
-            {event.title || event.name || 'Мероприятие'}
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-text-primary">
+              {event.eventName || 'Мероприятие'}
+            </h1>
+            <span className={`text-xs px-2 py-0.5 rounded font-medium ${event.status === 'DRAFT' ? 'bg-gray-100 text-gray-600' : 'bg-blue-50 text-blue-600'}`}>
+              {STATUS_LABEL[event.status] || event.status}
+            </span>
+          </div>
           <div className="flex items-center gap-2 mt-2 text-sm text-text-secondary flex-wrap">
-            <span>{formatDate(event.startDate || event.date)}</span>
-            {event.endDate && event.endDate !== event.startDate && (
-              <>
-                <span>—</span>
-                <span>{formatDate(event.endDate)}</span>
-              </>
-            )}
+            <span>{formatDate(event.eventDate, event.startTime)}</span>
             {event.location && (
               <>
                 <span className="text-border">·</span>
-                <span>г. {event.location}</span>
+                <span>{event.location}</span>
               </>
             )}
           </div>
         </div>
-        <button
-          onClick={handleRegister}
-          disabled={regLoading}
-          className={`px-5 py-2 rounded-btn text-sm font-medium transition-colors flex-shrink-0 ${
-            registered
-              ? 'bg-gray-200 text-text-secondary hover:bg-gray-300'
-              : 'bg-primary text-white hover:bg-primary-hover'
-          } disabled:opacity-60`}
-        >
-          {regLoading ? '...' : registered ? 'Отменить участие' : 'Откликнуться'}
-        </button>
+
+        <div className="flex-shrink-0">
+          {event.status === 'DRAFT' ? (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDelete}
+                disabled={actionLoading}
+                className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium rounded-btn transition-colors cursor-pointer"
+              >
+                Удалить
+              </button>
+
+              <button
+                onClick={() => navigate(`/events/${id}/edit`)}
+                disabled={actionLoading}
+                className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-border text-sm font-medium rounded-btn transition-colors cursor-pointer"
+              >
+                Редактировать
+              </button>
+
+              <button
+                onClick={handlePublish}
+                disabled={actionLoading}
+                className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-btn transition-colors shadow-sm cursor-pointer"
+              >
+                Опубликовать
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleRegister}
+              disabled={actionLoading}
+              className={`px-5 py-2 rounded-btn text-sm font-medium transition-colors cursor-pointer ${
+                registered ? 'bg-gray-200 text-text-secondary hover:bg-gray-300' : 'bg-primary text-white hover:bg-primary-hover'
+              }`}
+            >
+              {registered ? 'Отменить участие' : 'Откликнуться'}
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Two-column layout */}
       <div className="grid grid-cols-3 gap-6 mt-6">
-        {/* Left — 2/3 */}
-        <div className="col-span-2 space-y-0">
+        <div className="col-span-2">
           <div className="bg-surface rounded-card border border-border p-5">
             <div className="flex items-start justify-between mb-3">
               <h2 className="text-base font-semibold text-text-primary">Описание</h2>
-              <Badge type={event.type} />
+              <Badge type={event.eventType} />
             </div>
-            <p className="text-sm text-text-secondary leading-relaxed">
+            <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">
               {event.description || <span className="text-text-muted italic">Описание не указано</span>}
             </p>
 
-            {event.goals && (
+            {speakersList.length > 0 && (
               <div className="mt-5 pt-5 border-t border-border">
-                <h2 className="text-base font-semibold text-text-primary mb-2">Цели</h2>
-                <p className="text-sm text-text-secondary leading-relaxed">{event.goals}</p>
-              </div>
-            )}
-
-            {event.tasks && (
-              <div className="mt-5 pt-5 border-t border-border">
-                <h2 className="text-base font-semibold text-text-primary mb-2">Задачи</h2>
-                <p className="text-sm text-text-secondary leading-relaxed">{event.tasks}</p>
-              </div>
-            )}
-
-            {speakers.length > 0 && (
-              <div className="mt-5 pt-5 border-t border-border">
-                <h2 className="text-base font-semibold text-text-primary mb-3">Спикеры / Гости</h2>
+                <h2 className="text-base font-semibold text-text-primary mb-3">Спикеры</h2>
                 <div className="space-y-3">
-                  {speakers.map((speaker, i) => (
+                  {speakersList.map((speaker, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <UserCircle size={36} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-text-primary">
-                            {speaker.name || speaker.firstName}
-                          </span>
-                          <span className="text-xs text-text-muted bg-gray-50 px-2 py-0.5 rounded-badge">
-                            {speaker.role || (speaker.isSpeaker ? 'Спикер' : 'Гость')}
-                          </span>
-                        </div>
-                        {speaker.position && (
-                          <p className="text-xs text-text-muted">{speaker.position}</p>
-                        )}
-                      </div>
+                      <span className="text-sm font-medium text-text-primary">{speaker}</span>
                     </div>
                   ))}
                 </div>
@@ -264,72 +265,22 @@ export default function EventDetailPage() {
           </div>
         </div>
 
-        {/* Right — 1/3 */}
         <div className="space-y-4">
-          {/* Coordinator */}
-          {coordinator && (
-            <div className="bg-surface rounded-card border border-border p-4">
-              <div className="flex items-start gap-3 mb-3">
-                <UserCircle size={44} />
-                <div>
-                  <p className="text-sm font-semibold text-text-primary">
-                    {coordinator.name || [coordinator.firstName, coordinator.lastName].filter(Boolean).join(' ') || 'Координатор'}
-                  </p>
-                  <p className="text-xs text-text-muted">Координатор события</p>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                {coordinator.email && (
-                  <div className="flex items-center gap-2 text-xs text-text-secondary">
-                    <EmailIcon />
-                    {coordinator.email}
-                  </div>
-                )}
-                {coordinator.phone && (
-                  <div className="flex items-center gap-2 text-xs text-text-secondary">
-                    <PhoneIcon />
-                    {coordinator.phone}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Requirements */}
           <div className="bg-surface rounded-card border border-border p-4">
             <h3 className="text-sm font-semibold text-text-primary mb-3">Требования</h3>
             <div className="space-y-2">
-              {event.maxParticipants != null && (
-                <div className="flex items-center gap-2 text-xs text-text-secondary">
-                  <UsersIcon />
-                  Кол-во людей: {event.registeredCount ?? '?'}/{event.maxParticipants}
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-xs text-text-secondary">
+                <UsersIcon />
+                Кол-во людей: {event.currentParticipants ?? 0}/{event.maxParticipants || 'Не ограничено'}
+              </div>
               {event.dressCode && (
                 <div className="flex items-center gap-2 text-xs text-text-secondary">
                   <ShirtIcon />
                   Дресс-код: {event.dressCode}
                 </div>
               )}
-              {event.reserveCount != null && (
-                <div className="flex items-center gap-2 text-xs text-text-secondary">
-                  <UsersIcon />
-                  Резерв: {event.reserveUsed ?? 0}/{event.reserveCount}
-                </div>
-              )}
             </div>
           </div>
-
-          {/* QR if registered */}
-          {registered && (
-            <button className="w-full bg-surface border border-border rounded-card px-4 py-3 flex items-center justify-between text-sm text-text-secondary hover:bg-gray-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <QrIcon />
-                <span className="font-medium">QR-отметка</span>
-              </div>
-              <span className="text-text-muted">›</span>
-            </button>
-          )}
         </div>
       </div>
     </div>

@@ -1,31 +1,101 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  /* Фирменная палитра Ассамблея Жастары */
+  --color-primary: #FF6B00;
+  --color-primary-hover: #E55F00;
+  --color-surface: #FFFFFF;
+  --color-bg: #F8F9FA;
+  --color-border: #EFF1F3;
+  --color-sidebar-text: #1A1A1A;
 
+  /* Кастомные цвета для ролей и типов событий */
+  --color-badge-volunteer-bg: #E8F5E9;
+  --color-badge-volunteer-text: #4CAF50;
+  --color-badge-activist-bg: #FFE0B2;
+  --color-badge-activist-text: #FF6B00;
+  --color-badge-management-bg: #CFD8DC;
+  --color-badge-management-text: #607D8B;
 
+  --color-badge-conference-bg: #E3F2FD;
+  --color-badge-conference-text: #1565C0;
+  --color-badge-roundtable-bg: #F3E5F5;
+  --color-badge-roundtable-text: #6A1B9A;
 
-* {
-  box-sizing: border-box;
+  /* Типографика */
+  --font-sans: 'Inter', sans-serif;
+
+  /* Радиусы скруглений как на макетах */
+  --radius-card: 16px;
+  --radius-btn: 10px;
+  --radius-badge: 8px;
 }
 
+/* В Tailwind v4 базовые стили пишутся через обычный CSS-селектор */
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #F5F5F5;
-  color: #1A1A1A;
-  margin: 0;
-  padding: 0;
+  @apply bg-bg font-sans text-[#1A1A1A] antialiased;
+  background-color: #F8F9FA;
+}
+body::selection {
+  @apply bg-primary/20;
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-primary hover:bg-primary-hover text-white font-medium px-4 py-2 rounded-btn transition-colors duration-150 cursor-pointer;
-  }
-  .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-text-secondary font-medium px-4 py-2 rounded-btn transition-colors duration-150 cursor-pointer;
-  }
-  .card {
-    @apply bg-surface rounded-card border border-border p-4;
-  }
+/* В Tailwind v4 вместо @layer components используются обычные CSS-классы и @utility */
+@utility sidebar-container {
+  @apply fixed top-0 left-0 h-screen w-[260px] bg-white border-r border-border flex flex-col justify-between py-6 px-4 z-40;
 }
+
+@utility sidebar-link {
+  @apply flex items-center gap-3 px-4 py-3 text-[15px] font-medium text-sidebar-text rounded-btn transition-all duration-200 hover:bg-gray-50;
+}
+
+@utility sidebar-link-active {
+  @apply bg-[#FFF0E6] text-primary font-semibold;
+}
+
+@utility header-panel {
+  @apply fixed top-0 right-0 left-[260px] h-[70px] bg-white border-b border-border flex items-center justify-between px-8 z-30;
+}
+
+@utility main-content-layout {
+  @apply pt-[94px] pl-[284px] pr-8 pb-8 min-h-screen bg-[#F8F9FA];
+}
+
+@utility figma-card {
+  @apply bg-white border border-border rounded-card p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-shadow duration-200 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)];
+}
+
+@utility btn-primary {
+  @apply bg-primary hover:bg-primary-hover text-white font-medium px-5 py-2.5 rounded-btn transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm;
+}
+
+@utility btn-secondary {
+  @apply bg-[#FFE0B2] hover:bg-[#FFCC80] text-primary font-medium px-5 py-2.5 rounded-btn transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer;
+}
+
+@utility btn-outline {
+  @apply border border-border hover:bg-gray-50 text-sidebar-text font-medium px-5 py-2.5 rounded-btn transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer;
+}
+
+@utility figma-table {
+  @apply w-full border-collapse text-left text-[14px];
+}
+
+.figma-table th {
+  @apply pb-4 pt-2 text-[#999999] font-medium border-b border-border;
+}
+
+.figma-table td {
+  @apply py-4 border-b border-border/60 text-[#1A1A1A] align-middle;
+}
+
+@utility figma-table-row-user {
+  @apply bg-[#FFF5EE] font-medium;
+}
+
+@utility badge-volunteer { @apply bg-badge-volunteer-bg text-badge-volunteer-text px-3 py-1 text-xs font-semibold rounded-badge inline-block; }
+@utility badge-activist { @apply bg-badge-activist-bg text-badge-activist-text px-3 py-1 text-xs font-semibold rounded-badge inline-block; }
+@utility badge-management { @apply bg-badge-management-bg text-badge-management-text px-3 py-1 text-xs font-semibold rounded-badge inline-block; }
+@utility badge-conference { @apply bg-badge-conference-bg text-badge-conference-text px-3 py-1 text-xs font-medium rounded-badge inline-block; }
+@utility badge-roundtable { @apply bg-badge-roundtable-bg text-badge-roundtable-text px-3 py-1 text-xs font-medium rounded-badge inline-block; }

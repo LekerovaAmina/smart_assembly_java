@@ -62,18 +62,20 @@ public class EventController {
         return ResponseEntity.ok(eventService.getEventsForVolunteer(phoneFrom(auth), pageable));
     }
 
-    // ── Получить мероприятие по ID ────────────────────────────────────────────
+    // ── Получить мероприятие по ID (с проверкой авторизации) ──────────────────
     @GetMapping("/{id}")
-    public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id) {
-        return ResponseEntity.ok(eventService.getEventById(id));
+    public ResponseEntity<EventResponseDto> getEventById(@PathVariable Long id, Authentication auth) {
+        String phone = (auth != null) ? phoneFrom(auth) : null;
+        return ResponseEntity.ok(eventService.getEventById(id, phone));
     }
 
-    // ── HR: редактировать черновик ────────────────────────────────────────────
+    // ── Обновить мероприятие/черновик (HR) ────────────────────────────────────
     @PutMapping("/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
             @Valid @RequestBody CreateEventRequest request,
             Authentication auth) {
+        // Вызываем метод сервиса для обновления и передаем телефон пользователя
         return ResponseEntity.ok(eventService.updateEvent(id, request, phoneFrom(auth)));
     }
 

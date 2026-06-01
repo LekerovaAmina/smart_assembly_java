@@ -52,6 +52,25 @@ export const unregisterEvent = (id) =>
 export const getMyResponses = () =>
   api.get('/events/my-responses');
 
+export const createEvent = (eventData) =>
+  api.post('/events', eventData);
+
+// Обновление существующего мероприятия/черновика
+export const updateEvent = (id, eventData) =>
+  api.put(`/events/${id}`, eventData);
+
+// Публикация мероприятия (DRAFT -> OPEN)
+export const publishEvent = (id) =>
+  api.post(`/events/${id}/publish`);
+
+// Отмена мероприятия
+export const cancelEvent = (id) =>
+  api.post(`/events/${id}/cancel`);
+
+// Удаление черновика
+export const deleteEvent = (id) =>
+  api.delete(`/events/${id}`);
+
 // ── Profile & hours ───────────────────────────────────────────────────────────
 export const getMe = () =>
   api.get('/users/me');
