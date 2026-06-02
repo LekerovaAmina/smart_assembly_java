@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, getRegisteredEvents } from '../context/AuthContext';
 import { getEvents, getHrEvents } from '../api';
 import EventCard from '../components/EventCard';
+import Badge from '../components/Badge';
 
 function SkeletonCard() {
   return (
@@ -18,14 +19,60 @@ function SkeletonCard() {
   );
 }
 
+const STATUS_LABEL = {
+  COMPLETED: 'Завершено',
+  CANCELLED: 'Отменено',
+};
+
+const STATUS_COLOR = {
+  COMPLETED: 'bg-green-100 text-green-700',
+  CANCELLED: 'bg-red-100 text-red-700',
+};
+
+function formatDate(dateStr, timeStr) {
+  if (!dateStr) return '';
+  try {
+    const [year, month, day] = dateStr.split('-');
+    return `${day}.${month}.${year}${timeStr ? ` · ${timeStr.substring(0, 5)}` : ''}`;
+  } catch { return dateStr; }
+}
+
+function HistoryCard({ event }) {
+  const navigate = useNavigate();
+  return (
+    <div
+      onClick={() => navigate(`/events/${event.id}`)}
+      className="bg-surface rounded-card border border-border p-5 cursor-pointer hover:shadow-md transition-shadow"
+    >
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <Badge type={event.eventType} />
+        <span className={`text-xs font-medium px-2.5 py-1 rounded-badge flex-shrink-0 ${
+          STATUS_COLOR[event.status] ?? 'bg-gray-100 text-gray-500'
+        }`}>
+          {STATUS_LABEL[event.status] ?? event.status}
+        </span>
+      </div>
+      <h3 className="text-sm font-semibold text-text-primary mb-2 line-clamp-2">
+        {event.eventName}
+      </h3>
+      <div className="space-y-1 text-xs text-text-muted">
+        <p>📅 {formatDate(event.eventDate, event.startTime)}</p>
+        {event.location && <p>📍 {event.location}</p>}
+        <p>👥 {event.currentParticipants ?? 0} участников</p>
+      </div>
+    </div>
+  );
+}
+
 export default function EventsPage() {
-  const { isHr } = useAuth();
+  const { isHr, user } = useAuth();
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // По умолчанию для HR открываем 'published', для волонтера 'all'
+  // Для волонтёра: all | my | history
+  // Для HR: published | drafts | history
   const [activeTab, setActiveTab] = useState(isHr ? 'published' : 'all');
 
   const fetchEvents = useCallback(async () => {
@@ -43,49 +90,59 @@ export default function EventsPage() {
     }
   }, [isHr]);
 
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+  useEffect(() => { fetchEvents(); }, [fetchEvents]);
 
-  // Умная фильтрация в зависимости от роли (HR или Волонтер)
+  // localStorage привязан к userId — нет смешения между аккаунтами
+  const userId = user?.userId;
+  const localRegistered = getRegisteredEvents(userId);
+
   const filteredEvents = events.filter((event) => {
     if (isHr) {
-      if (activeTab === 'drafts') return event.status === 'DRAFT';
-      return event.status === 'OPEN'; // Вкладка 'published'
+      if (activeTab === 'drafts')  return event.status === 'DRAFT';
+      if (activeTab === 'history') return event.status === 'COMPLETED' || event.status === 'CANCELLED';
+      return event.status === 'OPEN' || event.status === 'IN_PROGRESS';
     } else {
       if (activeTab === 'my') {
-        const localRegistered = JSON.parse(localStorage.getItem('my_registered_events') || '[]');
         return event.isRegistered === true || localRegistered.includes(event.id);
       }
-      return true; // Вкладка 'all'
+      if (activeTab === 'history') {
+        return event.status === 'COMPLETED' || event.status === 'CANCELLED';
+      }
+      // 'all' — только активные для волонтёра
+      return event.status === 'OPEN' || event.status === 'IN_PROGRESS';
     }
   });
 
-  // Считаем отклики волонтера
-  const getMyEventsCount = () => {
-    const localRegistered = JSON.parse(localStorage.getItem('my_registered_events') || '[]');
-    return events.filter(e => e.isRegistered || localRegistered.includes(e.id)).length;
-  };
+  // Сортируем историю по дате — сначала новые
+  const displayEvents = activeTab === 'history'
+    ? [...filteredEvents].sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate))
+    : filteredEvents;
+
+  const myEventsCount = events.filter(
+    e => e.isRegistered || localRegistered.includes(e.id)
+  ).length;
+
+  const historyCount = events.filter(
+    e => e.status === 'COMPLETED' || e.status === 'CANCELLED'
+  ).length;
 
   return (
     <div className="relative min-h-screen">
-      {/* Уведомление об ошибке в правом верхнем углу (не ломает верстку) */}
       {error && (
-        <div className="fixed top-6 right-6 z-50 bg-red-50 border border-red-200 text-red-700 rounded-card px-4 py-3 text-sm shadow-xl flex items-center gap-2 animate-fade-in">
+        <div className="fixed top-6 right-6 z-50 bg-red-50 border border-red-200 text-red-700 rounded-card px-4 py-3 text-sm shadow-xl flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-red-500" />
           <span>{error}</span>
           <button onClick={() => setError(null)} className="ml-2 font-bold hover:opacity-70">×</button>
         </div>
       )}
 
-      {/* Заголовок страницы */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-text-primary">
-          {isHr ? 'Управление мероприятиями' : 'Ближайшие мероприятия'}
+          {isHr ? 'Управление мероприятиями' : 'Мероприятия'}
         </h1>
         {isHr && (
           <button
-            onClick={() => navigate('/events/new')} // ИСПОЛЬЗУЕМ /events/new ВМЕСТО /create ЧТОБЫ БЭКЕНД НЕ ПАДАЛ
+            onClick={() => navigate('/events/new')}
             className="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-btn transition-colors cursor-pointer shadow-sm"
           >
             + Создать мероприятие
@@ -93,7 +150,7 @@ export default function EventsPage() {
         )}
       </div>
 
-      {/* ДИНАМИЧЕСКИЕ ВКЛАДКИ (Разные для HR и Волонтера) */}
+      {/* Вкладки */}
       <div className="flex gap-4 mb-6 border-b border-border pb-px">
         {isHr ? (
           <>
@@ -103,7 +160,7 @@ export default function EventsPage() {
                 activeTab === 'published' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              Опубликованные ({events.filter(e => e.status === 'OPEN').length})
+              Активные ({events.filter(e => e.status === 'OPEN' || e.status === 'IN_PROGRESS').length})
             </button>
             <button
               onClick={() => setActiveTab('drafts')}
@@ -112,6 +169,14 @@ export default function EventsPage() {
               }`}
             >
               Черновики ({events.filter(e => e.status === 'DRAFT').length})
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                activeTab === 'history' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              История ({historyCount})
             </button>
           </>
         ) : (
@@ -130,35 +195,44 @@ export default function EventsPage() {
                 activeTab === 'my' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              Мои отклики ({getMyEventsCount()})
+              Мои отклики ({myEventsCount})
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                activeTab === 'history' ? 'border-primary text-primary font-semibold' : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              История ({historyCount})
             </button>
           </>
         )}
       </div>
 
-      {/* Сетка карточек */}
+      {/* Сетка */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading
           ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-          : filteredEvents.length > 0
-          ? filteredEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onUpdate={fetchEvents}
-              />
-            ))
-          : (
-              <div className="col-span-3 text-center py-16 text-[#999999]">
-                <p className="text-lg mb-1">Пусто</p>
-                <p className="text-sm">
-                  {isHr
-                    ? (activeTab === 'drafts' ? 'Нет сохраненных черновиков' : 'Нет опубликованных событий')
-                    : (activeTab === 'my' ? 'Вы еще не откликнулись ни на одно событие' : 'Ближайших событий пока нет')
-                  }
-                </p>
-              </div>
+          : displayEvents.length > 0
+          ? displayEvents.map((event) =>
+              activeTab === 'history'
+                ? <HistoryCard key={event.id} event={event} />
+                : <EventCard key={event.id} event={event} onUpdate={fetchEvents} />
             )
+          : (
+            <div className="col-span-3 text-center py-16 text-text-muted">
+              <p className="text-lg mb-1">Пусто</p>
+              <p className="text-sm">
+                {isHr
+                  ? activeTab === 'drafts'  ? 'Нет черновиков'
+                  : activeTab === 'history' ? 'Нет завершённых мероприятий'
+                  : 'Нет активных мероприятий'
+                  : activeTab === 'my'      ? 'Вы ещё не откликались ни на одно мероприятие'
+                  : activeTab === 'history' ? 'Нет завершённых мероприятий'
+                  : 'Ближайших мероприятий пока нет'}
+              </p>
+            </div>
+          )
         }
       </div>
     </div>
