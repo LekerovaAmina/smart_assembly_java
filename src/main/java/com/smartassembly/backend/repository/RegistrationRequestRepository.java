@@ -20,7 +20,7 @@ public interface RegistrationRequestRepository extends JpaRepository<Registratio
 
     boolean existsByEmailAndStatusIn(String email, List<RegistrationStatus> statuses);
 
-    // Добавить эти две:
+    // Проверки дубликатов при импорте из Sheets
     boolean existsByEmail(String email);
     boolean existsByIin(String iin);
 }
