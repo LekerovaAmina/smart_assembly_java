@@ -149,13 +149,7 @@ export default function LoginPage() {
           {loading ? 'Входим...' : 'Войти'}
         </button>
 
-        {/* Register link */}
-        <p className="text-center text-xs text-text-muted mt-5">
-          У вас нет аккаунта?{' '}
-          <a href="#" className="text-primary hover:text-primary-hover font-medium">
-            Зарегистрироваться
-          </a>
-        </p>
+
       </div>
     </div>
   );

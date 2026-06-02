@@ -11,11 +11,12 @@ import EventEditPage from './pages/EventEditPage';
 import RegistrationPage from './pages/RegistrationPage';
 import HrVolunteersPage from './pages/HrVolunteersPage';
 import HrVolunteerDetailPage from './pages/HrVolunteerDetailPage';
+import StrikesPage from './pages/StrikesPage';
+import AppealsPage from './pages/AppealsPage';
+import StatisticsPage from './pages/StatisticsPage';
+import SettingsPage from './pages/SettingsPage';
 
-
-
-
-// Страницы-заглушки для маршрутов из сайдбара
+// Заглушка для страниц, которых ещё нет
 function PlaceholderPage({ title }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -37,34 +38,38 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* Публичная страница */}
           <Route path="/login" element={<LoginPage />} />
 
+          {/* Защищённые страницы — AppLayout сам проверяет токен */}
           <Route element={<AppLayout />}>
-            {/* Основные страницы */}
+
+            {/* ── Мероприятия ── */}
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/new" element={<EventCreatePage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />
             <Route path="/events/:id/edit" element={<EventEditPage />} />
 
-            {/* Профиль и рейтинг */}
+            {/* ── Профиль и рейтинг ── */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/rating" element={<RatingPage />} />
 
+            {/* ── Личный кабинет волонтёра (приоритет 4) ── */}
+            <Route path="/strikes" element={<StrikesPage />} />
+            <Route path="/appeals" element={<AppealsPage />} />
+            <Route path="/statistics" element={<StatisticsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+
+            {/* ── Мои мероприятия (заглушка — логика уже есть в EventsPage на вкладке) ── */}
+            <Route path="/my-events" element={<PlaceholderPage title="Мои мероприятия" />} />
+
+            {/* ── HR-страницы ── */}
+            <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/hr/volunteers" element={<HrVolunteersPage />} />
             <Route path="/hr/volunteers/:id" element={<HrVolunteerDetailPage />} />
-
-            {/* Волонтёрские страницы */}
-            <Route path="/my-events" element={<PlaceholderPage title="Мои мероприятия" />} />
-            <Route path="/strikes" element={<PlaceholderPage title="Мои страйки" />} />
-            <Route path="/appeals" element={<PlaceholderPage title="Апелляции" />} />
-            <Route path="/statistics" element={<PlaceholderPage title="Статистика часов" />} />
-
-            {/* HR-страницы */}
-            <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/analytics" element={<PlaceholderPage title="Аналитика" />} />
-            <Route path="/settings" element={<PlaceholderPage title="Настройки" />} />
 
-            {/* Редиректы */}
+            {/* ── Редиректы ── */}
             <Route path="/" element={<Navigate to="/events" replace />} />
             <Route path="*" element={<Navigate to="/events" replace />} />
           </Route>
@@ -73,5 +78,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-

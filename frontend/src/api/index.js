@@ -4,16 +4,14 @@ const api = axios.create({
   baseURL: 'http://localhost:8080/api',
 });
 
-// Request interceptor — attach Bearer token
+// ── Интерцепторы ──────────────────────────────────────────────────────────────
+
 api.interceptors.request.use((cfg) => {
   const token = localStorage.getItem('sa_token');
-  if (token) {
-    cfg.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) cfg.headers.Authorization = `Bearer ${token}`;
   return cfg;
 });
 
-// Response interceptor — handle 401
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -33,6 +31,22 @@ export const sendCode = (phone) =>
 export const verifyCode = (phone, code) =>
   api.post('/auth/verify-code', { phone, code });
 
+// ── Users ─────────────────────────────────────────────────────────────────────
+export const getMe = () =>
+  api.get('/users/me');
+
+export const getUsers = (params = {}) =>
+  api.get('/users', { params });
+
+export const getUserById_hr = (id) =>
+  api.get(`/users/${id}`);
+
+export const updateUserStatus = (id, status) =>
+  api.patch(`/users/${id}/status`, { status });
+
+export const updateUserRole = (id, role) =>
+  api.patch(`/users/${id}/role`, { role });
+
 // ── Events ────────────────────────────────────────────────────────────────────
 export const getEvents = () =>
   api.get('/events');
@@ -42,15 +56,6 @@ export const getHrEvents = () =>
 
 export const getEventById = (id) =>
   api.get(`/events/${id}`);
-
-export const registerEvent = (id) =>
-  api.post(`/events/${id}/register`);
-
-export const unregisterEvent = (id) =>
-  api.delete(`/events/${id}/register`);
-
-export const getMyResponses = () =>
-  api.get('/events/my-responses');
 
 export const createEvent = (eventData) =>
   api.post('/events', eventData);
@@ -70,28 +75,53 @@ export const deleteEvent = (id) =>
 export const completeEvent = (id) =>
   api.post(`/events/${id}/complete`);
 
-export const getEventAttendees = (id) =>
-  api.get(`/events/${id}/attendees`);
+export const startEvent = (id) =>
+  api.post(`/events/${id}/start`);
+
+export const closeEvent = (id) =>
+  api.post(`/events/${id}/close`);
 
 export const getEventQr = (id) =>
   api.get(`/events/${id}/qr`);
 
-// ── Profile & hours ───────────────────────────────────────────────────────────
-export const getMe = () =>
-  api.get('/users/me');
+// ── Event responses ───────────────────────────────────────────────────────────
+export const registerEvent = (id) =>
+  api.post(`/events/${id}/register`);
 
+export const unregisterEvent = (id) =>
+  api.delete(`/events/${id}/register`);
+
+export const getMyResponses = () =>
+  api.get('/events/my-responses');
+
+// ── Attendees ─────────────────────────────────────────────────────────────────
+export const getAttendees = (eventId) =>
+  api.get(`/events/${eventId}/attendees`);
+
+export const updateAttendeeHours = (eventId, userId, data) =>
+  api.patch(`/events/${eventId}/attendees/${userId}/hours`, data);
+
+export const checkinSelf = (eventId) =>
+  api.post(`/events/${eventId}/checkin`, {});
+
+export const checkinUser = (eventId, userId) =>
+  api.post(`/events/${eventId}/checkin`, { userId });
+
+// ── Volunteer hours ───────────────────────────────────────────────────────────
 export const getMyHours = () =>
   api.get('/volunteers/me/hours');
 
 export const getMyHoursHistory = (params = {}) =>
   api.get('/volunteers/me/hours/history', { params });
 
+export const adjustVolunteerHours = (volunteerId, data) =>
+  api.post(`/volunteers/${volunteerId}/hours/adjust`, data);
+
 // ── Rating ────────────────────────────────────────────────────────────────────
-// Теперь используем правильный эндпоинт /api/rating (доступен всем авторизованным)
 export const getRating = () =>
   api.get('/rating');
 
-// ── Registration (HR) ─────────────────────────────────────────────────────────
+// ── Registration ──────────────────────────────────────────────────────────────
 export const getPendingRequests = (params = {}) =>
   api.get('/registration/pending', { params });
 
@@ -124,6 +154,9 @@ export const markAllNotificationsRead = () =>
 export const getMyStrikes = () =>
   api.get('/strikes/my');
 
+export const getVolunteerStrikes = (volunteerId) =>
+  api.get(`/strikes/volunteer/${volunteerId}`);
+
 export const createStrike = (volunteerId, data) =>
   api.post(`/strikes/${volunteerId}`, data);
 
@@ -142,53 +175,4 @@ export const approveAppeal = (appealId) =>
 export const rejectAppeal = (appealId, comment) =>
   api.post(`/strikes/appeals/${appealId}/reject`, { comment });
 
-// ── Users (HR) ────────────────────────────────────────────────────────────────
-export const getUsers = (params = {}) =>
-  api.get('/users', { params });
-
-export const getUserById = (id) =>
-  api.get(`/users/${id}`);
-
 export default api;
-
-
-// ── Events дополнительно ──────────────────────────────────────────────────────
-export const completeEvent = (id) => api.post(`/events/${id}/complete`);
-export const startEvent = (id) => api.post(`/events/${id}/start`);
-export const closeEvent = (id) => api.post(`/events/${id}/close`);
-export const getEventQr = (id) => api.get(`/events/${id}/qr`);
-
-// ── Attendees ─────────────────────────────────────────────────────────────────
-export const getAttendees = (eventId) => api.get(`/events/${eventId}/attendees`);
-export const updateAttendeeHours = (eventId, userId, data) =>
-  api.patch(`/events/${eventId}/attendees/${userId}/hours`, data);
-export const checkinSelf = (eventId) => api.post(`/events/${eventId}/checkin`, {});
-export const checkinUser = (eventId, userId) =>
-  api.post(`/events/${eventId}/checkin`, { userId });
-
-// ── Users (HR) ────────────────────────────────────────────────────────────────
-export const getUsers = (params) => api.get('/users', { params });
-export const getUserById_hr = (id) => api.get(`/users/${id}`);
-export const updateUserStatus = (id, status) =>
-  api.patch(`/users/${id}/status`, { status });
-export const updateUserRole = (id, role) =>
-  api.patch(`/users/${id}/role`, { role });
-
-// ── Strikes ───────────────────────────────────────────────────────────────────
-export const getMyStrikes = () => api.get('/strikes/my');
-export const getVolunteerStrikes = (id) => api.get(`/strikes/volunteer/${id}`);
-export const createStrike = (volunteerId, data) =>
-  api.post(`/strikes/${volunteerId}`, data);
-export const revokeStrike = (strikeId) => api.delete(`/strikes/${strikeId}`);
-export const createAppeal = (strikeId, data) =>
-  api.post(`/strikes/${strikeId}/appeal`, data);
-export const getPendingAppeals = () => api.get('/strikes/appeals/pending');
-export const approveAppeal = (id) => api.post(`/strikes/appeals/${id}/approve`);
-export const rejectAppeal = (id, comment) =>
-  api.post(`/strikes/appeals/${id}/reject`, { comment });
-
-// ── Notifications ─────────────────────────────────────────────────────────────
-export const getNotifications = (params) => api.get('/notifications/my', { params });
-export const getUnreadCount = () => api.get('/notifications/my/unread-count');
-export const markNotificationRead = (id) => api.patch(`/notifications/${id}/read`);
-export const markAllRead = () => api.post('/notifications/read-all');
