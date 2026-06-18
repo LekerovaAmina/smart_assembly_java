@@ -28,7 +28,11 @@ public class SmsService {
         }
 
         try {
-            String normalizedPhone = phone.replaceAll("[^0-9]", "");
+            // Нормализуем номер: удаляем всё кроме цифр
+            String digits = phone.replaceAll("[^0-9]", "");
+
+            // Добавляем + если его нет
+            String normalizedPhone = digits.startsWith("+") ? digits : "+" + digits;
 
             String url = UriComponentsBuilder
                     .fromHttpUrl("https://api.mobizon.kz/service/message/sendsmsmessage")
@@ -39,6 +43,8 @@ public class SmsService {
                     .queryParam("text", message)
                     .toUriString();
 
+            log.debug("📤 Отправляем SMS на {} (нормализованный: {})", phone, normalizedPhone);
+
             String response = restTemplate.getForObject(url, String.class);
 
             // Проверяем код ответа
@@ -47,11 +53,11 @@ public class SmsService {
             if (code == 0) {
                 log.info("✅ SMS отправлено на {}", phone);
             } else {
-                log.error("❌ Mobizon ошибка {}: {}", code, json.path("message").asText());
+                log.error("❌ Mobizon ошибка {}: {} | Номер: {} | Текст: {}",
+                        code, json.path("message").asText(), normalizedPhone, message);
             }
 
         } catch (Exception e) {
-            log.error("Ошибка отправки SMS на {}: {}", phone, e.getMessage());
+            log.error("Ошибка отправки SMS на {}: {}", phone, e.getMessage(), e);
         }
     }
-}
