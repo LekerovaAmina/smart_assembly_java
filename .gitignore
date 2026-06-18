@@ -37,3 +37,4 @@ src/main/resources/*service-account*.json
 src/main/resources/smart-assembly-*.json
 frontend/node_modules/
 frontend/dist/
+src/main/resources/application.properties
