@@ -61,3 +61,5 @@ public class SmsService {
             log.error("Ошибка отправки SMS на {}: {}", phone, e.getMessage(), e);
         }
     }
+
+}
