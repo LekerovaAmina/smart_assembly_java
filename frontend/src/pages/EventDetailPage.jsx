@@ -4,11 +4,9 @@ import { useAuth } from '../context/AuthContext';
 import QrScannerModal from '../components/QrScannerModal';
 import {
   getEventById,
-  checkinUser,
   getEventQr,
-  getEventAttendees,
+  getAttendees,
   completeEvent,
-  updateAttendee,
 } from '../api';
 
 const STATUS_LABEL = {
@@ -57,95 +55,30 @@ function QrModal({ eventId, onClose }) {
 }
 
 // ── Attendees List ────────────────────────────────────────────────────────────
-function AttendeesList({ eventId, attendees, onUpdated }) {
-  const [editing, setEditing] = useState(null);
-  const [saving, setSaving] = useState(false);
-  const [hours, setHours] = useState('');
-  const [msg, setMsg] = useState('');
+function AttendeesList({ eventId, attendees, loading }) {
+  if (loading) {
+    return <div className="text-center text-text-muted py-4 text-sm">Загружаем...</div>;
+  }
 
-  const handleEdit = (att) => {
-    setEditing(att);
-    setHours(att.volunteerHours?.toString() || '0');
-    setMsg('');
-  };
-
-  const handleSave = async () => {
-    if (!editing) return;
-    setSaving(true);
-    try {
-      await updateAttendee(eventId, editing.userId, {
-        status: editing.status,
-        volunteerHours: parseFloat(hours) || 0,
-      });
-      setMsg('✅ Сохранено');
-      setTimeout(() => {
-        setEditing(null);
-        onUpdated?.();
-      }, 800);
-    } catch (err) {
-      setMsg(`❌ ${err.message}`);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (!editing) {
-    return (
-      <div className="space-y-2 max-h-96 overflow-y-auto">
-        {attendees.map(att => (
-          <div key={att.userId} className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
-            <div>
-              <p className="font-medium text-text-primary">{att.firstName} {att.lastName}</p>
-              <p className="text-xs text-text-muted">{att.phone}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs font-semibold text-primary">{ATTENDANCE_STATUS_LABEL[att.status] || att.status}</p>
-              <p className="text-xs text-text-muted">{att.volunteerHours || 0}ч</p>
-              {att.checkInTime && <p className="text-xs text-green-600">{new Date(att.checkInTime).toLocaleTimeString('ru')}</p>}
-            </div>
-            <button onClick={() => handleEdit(att)} className="ml-2 text-blue-600 hover:text-blue-700 text-xs font-medium">
-              ✏️
-            </button>
-          </div>
-        ))}
-      </div>
-    );
+  if (!attendees || attendees.length === 0) {
+    return <div className="text-center text-text-muted py-4 text-sm">Нет участников</div>;
   }
 
   return (
-    <div className="space-y-3 p-3 bg-gray-50 rounded">
-      <div>
-        <label className="text-xs text-text-muted mb-1 block">Статус</label>
-        <select
-          value={editing.status}
-          onChange={e => setEditing({ ...editing, status: e.target.value })}
-          className="w-full px-2 py-1.5 border border-border rounded text-sm"
-        >
-          {Object.entries(ATTENDANCE_STATUS_LABEL).map(([key, label]) => (
-            <option key={key} value={key}>{label}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="text-xs text-text-muted mb-1 block">Часы</label>
-        <input
-          type="number"
-          value={hours}
-          onChange={e => setHours(e.target.value)}
-          className="w-full px-2 py-1.5 border border-border rounded text-sm"
-          step="0.5"
-          min="0"
-        />
-      </div>
-      <div className="flex gap-2">
-        <button onClick={handleSave} disabled={saving} className="flex-1 px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-btn hover:bg-primary-hover transition-colors cursor-pointer disabled:opacity-50">
-          {saving ? 'Сохраняю...' : 'Сохранить'}
-        </button>
-        <button onClick={() => setEditing(null)} className="flex-1 px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-medium rounded-btn hover:bg-gray-300 transition-colors cursor-pointer">
-          Отмена
-        </button>
-      </div>
-      {msg && <span className="text-xs text-text-muted">{msg}</span>}
+    <div className="space-y-2 max-h-96 overflow-y-auto">
+      {attendees.map(att => (
+        <div key={att.userId} className="flex items-center justify-between p-3 bg-gray-50 rounded text-sm">
+          <div>
+            <p className="font-medium text-text-primary">{att.firstName} {att.lastName}</p>
+            <p className="text-xs text-text-muted">{att.phone}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs font-semibold text-primary">{ATTENDANCE_STATUS_LABEL[att.status] || att.status}</p>
+            <p className="text-xs text-text-muted">{att.volunteerHours || 0}ч</p>
+            {att.checkInTime && <p className="text-xs text-green-600">{new Date(att.checkInTime).toLocaleTimeString('ru')}</p>}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -185,26 +118,29 @@ export default function EventDetailPage() {
   }, [id]);
 
   const fetchAttendees = useCallback(async () => {
-    if (!isHr) return;
+    if (!isHr || !showAttendees) return;
     setAttendeesLoading(true);
     try {
-      const res = await getEventAttendees(id);
+      const res = await getAttendees(id);
       setAttendees(res.data || []);
     } catch (err) {
       console.error('Ошибка загрузки участников:', err);
     } finally {
       setAttendeesLoading(false);
     }
-  }, [id, isHr]);
+  }, [id, isHr, showAttendees]);
 
   useEffect(() => {
     fetchEvent();
-    if (isHr) {
+  }, [fetchEvent]);
+
+  useEffect(() => {
+    if (showAttendees && isHr) {
       fetchAttendees();
       const interval = setInterval(fetchAttendees, 3000);
       return () => clearInterval(interval);
     }
-  }, [fetchEvent, fetchAttendees, isHr]);
+  }, [showAttendees, isHr, fetchAttendees]);
 
   const handleDelete = async () => {
     if (!window.confirm('Удалить мероприятие? Это необратимо!')) return;
@@ -223,8 +159,7 @@ export default function EventDetailPage() {
   const handlePublish = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`/api/v1/events/${id}/publish`, { method: 'PATCH' });
-      if (!res.ok) throw new Error('Ошибка публикации');
+      await fetch(`/api/v1/events/${id}/publish`, { method: 'PATCH' });
       await fetchEvent();
       alert('✅ Мероприятие опубликовано!');
     } catch (err) {
@@ -256,7 +191,7 @@ export default function EventDetailPage() {
   return (
     <div className="min-h-screen bg-bg p-4 sm:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Заголовок и кнопки */}
+        {/* Заголовок и информация */}
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2 break-words">{event.eventName}</h1>
@@ -270,10 +205,12 @@ export default function EventDetailPage() {
               {STATUS_LABEL[event.status] || event.status}
             </span>
           </div>
-          <div className="flex items-center gap-2 mt-2 text-sm text-text-secondary flex-wrap flex-shrink-0">
-            <span>{event.eventDate && new Date(event.eventDate).toLocaleDateString('ru')} {event.startTime}</span>
-            {event.location && <><span className="text-border">·</span><span>{event.location}</span></>}
-          </div>
+        </div>
+
+        {/* Дата и время */}
+        <div className="flex items-center gap-2 text-sm text-text-secondary flex-wrap">
+          <span>{event.eventDate && new Date(event.eventDate).toLocaleDateString('ru')} {event.startTime}</span>
+          {event.location && <><span className="text-border">·</span><span>{event.location}</span></>}
         </div>
 
         {/* Кнопки действий */}
@@ -331,20 +268,14 @@ export default function EventDetailPage() {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-text-primary">Участники</h2>
               <button
-                onClick={() => { setShowAttendees(!showAttendees); if (!showAttendees) fetchAttendees(); }}
+                onClick={() => setShowAttendees(!showAttendees)}
                 className="px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-btn hover:bg-primary-hover transition-colors cursor-pointer"
               >
                 {showAttendees ? 'Скрыть' : 'Показать'}
               </button>
             </div>
             {showAttendees && (
-              attendeesLoading ? (
-                <div className="text-center text-text-muted py-4 text-sm">Загружаем...</div>
-              ) : attendees.length > 0 ? (
-                <AttendeesList eventId={id} attendees={attendees} onUpdated={fetchAttendees} />
-              ) : (
-                <div className="text-center text-text-muted py-4 text-sm">Нет участников</div>
-              )
+              <AttendeesList eventId={id} attendees={attendees} loading={attendeesLoading} />
             )}
           </div>
         )}
