@@ -194,8 +194,15 @@ export default function EventDetailPage() {
     try {
       const res = await getEventById(id);
       setEvent(res.data);
-      const local = JSON.parse(localStorage.getItem('my_registered_events') || '[]');
-      setRegistered((res.data?.isRegistered ?? false) || local.includes(Number(id)));
+      // Верим серверу как главному источнику истины
+      setRegistered(res.data?.isRegistered ?? false);
+      // Очищаем localStorage если уже зарегистрирован на сервере
+      if (res.data?.isRegistered) {
+        const local = JSON.parse(localStorage.getItem('my_registered_events') || '[]');
+        if (local.includes(Number(id))) {
+          localStorage.setItem('my_registered_events', JSON.stringify(local.filter(x => x !== Number(id))));
+        }
+      }
     } catch {
       setError('Не удалось загрузить мероприятие');
     } finally {
