@@ -193,7 +193,7 @@ public class EventService {
                 && !event.getAssembly().getId().equals(user.getAssembly().getId())) {
             throw new RuntimeException("Нет доступа к мероприятию");
         }
-        String qrContent = "https://smart-assembly.org/event/" + event.getId() + "/register?token=" + event.getQrCodeData();
+        String qrContent = "https://smart-assembly.org/events/" + event.getId();
         return Map.of("qrBase64", qrCodeService.generateBase64Png(qrContent));
     }
 

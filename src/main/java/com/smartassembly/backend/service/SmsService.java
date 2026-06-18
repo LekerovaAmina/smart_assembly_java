@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Service
 @Slf4j
 public class SmsService {
@@ -34,13 +37,16 @@ public class SmsService {
             // Добавляем + если его нет
             String normalizedPhone = digits.startsWith("+") ? digits : "+" + digits;
 
+            // URL-кодируем текст (важно для кириллицы!)
+            String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
+
             String url = UriComponentsBuilder
                     .fromHttpUrl("https://api.mobizon.kz/service/message/sendsmsmessage")
                     .queryParam("output", "json")
                     .queryParam("api", "v1")
                     .queryParam("apiKey", apiKey)
                     .queryParam("recipient", normalizedPhone)
-                    .queryParam("text", message)
+                    .queryParam("text", encodedMessage)
                     .toUriString();
 
             log.debug("📤 Отправляем SMS на {} (нормализованный: {})", phone, normalizedPhone);
