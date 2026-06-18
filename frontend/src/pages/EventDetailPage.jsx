@@ -7,6 +7,7 @@ import {
 } from '../api';
 import { useAuth } from '../context/AuthContext';
 import Badge from '../components/Badge';
+import QrScannerModal from '../components/QrScannerModal';
 
 const STATUS_LABEL = {
   DRAFT: 'Черновик', OPEN: 'Открыта запись', IN_PROGRESS: 'Идёт сейчас',
@@ -186,6 +187,7 @@ export default function EventDetailPage() {
   const [attendeesLoading, setAttendeesLoading] = useState(false);
   const [showAttendees, setShowAttendees] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const [showQrScanner, setShowQrScanner] = useState(false);
   const [completeMsg, setCompleteMsg] = useState(null);
 
   const fetchEvent = useCallback(async () => {
@@ -379,23 +381,13 @@ export default function EventDetailPage() {
 
           {!isHr && registered && event.status === 'IN_PROGRESS' && (
             <button
-              onClick={async () => {
-                setActionLoading(true);
-                try {
-                  await checkinUser(id, null);
-                  alert('✅ Ваш приход отмечен! Часы начисляются автоматически');
-                  await fetchEvent();
-                } catch (e) {
-                  alert('❌ ' + (e.response?.data?.message || 'Ошибка check-in'));
-                } finally {
-                  setActionLoading(false);
-                }
-              }}
-              disabled={actionLoading}
-              className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-btn transition-colors shadow-sm cursor-pointer disabled:opacity-50">
-              ✓ Подтвердить мой приход
+              onClick={() => setShowQrScanner(true)}
+              className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-btn transition-colors shadow-sm cursor-pointer"
+            >
+              📱 Отметить приход (сканирование)
             </button>
           )}
+
 
           {!isHr && event.status !== 'DRAFT' && (
             <button onClick={handleRegister} disabled={actionLoading}
@@ -524,5 +516,17 @@ export default function EventDetailPage() {
         </div>
       </div>
     </div>
+      {/* QR Scanner Modal для волонтеров */}
+      {showQrScanner && (
+        <QrScannerModal
+          eventId={id}
+          onSuccess={(result) => {
+            alert(result.message);
+            // Опционально: обновляем данные события для синхронизации
+            fetchEvent();
+          }}
+          onClose={() => setShowQrScanner(false)}
+        />
+      )}
   );
 }
