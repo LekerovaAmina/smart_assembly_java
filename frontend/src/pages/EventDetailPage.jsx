@@ -370,6 +370,26 @@ export default function EventDetailPage() {
             </button>
           )}
 
+          {!isHr && registered && event.status === 'IN_PROGRESS' && (
+            <button
+              onClick={async () => {
+                setActionLoading(true);
+                try {
+                  await checkinUser(id, null);
+                  alert('✅ Ваш приход отмечен! Часы начисляются автоматически');
+                  await fetchEvent();
+                } catch (e) {
+                  alert('❌ ' + (e.response?.data?.message || 'Ошибка check-in'));
+                } finally {
+                  setActionLoading(false);
+                }
+              }}
+              disabled={actionLoading}
+              className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-btn transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+              ✓ Подтвердить мой приход
+            </button>
+          )}
+
           {!isHr && event.status !== 'DRAFT' && (
             <button onClick={handleRegister} disabled={actionLoading}
               className={`px-5 py-2 rounded-btn text-sm font-medium transition-colors cursor-pointer ${
