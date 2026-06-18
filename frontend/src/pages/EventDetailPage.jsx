@@ -9,7 +9,7 @@ import {
   getEventAttendees,
   completeEvent,
   updateAttendee,
-} from '../api/api';
+} from '../api';
 
 const STATUS_LABEL = {
   DRAFT: 'Черновик',
