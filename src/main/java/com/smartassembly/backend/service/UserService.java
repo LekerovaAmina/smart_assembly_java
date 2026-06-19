@@ -4,11 +4,8 @@ import com.smartassembly.backend.dto.user.UserResponseDto;
 import com.smartassembly.backend.dto.user.UserUpdateRoleRequest;
 import com.smartassembly.backend.dto.user.UserUpdateStatusRequest;
 import com.smartassembly.backend.entity.User;
-import com.smartassembly.backend.enums.UserAccountStatus;
-import com.smartassembly.backend.enums.UserApiRole;
 import com.smartassembly.backend.enums.UserRole;
 import com.smartassembly.backend.enums.UserStatus;
-import com.smartassembly.backend.repository.StrikeRepository;
 import com.smartassembly.backend.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +25,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final StrikeRepository strikeRepository;
-    private final VolunteerHoursService volunteerHoursService;
 
     @Transactional(readOnly = true)
     public Page<UserResponseDto> listUsers(
@@ -39,73 +34,8 @@ public class UserService {
             String search,
             Pageable pageable) {
 
-        requireHrOrAdmin(currentUser);
-
-        Specification<User> spec = buildUserSpecification(currentUser, status, role, search);
-        return userRepository.findAll(spec, pageable).map(this::toDto);
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponseDto getUserById(Long id, User currentUser) {
-        requireHrOrAdmin(currentUser);
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-
-        // ИСПРАВЛЕНО: добавлена проверка на null для assembly
-        if (currentUser.getRole() == UserRole.HR
-                && currentUser.getAssembly() != null
-                && user.getAssembly() != null
-                && !user.getAssembly().getId().equals(currentUser.getAssembly().getId())) {
-            throw new RuntimeException("Нет доступа к пользователям другого отделения");
-        }
-
-        return toDto(user);
-    }
-
-    @Transactional(readOnly = true)
-    public UserResponseDto getCurrentUser(User currentUser) {
-        return toDto(currentUser);
-    }
-
-    @Transactional
-    public UserResponseDto updateStatus(Long id, UserUpdateStatusRequest request, User admin) {
-        requireAdmin(admin);
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-
-        applyAccountStatus(user, request.getStatus());
-        user = userRepository.save(user);
-
-        log.info("User {} status updated to {} by {}", id, request.getStatus(), admin.getId());
-        return toDto(user);
-    }
-
-    @Transactional
-    public UserResponseDto updateRole(Long id, UserUpdateRoleRequest request, User admin) {
-        requireAdmin(admin);
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-
-        user.setRole(mapApiRole(request.getRole()));
-        user = userRepository.save(user);
-
-        log.info("User {} role updated to {} by {}", id, user.getRole(), admin.getId());
-        return toDto(user);
-    }
-
-    private Specification<User> buildUserSpecification(
-            User currentUser, UserStatus status, UserRole role, String search) {
-
-        return (root, query, cb) -> {
+        Specification<User> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-
-            // ИСПРАВЛЕНО: null-check для assembly у currentUser
-            if (currentUser.getRole() == UserRole.HR && currentUser.getAssembly() != null) {
-                predicates.add(cb.equal(root.get("assembly").get("id"), currentUser.getAssembly().getId()));
-            }
 
             if (status != null) {
                 predicates.add(cb.equal(root.get("status"), status));
@@ -116,48 +46,28 @@ public class UserService {
             }
 
             if (search != null && !search.isBlank()) {
-                String pattern = "%" + search.trim().toLowerCase() + "%";
-                Predicate firstName = cb.like(cb.lower(root.get("firstName")), pattern);
-                Predicate lastName  = cb.like(cb.lower(root.get("lastName")), pattern);
-                Predicate phone     = cb.like(root.get("phone"), "%" + search.trim() + "%");
-                Predicate uniqueId  = cb.like(cb.lower(root.get("uniqueId")), pattern);
-                predicates.add(cb.or(firstName, lastName, phone, uniqueId));
+                String pattern = "%" + search.toLowerCase() + "%";
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("firstName")), pattern),
+                        cb.like(cb.lower(root.get("lastName")), pattern),
+                        cb.like(cb.lower(root.get("phone")), pattern),
+                        cb.like(cb.lower(root.get("email")), pattern)
+                ));
+            }
+
+            if (currentUser.getRole() == UserRole.HR) {
+                predicates.add(cb.equal(root.get("assembly").get("id"), currentUser.getAssembly().getId()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
-    }
 
-    private void applyAccountStatus(User user, UserAccountStatus accountStatus) {
-        switch (accountStatus) {
-            case ACTIVE -> {
-                user.setStatus(UserStatus.ACTIVE);
-                user.setIsActive(true);
-            }
-            case INACTIVE -> {
-                user.setStatus(UserStatus.INACTIVE);
-                user.setIsActive(false);
-            }
-            case BANNED -> {
-                user.setStatus(UserStatus.BANNED);
-                user.setIsActive(false);
-            }
-        }
-    }
-
-    private UserRole mapApiRole(UserApiRole apiRole) {
-        return switch (apiRole) {
-            case VOLUNTEER -> UserRole.VOLUNTEER;
-            case HR        -> UserRole.HR;
-            case ADMIN     -> UserRole.SUPER_ADMIN;
-        };
+        Page<User> users = userRepository.findAll(spec, pageable);
+        return users.map(this::toDto);
     }
 
     private UserResponseDto toDto(User user) {
-        long strikeCount = strikeRepository.countByUserIdAndIsActiveTrue(user.getId());
-
-        // ИСПРАВЛЕНО: безопасное получение ID отделения — если assembly == null, возвращаем null
-        Long departmentId = (user.getAssembly() != null) ? user.getAssembly().getId() : null;
+        if (user == null) return null;
 
         return UserResponseDto.builder()
                 .id(user.getId())
@@ -165,24 +75,73 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .phone(user.getPhone())
+                .email(user.getEmail())
+                .iin(user.getIin())
                 .role(user.getRole())
                 .status(user.getStatus())
-                .totalHours(volunteerHoursService.getTotalHoursForUser(user.getId()))
-                .strikeCount((int) strikeCount)
-                .departmentId(departmentId)
-                .createdAt(user.getCreatedAt())
+                .photoUrl(user.getPhotoUrl())
+                .isActive(user.getIsActive())
+                .registrationDate(user.getRegistrationDate())
+                .lastActivity(user.getLastActivity())
+                .birthDate(user.getBirthDate())
+                .totalVolunteerHours(user.getTotalVolunteerHours())
+                .monthlyVolunteerHours(user.getMonthlyVolunteerHours())
+                .freeDays(user.getFreeDays())
+                .activeStrikes(user.getActiveStrikes())
+                .totalStrikes(user.getTotalStrikes())
+                .telegramUsername(user.getTelegramUsername())
+                .telegramId(user.getTelegramId())
+                .instagram(user.getInstagram())
                 .build();
     }
 
-    private void requireHrOrAdmin(User user) {
-        if (user.getRole() != UserRole.HR && user.getRole() != UserRole.SUPER_ADMIN) {
-            throw new RuntimeException("Недостаточно прав");
+    @Transactional(readOnly = true)
+    public UserResponseDto getCurrentUser(User currentUser) {
+        if (currentUser == null) {
+            throw new RuntimeException("User not found");
         }
+        return toDto(currentUser);
     }
 
-    private void requireAdmin(User user) {
-        if (user.getRole() != UserRole.SUPER_ADMIN) {
-            throw new RuntimeException("Только SUPER_ADMIN может выполнить это действие");
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserById(Long id, User currentUser) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
+
+        if (currentUser.getRole() == UserRole.HR &&
+                !currentUser.getAssembly().getId().equals(user.getAssembly().getId())) {
+            throw new RuntimeException("Access denied: User is not in your assembly");
         }
+
+        return toDto(user);
+    }
+
+    @Transactional
+    public UserResponseDto updateStatus(Long id, UserUpdateStatusRequest request, User currentUser) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (currentUser.getRole() == UserRole.HR &&
+                !currentUser.getAssembly().getId().equals(user.getAssembly().getId())) {
+            throw new RuntimeException("Access denied");
+        }
+
+        user.setStatus(request.getStatus());
+        userRepository.save(user);
+        return toDto(user);
+    }
+
+    @Transactional
+    public UserResponseDto updateRole(Long id, UserUpdateRoleRequest request, User currentUser) {
+        if (currentUser.getRole() != UserRole.SUPER_ADMIN) {
+            throw new RuntimeException("Only SUPER_ADMIN can change user roles");
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(request.getRole());
+        userRepository.save(user);
+        return toDto(user);
     }
 }
