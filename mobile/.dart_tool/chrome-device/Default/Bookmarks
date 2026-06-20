@@ -1,0 +1,1325 @@
+{
+   "checksum": "41f43de5b987e4ed72ea421b98a5baf8",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13354825329983018",
+            "date_last_used": "13375128609910328",
+            "guid": "b0cbcc0c-492f-4f3e-b21b-997bc6326880",
+            "id": "7",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Drafts – Figma",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.figma.com/files/drafts?fuid=1349791352229554824",
+            "visit_count": 1
+         }, {
+            "date_added": "13355433214647017",
+            "date_last_used": "13401777544981361",
+            "guid": "1ed03816-43e3-4354-b43e-2f6dd065d6dd",
+            "id": "8",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Онлайн-курсы для начинающих: обучение IT-специалистов с нуля — Яндекс Практикум Казахстан",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://practicum.yandex.kz/catalog/start/?from=main_from-scratch_card",
+            "visit_count": 1
+         }, {
+            "date_added": "13357934393087287",
+            "date_last_used": "13377428672163328",
+            "guid": "6640c0e5-2d7c-4674-995a-760dca210494",
+            "id": "9",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "фф Джейд Вест/Тори Вега",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://ficbook.net/readfic/10763083/27749160#part_content",
+            "visit_count": 5
+         }, {
+            "date_added": "13358013627944873",
+            "date_last_used": "13372407804576590",
+            "guid": "ebdafb21-bda3-489a-9349-1d6f74de125f",
+            "id": "10",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Смотреть сериал Оранжевый — хит сезона / Оранжевый — новый черный онлайн бесплатно в хорошем качестве",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://rezka.ag/series/drama/1924-oranzhevyy-hit-sezona-2013.html",
+            "visit_count": 17
+         }, {
+            "date_added": "13358385660397773",
+            "date_last_used": "0",
+            "guid": "41b629ec-3bf5-45ff-b7bb-4e892c578756",
+            "id": "11",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Приборная панель | Пиктодиаграмма",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://create.piktochart.com/teams/31028974/dashboard",
+            "visit_count": 0
+         }, {
+            "date_added": "13358698113105944",
+            "date_last_used": "0",
+            "guid": "28a7cb97-c738-4438-8745-fbde5de169af",
+            "id": "12",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "цвИгра Фрайдей Найт Фанкин: Хатсуне Мику - Онлайн",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://vseigru.net/igry-frajdej-najt-fankin/31523-igra-frajdej-najt-fankin-khatsune-miku.html",
+            "visit_count": 0
+         }, {
+            "date_added": "13358721519391846",
+            "date_last_used": "0",
+            "guid": "4c6d009c-38e7-40ec-beba-e0bc1b599ba6",
+            "id": "13",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "фцвцй2кцв",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://vseigru.net/ogon-i-voda/2804-igra-ogon-i-voda-1-lesnoj-khram.html",
+            "visit_count": 0
+         }, {
+            "date_added": "13359419527482732",
+            "date_last_used": "13395311146535166",
+            "guid": "f3952cab-1bed-4471-95a2-b174c4e62b1f",
+            "id": "14",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Получить помощь с домашним заданием",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://ai.mozgotvet.com/ai-chat",
+            "visit_count": 1
+         }, {
+            "date_added": "13361404976333592",
+            "date_last_used": "13397637512226211",
+            "guid": "02c5f4df-8ac9-48f8-bc0b-ddb0146f6864",
+            "id": "15",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "iCloud",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.icloud.com/",
+            "visit_count": 0
+         }, {
+            "date_added": "13362942539711236",
+            "date_last_used": "13386688659272441",
+            "guid": "6922caa2-a28d-42ec-8352-33791fa94a17",
+            "id": "16",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Introduction to the Program | Coursera",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.coursera.org/learn/introduction-to-back-end-development/lecture/pLhQR/introduction-to-the-program",
+            "visit_count": 3
+         }, {
+            "date_added": "13362946677209617",
+            "date_last_used": "0",
+            "guid": "ae62aecc-778b-4b60-83b7-4cf296aa6be4",
+            "id": "17",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "How the internet works | Coursera",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.coursera.org/learn/introduction-to-back-end-development/lecture/ewZtL/how-the-internet-works",
+            "visit_count": 0
+         }, {
+            "date_added": "13363474012582596",
+            "date_last_used": "0",
+            "guid": "580b9807-291c-47b7-8693-67c8d6e93d70",
+            "id": "18",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Создаем HTML страницу — Как создать сайт",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://gabdrahimov.ru/html-uchebnik-sozdaem-stranitsu",
+            "visit_count": 0
+         }, {
+            "date_added": "13363478917693074",
+            "date_last_used": "0",
+            "guid": "aad97c6b-daf2-4e44-b296-d9beba616fbe",
+            "id": "19",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "PY4E - Python для всех",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.py4e.com/tools/pythonauto/?PHPSESSID=eb680ae28466bb2cbed4180c8c5c5629",
+            "visit_count": 0
+         }, {
+            "date_added": "13366113426327976",
+            "date_last_used": "0",
+            "guid": "45b865f8-77f2-418a-94ab-961124695bca",
+            "id": "20",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": " Школа 2010",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://rezka.ag/series/drama/11784-shkola-2010.html#t:110-s:1-e:21",
+            "visit_count": 0
+         }, {
+            "date_added": "13367715586369601",
+            "date_last_used": "0",
+            "guid": "ddf6f0f3-4f7e-4f23-a6b9-806ac502e573",
+            "id": "21",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Скины майнкрафт для девочек / Minecraft Inside - Страница 4",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://minecraft-inside.ru/skins/female/page/4/",
+            "visit_count": 0
+         }, {
+            "date_added": "13367890195985739",
+            "date_last_used": "0",
+            "guid": "5b2b434a-f5ec-4c22-9f05-2a47a20c6013",
+            "id": "22",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "с",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://onedrive.live.com/personal/530bf8582df73e13/_layouts/15/doc2.aspx?resid=db9009f6-d1b5-4179-8531-2d2ed71c10d6&cid=530bf8582df73e13&action=editnew&wdNewAndOpenCt=1723405714211&ct=1723405714211&wdOrigin=OFFICECOM-HWA.MAIN.NEW&wdPreviousSessionSrc=HarmonyDesktop&wdPreviousSession=acf6cd88-9338-4e29-ad2a-edf554a05f66",
+            "visit_count": 0
+         }, {
+            "date_added": "13369480054580590",
+            "date_last_used": "13397338485050643",
+            "guid": "413c07f9-8a01-4772-90c1-f39e8e6091ed",
+            "id": "23",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "ChatGPT | OpenAI",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://openai.com/chatgpt/",
+            "visit_count": 2
+         }, {
+            "date_added": "13369508635673317",
+            "date_last_used": "0",
+            "guid": "a4f68e38-4022-45cd-87dc-2d24a0a5d65e",
+            "id": "24",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Смотреть сериал Виктория - победительница онлайн бесплатно в хорошем качестве",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://rezka.ag/series/comedy/17016-viktoriya-pobeditelnica-2010.html#t:56-s:3-e:6",
+            "visit_count": 1
+         }, {
+            "date_added": "13370030625770080",
+            "date_last_used": "0",
+            "guid": "50350751-80f3-4998-a6dc-0dcee1822022",
+            "id": "25",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Python - деление с остатком",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://progery.ru/python-delenie-s-ostatkom",
+            "visit_count": 1
+         }, {
+            "date_added": "13370031386302967",
+            "date_last_used": "0",
+            "guid": "02c7f9ab-d6f8-46a4-a271-a10c3023cf9c",
+            "id": "26",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "🔢 Как написать остаток от деления в Питоне: простые шаги и примеры кода",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://pythonhelp.ru/python/kak-napisat-ostatok-ot-deleniia-v-pitone/",
+            "visit_count": 1
+         }, {
+            "date_added": "13371352435608203",
+            "date_last_used": "0",
+            "guid": "3e6c6544-475d-490b-b639-b7111675341e",
+            "id": "27",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Смотреть сериал Отчаянные домохозяйки онлайн бесплатно в хорошем качестве",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://rezka.ag/series/drama/1915-otchayannye-domohozyayki-2004.html#t:56-s:2-e:20",
+            "visit_count": 1
+         }, {
+            "date_added": "13371653956493291",
+            "date_last_used": "0",
+            "guid": "f022830c-416c-47cc-ac37-9fe856eeb4fe",
+            "id": "28",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "ChatGPT",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://chatgpt.com/c/66f29dad-e448-8005-8dce-1173f9e325d8",
+            "visit_count": 1
+         }, {
+            "date_added": "13371738478113369",
+            "date_last_used": "0",
+            "guid": "cfa4481a-937e-4bc5-ae84-7f4b79c9a208",
+            "id": "29",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Руководство по программированию на Python",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://metanit.com/python/tutorial/?ysclid=m1hrfac457158376295",
+            "visit_count": 1
+         }, {
+            "date_added": "13371738482552902",
+            "date_last_used": "0",
+            "guid": "25a47583-6770-468b-ab75-35babd67a8e8",
+            "id": "30",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Python — Каталог — Stepik",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://stepik.org/catalog/153",
+            "visit_count": 1
+         }, {
+            "date_added": "13371802526457501",
+            "date_last_used": "0",
+            "guid": "12e555b2-b1b9-4cbd-bac3-d41a354c8b38",
+            "id": "31",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Python | Переменные и типы данных",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://metanit.com/python/tutorial/2.2.php",
+            "visit_count": 1
+         }, {
+            "date_added": "13372022825879292",
+            "date_last_used": "0",
+            "guid": "cb177e3b-91cf-482f-a4fc-696b8464a577",
+            "id": "32",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Смотреть сериал Трудности ассимиляции / Понаехали! онлайн бесплатно в хорошем качестве",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://rezka.ag/series/comedy/7842-trudnosti-assimilyacii-2015.html#t:232-s:3-e:1",
+            "visit_count": 1
+         }, {
+            "date_added": "13372259381607077",
+            "date_last_used": "0",
+            "guid": "abaaf38b-5a99-4bd8-88ca-e70970162288",
+            "id": "33",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Реальный заработок онлайн без вложений: лучшие способы для начала в 2024 году",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://sky.pro/wiki/profession/realnyj-zarabotok-onlajn-bez-vlozhenij-luchshie-sposoby-dlya-nachala-v-2024-godu/",
+            "visit_count": 1
+         }, {
+            "date_added": "13372259410452260",
+            "date_last_used": "0",
+            "guid": "1bf56f12-fb3a-48ae-913c-0200609f54b4",
+            "id": "34",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Метод append() в Python: добавление элемента в конец списка",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://sky.pro/wiki/python/metod-append-v-python-dobavlenie-elementa-v-konec-spiska/",
+            "visit_count": 1
+         }, {
+            "date_added": "13372970609300455",
+            "date_last_used": "0",
+            "guid": "d3a7d376-b8f7-4481-9bbd-c96edd8b28e0",
+            "id": "35",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Комплектация",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://casaazzurra-courses.com/teach/control/stream/view/id/512870042?gcmes=61463941408&gcmlg=15009852",
+            "visit_count": 1
+         }, {
+            "date_added": "13374005071578143",
+            "date_last_used": "0",
+            "guid": "3bcdecad-cf97-4295-89b8-e30d35664118",
+            "id": "36",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Shaderpacks - shaderLABS",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://shaderlabs.org/wiki/Shaderpacks",
+            "visit_count": 1
+         }, {
+            "date_added": "13374005772100288",
+            "date_last_used": "0",
+            "guid": "3d1a2b1a-4609-4687-a14a-7dd0d2520313",
+            "id": "37",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Better Lights для Майнкрафт 1.21.1",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://tlauncher.org/ru/texture-packs-121_166/better-lights-1-21-1_24806.html",
+            "visit_count": 1
+         }, {
+            "date_added": "13374071601696563",
+            "date_last_used": "0",
+            "guid": "75b4feec-5b77-43fc-826c-9467b1614ea2",
+            "id": "38",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Создание таблиц аккордов",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://chatgpt.com/c/67178dd5-c9ac-8005-b233-0ecdde765526",
+            "visit_count": 1
+         }, {
+            "date_added": "13374641967659548",
+            "date_last_used": "0",
+            "guid": "c1136fc8-75ee-4eb6-84e0-ab8caaa170b3",
+            "id": "39",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Без памятное пробуждение, Всё из-за той ночи — фанфик по фэндому «Billie Eilish »",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://ficbook.net/readfic/018f3a7c-1d32-7495-a66e-11aaf4ea0033/37440299#part_content",
+            "visit_count": 1
+         }, {
+            "date_added": "13375003883649344",
+            "date_last_used": "0",
+            "guid": "0f3321f0-1531-4c23-a248-d2ff862f978f",
+            "id": "40",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Турецкий марш.webp (3000×1060)",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "file:///C:/Users/amina/Downloads/%D0%A2%D1%83%D1%80%D0%B5%D1%86%D0%BA%D0%B8%D0%B9%20%D0%BC%D0%B0%D1%80%D1%88.webp",
+            "visit_count": 1
+         }, {
+            "date_added": "13375009093100465",
+            "date_last_used": "0",
+            "guid": "95f5942c-dc4e-44fd-9c04-d558dcf801fa",
+            "id": "41",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Ado - I’m a Controversy Chords - Chordify",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://chordify.net/chords/ado-songs/atashiha-wen-ti-zuo-chords?version=youtube%3AD8FYxizdijE",
+            "visit_count": 1
+         }, {
+            "date_added": "13375302000046335",
+            "date_last_used": "0",
+            "guid": "6f8e29a4-41a1-41a6-ab13-f20d5298d5ba",
+            "id": "42",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Browse Fonts - Google Fonts",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://fonts.google.com/",
+            "visit_count": 1
+         }, {
+            "date_added": "13375668561848336",
+            "date_last_used": "0",
+            "guid": "9ca18978-d663-477f-bab8-3efbadfeba6f",
+            "id": "43",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "(5) Сурдин В.Г. Лекция 1. Наука астрономия - YouTube",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.youtube.com/watch?v=Zql617N62SA&list=PLpH8fV2e_pBiH9BHgdGmHOhmKQA-hopdR",
+            "visit_count": 1
+         }, {
+            "date_added": "13375738128161937",
+            "date_last_used": "0",
+            "guid": "c5357189-53f6-4420-b299-b1fe74975c32",
+            "id": "44",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Самые популярные курсы по теме Astronomy —изучайте Astronomy онлайн",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.coursera.org/search?query=Astronomy&productDifficultyLevel=Beginner&topic%5B0%5D=Data%20Science&topic%5B1%5D=Personal%20Development&productTypeDescription=Courses",
+            "visit_count": 1
+         }, {
+            "date_added": "13375790876387347",
+            "date_last_used": "0",
+            "guid": "cef7d42d-311d-404c-9bba-de4d95dd0c7e",
+            "id": "45",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Физика и музыка – внеурочная деятельность (конкурсная работа) – Корпорация Российский учебник (издательство Дрофа – Вентана)",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://rosuchebnik.ru/material/fizika-i-muzyka-7397/",
+            "visit_count": 1
+         }, {
+            "date_added": "13375790908005066",
+            "date_last_used": "0",
+            "guid": "19cf2a47-436b-457c-9ade-98af13a921ca",
+            "id": "46",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Физика музыки: из чего сделана симфония - РИА Новости, 30.11.2017",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://ria.ru/20171130/1509856779.html",
+            "visit_count": 1
+         }, {
+            "date_added": "13375791141861278",
+            "date_last_used": "0",
+            "guid": "3c75e187-c17e-4ecf-a08b-c09727bb7b06",
+            "id": "47",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Physics of Music - Physics | Socratic",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://translated.turbopages.org/proxy_u/en-ru.ru.95e4145f-6731cf19-cd687002-74722d776562/https/socratic.org/physics/sound/physics-of-music",
+            "visit_count": 1
+         }, {
+            "date_added": "13375791805351135",
+            "date_last_used": "0",
+            "guid": "6b3c1fdc-8480-4588-b03f-911c79ce09ee",
+            "id": "48",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Музыкальная физика или музыка как физический процесс",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://school-science.ru/6/11/36860?ysclid=m3cu2gq4j236817490",
+            "visit_count": 1
+         }, {
+            "date_added": "13375889746807527",
+            "date_last_used": "0",
+            "guid": "bbe47472-7bef-4995-9c18-63b839c1da78",
+            "id": "49",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Самые популярные курсы по теме Python Tkinter —изучайте Python Tkinter онлайн",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.coursera.org/search?query=python%20tkinter",
+            "visit_count": 1
+         }, {
+            "date_added": "13375889819806881",
+            "date_last_used": "0",
+            "guid": "7ad20847-e735-48b1-8dbb-64966f4e1f8e",
+            "id": "50",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Курс по библиотеке Tkinter языка Python — Викиверситет",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://ru.wikiversity.org/wiki/%D0%9A%D1%83%D1%80%D1%81_%D0%BF%D0%BE_%D0%B1%D0%B8%D0%B1%D0%BB%D0%B8%D0%BE%D1%82%D0%B5%D0%BA%D0%B5_Tkinter_%D1%8F%D0%B7%D1%8B%D0%BA%D0%B0_Python",
+            "visit_count": 1
+         }, {
+            "date_added": "13376337852429476",
+            "date_last_used": "0",
+            "guid": "9cf739ef-58d5-49d5-9a62-69b153e2bd5a",
+            "id": "51",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Étudiants | Campus France : étudier en France",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.campusfrance.org/fr",
+            "visit_count": 1
+         }, {
+            "date_added": "13376575132428420",
+            "date_last_used": "0",
+            "guid": "139d9cc9-da0e-4a52-afce-cf01aa077bd1",
+            "id": "52",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "09. Tkinter. Анимация - YouTube",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.youtube.com/watch?v=05Np_rTS6GI",
+            "visit_count": 1
+         }, {
+            "date_added": "13377818699240135",
+            "date_last_used": "0",
+            "guid": "40c6a594-21cc-41c2-85a6-8301ed3617b3",
+            "id": "53",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Что такое гармоники в электрических сетях - Сам электрик",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://samelectrik.ru/chto-takoe-garmoniki-v-elektricheskix-setyax.html",
+            "visit_count": 1
+         }, {
+            "date_added": "13377876128651866",
+            "date_last_used": "0",
+            "guid": "b37d87b8-ba9f-44aa-b075-3cc70d311518",
+            "id": "54",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Building and Deploying Your Flask App Using GitHub Actions, Docker, and Docker Hub: A Beginner’s Guide | by RADOUANE EL MAHFOUD | Nov, 2024 | DevOps.dev",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://blog.devops.dev/building-and-deploying-your-flask-app-using-github-actions-docker-and-docker-hub-a-beginners-97a0c57c853c",
+            "visit_count": 1
+         }, {
+            "date_added": "13377979310040703",
+            "date_last_used": "0",
+            "guid": "2d8a28e5-79bf-4396-9868-84b209210590",
+            "id": "55",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Онлайн метроном | Musicca",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.musicca.com/ru/metronom",
+            "visit_count": 1
+         }, {
+            "date_added": "13378475528293397",
+            "date_last_used": "0",
+            "guid": "c966a737-d8c8-44dd-b83e-bc101c5dc145",
+            "id": "56",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "о",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://chatgpt.com/c/675abb6f-6a58-8005-aa28-95776bc93d36",
+            "visit_count": 1
+         }, {
+            "date_added": "13382051267329835",
+            "date_last_used": "0",
+            "guid": "bffea51b-ad98-4f90-a234-111be05af33e",
+            "id": "57",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Теория относительности, Замедление времени, Увеличение массы",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.astrotime.ru/relact.html",
+            "visit_count": 1
+         }, {
+            "date_added": "13382051599132167",
+            "date_last_used": "0",
+            "guid": "87f32162-f747-4967-8492-e1b5b772572a",
+            "id": "58",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Приложение для наблюдения за звездным небом | Астрономия для всех | Изучение ночного неба | Star Walk",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://starwalk.space/ru",
+            "visit_count": 1
+         }, {
+            "date_added": "13382111604044825",
+            "date_last_used": "0",
+            "guid": "54ec081a-33bf-4022-be2f-6d5e9b3c5025",
+            "id": "59",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Задачи по математике с подробным решением. Электронное тестирование ЕНТ 2025.",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://ru.testing.kz/tests/ent/maths/37/",
+            "visit_count": 1
+         }, {
+            "date_added": "13382175654754792",
+            "date_last_used": "0",
+            "guid": "6a6c238b-1e65-4a77-b896-1a049656462b",
+            "id": "60",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Вариант 1 – онлайн-тренажер для подготовки к ЕНТ, итоговой аттестации",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://itest.kz/ru/ent/matematika/kontekstnye-testovye-zadaniya-2024-m-563/lecture/variant-1-5329",
+            "visit_count": 1
+         }, {
+            "date_added": "13382636871879897",
+            "date_last_used": "0",
+            "guid": "f19b92a4-50f9-42bc-8bf6-506a9805c909",
+            "id": "61",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Бесплатные онлайн-курсы английского языка и | USAHello",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://usahello.org/ru/%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/learn-english-language/%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2%D1%8B%D0%B5-%D0%BA%D1%83%D1%80%D1%81%D1%8B-%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD/?utm_source=chatgpt.com",
+            "visit_count": 1
+         }, {
+            "date_added": "13404154596696360",
+            "date_last_used": "0",
+            "guid": "d854ad31-589a-4b5e-bed3-9827bcf50647",
+            "id": "62",
+            "name": "a90e8255b0b2bce92e50a2c1134d2cdb.pdf",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://eurobak.kz/uploads/attachments/post_attachments/1192/a90e8255b0b2bce92e50a2c1134d2cdb.pdf",
+            "visit_count": 1
+         } ],
+         "date_added": "13426421878362059",
+         "date_last_used": "0",
+         "date_modified": "13404154596696360",
+         "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
+         "id": "1",
+         "name": "Панель избранного",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13426421878362059",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+         "id": "2",
+         "name": "Другое избранное",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13426421878362059",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+         "id": "3",
+         "name": "Избранное на мобильных устройствах",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "workspaces_v2": {
+         "children": [ {
+            "children": [  ],
+            "date_added": "13425376994339526",
+            "date_last_used": "0",
+            "date_modified": "13425376994339526",
+            "guid": "856896f4-9b08-44d2-9893-1321ee165aac",
+            "id": "63",
+            "name": "Студиа",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13419067682312096",
+            "date_last_used": "0",
+            "date_modified": "13419067682312096",
+            "guid": "8c7835b5-6340-445c-812b-7ddfbcea9ad7",
+            "id": "64",
+            "name": "s",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911274462",
+            "date_last_used": "0",
+            "date_modified": "13418374911274462",
+            "guid": "9b10a967-793c-4487-84d4-59cf5e037bfd",
+            "id": "65",
+            "name": "San4ous",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911272248",
+               "date_last_used": "0",
+               "guid": "1f79e700-0a7a-4ce0-bdec-4d51ebb3ce7f",
+               "id": "67",
+               "name": "reshuent.kz/test?id=94&print=true",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://reshuent.kz/test?id=94&print=true",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911272675",
+               "date_last_used": "0",
+               "guid": "3baa2c68-1a48-4588-bf91-df1c31050e7a",
+               "id": "68",
+               "name": "ЕНТ–2024: за­да­ния, от­ве­ты, ре­ше­ния",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://reshuent.kz/test?id=94",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911273045",
+               "date_last_used": "0",
+               "guid": "d33bd097-4132-45b3-a6f8-26736d951e78",
+               "id": "69",
+               "name": "ЕНТ Математика 2025. Тесты и подготовка с ответами",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://buki-kz.com/materials/matematika/",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911273403",
+               "date_last_used": "0",
+               "guid": "a891c561-f180-480d-a862-07684048c429",
+               "id": "70",
+               "name": "ЕНТ–2024: за­да­ния, от­ве­ты, ре­ше­ния",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://reshuent.kz/methodist",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911273854",
+               "date_last_used": "0",
+               "guid": "6798850a-744f-42e2-8686-349917b2eca2",
+               "id": "71",
+               "name": "matematika_2021_78.pdf",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://api.buki-kz.com/examination_tests/8/matematika_2021_78.pdf?_gl=1*1cjeyzp*_gcl_au*NTgyOTk0OTk4LjE3Mzc3MDE1NDA.",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911274236",
+               "date_last_used": "0",
+               "guid": "da69558f-9b0d-404e-b312-6f4816be8fb4",
+               "id": "72",
+               "name": "МАТЕМАТИКА | РАЗБОР ТЕСТА | АЛЬБИНА | ЕНТ 2025 #нұсқаталдау #тестталдау - YouTube",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.youtube.com/watch?v=0PTtSqg0T6g&list=PLWmPZ_55OBsCp3JZBOUpkKxDzDDKWUbw-",
+               "visit_count": 0
+            }, {
+               "date_added": "13421958294453844",
+               "date_last_used": "0",
+               "guid": "f57ea3cf-80bc-46e0-b5a3-e2be8cd94bd1",
+               "id": "73",
+               "name": "Английский",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://skyeng.ru/articles/vremena-v-anglijskom-yazyke/",
+               "visit_count": 1
+            } ],
+            "date_added": "13418374911271345",
+            "date_last_used": "0",
+            "date_modified": "13421958294453844",
+            "guid": "726ddca3-ba2b-4c9f-bf5d-defe67689ee7",
+            "id": "66",
+            "name": "ЕНТ",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911271061",
+            "date_last_used": "0",
+            "date_modified": "13418374911271061",
+            "guid": "9e46f7e1-284d-48c1-abbe-617c5ca4c801",
+            "id": "74",
+            "name": "Дипломная работа",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911270689",
+            "date_last_used": "0",
+            "date_modified": "13418374911270689",
+            "guid": "f65e08d2-1608-4269-94fe-6dfe30389701",
+            "id": "75",
+            "name": "React",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911270108",
+            "date_last_used": "0",
+            "date_modified": "13418374911270108",
+            "guid": "2d142326-9bb3-461b-b9a8-7fc1cabd5059",
+            "id": "76",
+            "name": "Испанский",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911269563",
+            "date_last_used": "0",
+            "date_modified": "13418374911269563",
+            "guid": "0c5cc7ed-d7ac-4514-a4dd-97c35db6bbf6",
+            "id": "77",
+            "name": "Ауыл Маркет",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911269233",
+            "date_last_used": "0",
+            "date_modified": "13418374911269233",
+            "guid": "5a511676-d2e6-4186-ae95-f33a6561125c",
+            "id": "78",
+            "name": "Liquid",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911268082",
+            "date_last_used": "0",
+            "date_modified": "13418374911268082",
+            "guid": "54dc9fae-0edd-4eeb-b2d3-5977300526c6",
+            "id": "79",
+            "name": "Карта",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911267439",
+               "date_last_used": "0",
+               "guid": "abc4474c-6db2-490e-86c2-f2353e8aea61",
+               "id": "81",
+               "name": "Fundamentals on After Effects Course - Motion Design School",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://motiondesign.school/courses/fundamentals-on-after-effects/",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911267866",
+               "date_last_used": "0",
+               "guid": "8a0f8ea9-8eb0-41f1-a88f-bf5a8a01871e",
+               "id": "82",
+               "name": "Введение в курс Illustrator Essentials | Возьмите с собой ноутбук",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://bringyourownlaptop.com/courses/adobe-illustrator-essentials-for-beginners/intro-to-the-illustrator-essentials-course",
+               "visit_count": 0
+            } ],
+            "date_added": "13418374911266721",
+            "date_last_used": "0",
+            "date_modified": "13418374911267866",
+            "guid": "391c23c1-3f2c-4c50-bf04-72cca232570b",
+            "id": "80",
+            "name": "Дизайн курсы",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911266487",
+               "date_last_used": "0",
+               "guid": "9bfab6f7-4c79-4e49-93f8-4a549d427ade",
+               "id": "84",
+               "name": "Cursor",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://cursor.com/",
+               "visit_count": 0
+            }, {
+               "date_added": "13418827549080824",
+               "date_last_used": "0",
+               "guid": "1596eb46-3d75-4e8d-9f07-6249f9656a0c",
+               "id": "85",
+               "name": "Железная дорога | Универсальный интеллектуальный облачный провайдер",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://railway.com/",
+               "visit_count": 1
+            } ],
+            "date_added": "13418374911265621",
+            "date_last_used": "0",
+            "date_modified": "13418827549080824",
+            "guid": "52c5b49b-5e27-4768-85ab-9b879bbfc7ab",
+            "id": "83",
+            "name": "Рабочая область",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911265030",
+               "date_last_used": "0",
+               "guid": "09c846c4-3b92-4b84-9daa-ee47997a9c2a",
+               "id": "87",
+               "name": "Introduction of Statistics and its Types | GeeksforGeeks",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://translated.turbopages.org/proxy_u/en-ru.ru.23231bc5-6834e263-8ffce3ef-74722d776562/https/www.geeksforgeeks.org/introduction-of-statistics-and-its-types/#statistics-terminologies",
+               "visit_count": 0
+            } ],
+            "date_added": "13418374911263949",
+            "date_last_used": "0",
+            "date_modified": "13418374911265030",
+            "guid": "1889c7e4-8a0c-40e0-91b5-fc378d2cd148",
+            "id": "86",
+            "name": "Планшет",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911263287",
+            "date_last_used": "0",
+            "date_modified": "13418374911263287",
+            "guid": "01adcc32-31ef-4707-a132-226145789933",
+            "id": "88",
+            "name": "Рабочая область обучения",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911262701",
+            "date_last_used": "0",
+            "date_modified": "13418374911262701",
+            "guid": "9ea06f1d-a825-4bd8-89f0-9089842e0409",
+            "id": "89",
+            "name": "Программ",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911260848",
+               "date_last_used": "0",
+               "guid": "e6ac0efe-b0ce-40f8-8ba4-f7efb16e8311",
+               "id": "91",
+               "name": "65 терминов дизайна, которые вам следует знать — Оди. О дизайне",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://awdee.ru/65-design-terms/",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911261409",
+               "date_last_used": "0",
+               "guid": "4c4d6d0c-c8c5-4799-9c01-1460821198b2",
+               "id": "92",
+               "name": "LEOLEO Studio — Brand design, identity & custom websites · LEOLEO",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.leoleo.studio/en-gb",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911261889",
+               "date_last_used": "0",
+               "guid": "f5a874b2-55a9-414c-8575-cff7ef0f0101",
+               "id": "93",
+               "name": "Аккаунт Google",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://myaccount.google.com/?utm_source=sign_in_no_continue",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911262329",
+               "date_last_used": "0",
+               "guid": "778e4224-ce12-4101-889f-1e7ba684a3a4",
+               "id": "94",
+               "name": "Touch Typing Practice Online",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.typingstudy.com/lesson/1/extra_word_drill",
+               "visit_count": 0
+            } ],
+            "date_added": "13418374911257087",
+            "date_last_used": "0",
+            "date_modified": "13418374911262329",
+            "guid": "468e5808-a45f-4f7c-9271-18c40a5e1258",
+            "id": "90",
+            "name": "Дизайн",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911256536",
+            "date_last_used": "0",
+            "date_modified": "13418374911256536",
+            "guid": "056ec966-2398-42fe-b894-aa8a8264bfce",
+            "id": "95",
+            "name": "PR",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911256175",
+            "date_last_used": "0",
+            "date_modified": "13418374911256175",
+            "guid": "a70de370-f401-42f6-b91d-4c194c63cc8c",
+            "id": "96",
+            "name": "Стажировка документы",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911255915",
+            "date_last_used": "0",
+            "date_modified": "13418374911255915",
+            "guid": "64dfcba1-9809-4598-bc55-32ca2bfb7ab5",
+            "id": "97",
+            "name": "Kr",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911255529",
+            "date_last_used": "0",
+            "date_modified": "13418374911255529",
+            "guid": "27b3d637-b2f0-4ddf-b237-633d60635375",
+            "id": "98",
+            "name": "Астр",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911253595",
+               "date_last_used": "0",
+               "guid": "40bc6db4-bdfa-40f9-a681-3fe453455cde",
+               "id": "100",
+               "name": "Ознакомление с файлами",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://chatgpt.com/c/68e67930-ee10-8332-b7c1-13dc56dfe2b6",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911254129",
+               "date_last_used": "0",
+               "guid": "223b1277-63e8-47d2-ba77-a740244f7d1a",
+               "id": "101",
+               "name": "Достать ножи: Воскрешение покойника фильм, 2025, дата выхода трейлеры актеры отзывы описание на Кинопоиске",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.kinopoisk.ru/film/4421816/?utm_referrer=www.bing.com",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911254580",
+               "date_last_used": "0",
+               "guid": "060118b3-c5b9-469f-9eb7-51f921014a89",
+               "id": "102",
+               "name": "Overleaf, Online LaTeX Editor",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.overleaf.com/",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911255056",
+               "date_last_used": "0",
+               "guid": "953b9ebe-5d65-435e-be05-f05d45795523",
+               "id": "103",
+               "name": "Бакалавр инженерии в области машиностроения и аэрокосмической инженерии",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://seds.nu.edu.kz/bachelor_of_bemae",
+               "visit_count": 0
+            } ],
+            "date_added": "13418374911251230",
+            "date_last_used": "0",
+            "date_modified": "13418374911255056",
+            "guid": "93325af0-2471-4c1f-9592-4ece3c5b50fa",
+            "id": "99",
+            "name": "Колледж",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13418374911248869",
+               "date_last_used": "0",
+               "guid": "18fa22c3-aa3d-4198-9ad1-39818dec0837",
+               "id": "105",
+               "name": "Внешние данные конфигурации в Spring / Хабр",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://habr.com/ru/companies/otus/articles/576910/",
+               "visit_count": 0
+            }, {
+               "date_added": "13418374911250325",
+               "date_last_used": "0",
+               "guid": "2057decf-7d92-48db-9e5d-8d6288ad4d1d",
+               "id": "106",
+               "name": "Шрифты для печатной машинки: история, применение и лучшие варианты | TypeType®",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://typetype.ru/blog/typewriter-fonts-from-retro-mechanics-to-digital-classics/",
+               "visit_count": 0
+            }, {
+               "date_added": "13420797010868579",
+               "date_last_used": "0",
+               "guid": "4c3f8ceb-a681-4958-9ab8-d624cc93ee41",
+               "id": "107",
+               "name": "§ 0. Предисловие",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.artlebedev.ru/kovodstvo/sections/0/",
+               "visit_count": 1
+            } ],
+            "date_added": "13418374911246025",
+            "date_last_used": "0",
+            "date_modified": "13420797010868579",
+            "guid": "ac7ed311-e8dd-4ba7-a24f-f9c483f1ba30",
+            "id": "104",
+            "name": "Figma",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911245366",
+            "date_last_used": "0",
+            "date_modified": "13418374911245366",
+            "guid": "557e5f94-794d-4e35-a191-a2525e4af923",
+            "id": "108",
+            "name": "ою",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [  ],
+            "date_added": "13418374911222213",
+            "date_last_used": "0",
+            "date_modified": "13418374911222213",
+            "guid": "3981139a-bb5a-4a3c-8f70-3a62e9932cdd",
+            "id": "109",
+            "name": "Переезд",
+            "source": "unknown",
+            "type": "folder"
+         } ],
+         "date_added": "13426421878362059",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "75aa6670-344f-549d-b742-660f029506ab",
+         "id": "5",
+         "name": "Рабочие пространства",
+         "source": "unknown",
+         "type": "folder"
+      }
+   },
+   "sync_metadata": "CjEKDgiIgQISCPFIHaaeAQAAEgAqGEdFVzZoRDhreEJMNWV6ZC9GeHhraFE9PUgDoAYHEq0BCGwSqAEKHGd1TzAyUFFNbFFTdGp5LzlINDZNRFJDZHROVT0SJDU1N2U1Zjk0LTc5NGQtNGUzNS1hMTkxLWEyNTI1ZTRhZjkyMxgAIAAoADCQ5oem0DM4rPCHptAzQKzwh6bQM0occmFqcmMxbndPaGNhcWlDQmtuQ0JZTVYyVmtrPVofIh0aV2dPQkZQVXZ3Z0pUYVhhai9EYmFXK0dGV3JZPWUAAAAAwj4CYAASrQEIaxKoAQocY2JHTnNadjRYa3hqVityamp4VUIvaElyb1NVPRIkNGMzZjhjZWItYTY4MS00OTU4LTlhYjgtZDYyNGNjOTNlZTQxGAAgACgAMJyNganZMzjgjYGp2TNA4I2BqdkzShxUbUVaVk4yM2huYWkxcU0weEQwaS8yaGVpYXM9Wh8iHdlCRXJKdXNEVU85MkpJUVMvTFZVYTVMVU53eTg9ZbmZXejCPgJgBRKtAQhoEqgBChxaVHlrRzcrVTQvSUVqaHV1ejIvYXg3NmRTY009EiRhYzdlZDMxMS1lOGRkLTRiYTctYTI0Zi1mOWM0ODNmMWJhMzAYACAAKAAw9OWHptAzOOHoh6bQM0Dh6Iem0DNKHFBVbWd5aUw2cS8vc1draC9Hc0FtMHhId3g2RT1aHyIdDTM5MTBhc3ZQVnhXUnBmakVFajhrY01Tck9VND1lAAAAAMI+AmAAEq0BCGcSqAEKHGhFRkNpWVhmVWhFdldRR2hGWjF0UmZaS0UxUT0SJDk1M2I5ZWJlLTVkNjUtNDM1ZS1iZTA1LWYwNWQ0NTc5NTUyMxgAIAAoADCA5oem0DM40euHptAzQNHrh6bQM0ocR3RSQmVsNlJqM0tOdE1wbVovOTc3eE1rdGgwPVofIh3cdjNLU0Rja3lxMFM2TWsvTTcvUExZL0txWWlvPWWXqTsnwj4CYAUSrAEIZRKnAQocUDFPaGFmRGtUNkZJYSszN2NqTnZFSGsvb0dNPRIkMjIzYjEyNzctNjNlOC00N2QyLWJhNzctYTc0MDI0NGY3ZDFhGAAgACgAMP7lh6bQMziT64em0DNAk+uHptAzShxVWlpJN0hCWHRpNGt6OXh5MElWVUl2SjBOam89Wh4iHHNPQWVKcTRzRnlvSEpOZjVzM3lRZVJYcm1EWT1lc8+PHcI+AmAFEqwBCGQSpwEKHGQyNnNUMTlCS1pxVFZiOG5nVExlY245Y0xnaz0SJDQwYmM2ZGI0LWJkZmEtNDBmOS1hNjgxLTNmZTQ1MzQ1NWNkZRgAIAAoADD95Yem0DM49eqHptAzQPXqh6bQM0ocMFA5TjNsU0lZMy9PdU5VUjZQUnNqRU1tYlVBPVoeIhw0VVg3S0pqL3g5eUx2VHFOSzFzNTgrNTRUWDA9ZfiSA9XCPgJgBRKtAQhhEqgBChxobVFySG1YS01DNXVNajFsWVZZNkthQ0hBZFU9EiQ2NGRmY2JhMS05ODA5LTQ1OTgtYmM1NS0zMmNhMmJmYjdhYjUYACAAKAAwiuaHptAzONTuh6bQM0DU7oem0DNKHDErZ2MvaHZtOU40OTlkckVOcmdjaUVMcnRucz1aHyIdAWFIWUo0dzN5NkV1bzRkVFFFSDA4cnpRNWxRdz1lAAAAAMI+AmAAEq4BCFkSqQEKHEVaUjMxRzlxR1pZWkE2TklTMG14clY2eUNxQT0SJDllYTA2ZjFkLWE4MjUtNGJkOC04OWYwLTkwODk4NDJlMDQwORgAIAAoADCI5oem0DM4h+6HptAzQIfuh6bQM0ocVFU1VlBaY2tFdXMyRDN5TG9rR2xGSXpQRG84PVogIh4ADVV0SW9wYUQ4QnIwYkJrOUExMkpRS1BoZysxMD1lAAAAAMI+AmAAEq4BCFYSqQEKHEFRdE5qQ0gwbVlHN1ErVXdFR3lWbWZaUXJiOD0SJDE4ODljN2U0LThhMGMtNDBlMC05MWI1LWZjMzc4ZDJjZDE0OBgAIAAoADCR5oem0DM4y/CHptAzQMvwh6bQM0ocUktiSGM1bVorcVQyWjM5cC9vYzJJdGJPL0dnPVogIh4AA1Q1QU9pT3hpbndXUzdCN2JDWE9uNCtiV1YyND1lAAAAAMI+AmAAErQBCCISrwEKHG12T1BscVROalpRZWF2eWRZd0lrMTkvN1g0ND0SJDFiZjU2ZjEyLWZiM2EtNDhhZS05MTNjLTAyMDA2MDlmNTRiNBgAIAAoADCg6ef50TM41I69wKQyQNSOvcCkMkocRkpXUG4zbVhTMmdBcGhGTUpyclVLTjNXWUlJPVomIiT/////AAAABDR5OW9uK0J4ajdOb2RvTUxnSkxvT2sxdlk3UT1lpRekZsI+AmAFEq0BCFUSqAEKHGJIdTdia09GRFRXRWNwdTZYSnVYMEd5c1NHMD0SJDE1OTZlYjQ2LTNkNzUtNGU4ZC05ZjA3LTYyNDlmOTY1NmEwYxgAIAAoADDl5/L90TM4kfzx/dEzQJH88f3RM0ocNnoycmpiU1BaQTRaVkhINXhQWUFMRDkrdldzPVofIh25QkU3d3RmcFhBc3VBb0lDb3FLVzJDZHYzWDU4PWXadc4xwj4CYAUSrwEITxKqAQocaTdtcVZkajlGTW13bDNWa0NTOWdMNkxDckhrPRIkNTRkYzlmYWUtMGVkZC00ZWViLWIyZDMtNTk3NzMwMDUyNmM2GAAgACgAMOr0h6bQMzjugoim0DNA7oKIptAzShxFR0ZKdlZ2VEQyM1dkbWhNQ0RadlhySXMwaGM9WiEiHwAAJlBNK2RPKzNlbDFOdFFuamdYSytrcDRjVkw1MD1lAAAAAMI+AmAAEq8BCEoSqgEKHCtVRUJ0T2Q2elFPUDFRRVpxaHpncXlUaGpRMD0SJDllNDZmN2UxLTI4NGQtNDhjMS1hYmJlLTYxN2M1Y2E0YzgwMRgAIAAoADDYo8T71TM4qvGHptAzQKrxh6bQM0ocOGZjR0VLWFppbGVxaW5NMnBTRkMvMStaK2VzPVohIh8AAAF2bzUvaDJCZWw2NkhYV1Y3S3llWTFIdWlGd2M9ZQAAAADCPgJgABKsAQhUEqcBChx4TXBOSm5JaUhpOWRyVUM3eUEySU8wZTE2SE09EiQ5YmZhYjZmNy00Yzc5LTRlNDktOTNmOC00YTU0OWQ0MjdhZGUYACAAKAAwtpL5kOgzOMPsh6bQM0DD7Iem0DNKHEpMaEpDS2JhRUh2UTZnL1I3cGNoV2V2LzlrOD1aHiIccm5aS1lwSmVJb0JNT1NZaVFMOWFRMUROM3BVPWXx/gTVwj4CYAUSrQEIChKoAQocakkzWXFpSElySlJDbVgycndJdktWQVBEQkFBPRIkZWJkYWZiMjEtYmRhMy00ODlhLTkzNDktMWQ2Zjc0ZGUxMjVmGAAgACgAML/up5vHMjjSwse37zFA0sLHt+8xShxxRnJiOVVBM3lVRW0wSEFoTDE4Zm55Z3FVSEk9Wh8iHf52b2ZaTUsxV0t1RlB4emFJc1lORWxNcVVrTEU9ZQAAAADCPgJgBRKsAQhREqcBChxJajRIaE1QSTFUQnp0SEhxWm9aRkNTMUtVb0k9EiRhYmM0NDc0Yy02ZGIyLTQ5MGUtODZjMi1mMjM1M2U4YWVhNjEYACAAKAAwhuaHptAzOMHth6bQM0DB7Yem0DNKHGxyUGN0eDRwQkFQZmFXMElRZzlPMm5rRFZjcz1aHiIcaTZJNTdHeEtxeDV2NFgwelN3KzdWcXBrNW9vPWUAAAAAwj4CYAUSrgEIERKpAQocd21rVDVXSlFFbFgzV2pUZGMvMVpVeGk3MlpJPRIkYWU2MmFlY2MtNzc4Yi00YjYwLTgzYjctNGNmMjk2YWE2YmU0GAAgACgAMMDup5vHMjipiOnngTJAqYjp54EyShx6b05hQ0QybU5yQmg4OFRxb01QQTV6aklZbUk9WiAiHv/9b25pV1VMY2UzaEV0U2hxWVVnZXA3bHdtWHJFPWUAAAAAwj4CYAUSrgEIUBKpAQocK3hhN0pNV1B5UlZrLzkzY1hhZGNIQWNTVXEwPRIkMzkxYzIzYzEtM2YyYy00YzUwLWJmMDQtNzJjY2EyMzI1NzBiGAAgACgAMIXmh6bQMzil7Yem0DNApe2HptAzShxqeUorRFFFNm41a3A0TXg4YTFhaTlFckxJSGc9WiAiHgAATHpRcWdGM3o5SHQvN1BJV3FTcXo5dVRlQURrPWUAAAAAwj4CYAASrwEITRKqAQocSXZvLzVUVGdwOUh0d09UMmo3ZCtnSEljV0JJPRIkMGM1Y2M3ZWQtZDdhYy00NTE0LWE0ZGQtOTdjMzVkYjZiYmY2GAAgACgAMIzmh6bQMziU74em0DNAlO+HptAzShxiTm15QnQ1VExnSFptNDZIM0RZVXphaGRQcmc9WiEiHwAACWJBNi90VWZRYXhIVGRRSWpGcEhGM25zV2VOMD1lAAAAAMI+AmAAEq4BCA8SqQEKHHFFZ2xGZUtKNVpORUUvWm1NNmlkZjFkelRmTT0SJDAyYzVmNGRmLThhYzktNDhmOC1iYzBiLWRkYjAxNDZmNjg2NBgAIAAoADCglubtrjM4moLXiPwxQJqC14j8MUocTFZ2b2NWMEpNNG44cEtuWXlJSnVWMFh0a1dFPVogIh7/91R5bjB6UUZ5QWQrK1h0SGFISWJKWVNQRXd1Yz1lNAoBlsI+AmAFEq0BCF8SqAEKHGpRTHpXUW5qdE4yMEZKQzVjSnpZZXU5VVJXTT0SJDA1NmVjOTY2LTIzOTgtNDJmZS1iODk0LWFhOGE4MjY0YmZjZRgAIAAoADCL5oem0DM49O6HptAzQPTuh6bQM0ocN2ZNd2kvTFAzU24vNDNmbERaVUpyckZSNktVPVofIh0ANXFlVmNOdjVRU1RHVWgxRHFSdnZibk13OFE4PWUAAAAAwj4CYAASrwEISxKqAQoceHBna1dXbVA3aUFDaU41T0lJeHFZWWhuejhRPRIkZjY1ZTA4ZDItMTYwOC00MjY5LTk0ZmUtNmRmZTMwMzg5NzAxGAAgACgAMI/mh6bQMziN8Iem0DNAjfCHptAzShwwakhxSk56b0FhbFkrMjBhRDE4TExXUWcyYVU9WiEiHwAAAnJheFRia1JFN2w0OS9qaEhUNXMrQXZNRXloOD1lAAAAAMI+AmAAEq0BCEgSqAEKHGxwaExqSTdCMWtzMDg2UmRIb1hkaXV3eXpiOD0SJGRhNjk1NThmLTliMGQtNDA0ZS1iMzEyLTZmNDgxNmJlOGZiNBgAIAAoADDz5Yem0DM4vuiHptAzQL7oh6bQM0ocZTNxM2RaRXdaTU01ODJyNUNZTlJRUDA0bHlnPVofIh32Q1VNa291TlRaWDdzUmdaVVdWQTFnYjZPZDdnPWUAAAAAwj4CYAUSrAEIWxKnAQocTFBEalVZbThLdlFjSy8yaFA0R2FPSHRSaytBPRIkZTZhYzBlZmUtYjBjZS00MGY4LThiYTQtZjdlZmIxNmU4MzExGAAgACgAMPjlh6bQMzjY6Yem0DNA2OmHptAzShxBcndwWktCSWRuUVFKR0Nlcit3bjRoWlZINXc9Wh4iHG9pNVJSTzMwV1J5eTd1L20wMk5qdXc0ZnFzbz1l+Ts2hMI+AmAFEq0BCAsSqAEKHGVSc1FMVHVaTm9YZWhVbm9SR0dEUURzTDdGMD0SJDQxYjYyOWVjLTNiZjUtNDVmZi1iN2JiLTRlODkyYzU3ODc1NhgAIAAoADDC7qebxzI49sb66PAxQPbG+ujwMUocMWZ0WmhWK2srdi84VkIrS0N1enQ4TW5WQUFVPVofIh3/c2dPeW03a3RaamplNkQwR2FENWYzaGVmTUdjPWUAAAAAwj4CYAUSrAEIVxKnAQocK2FxOW45SlM3aEZ4VGI5dkFyakw2L3NlMUxnPRIkMDljODQ2YzQtM2I5Mi00Yjg0LTlkYWEtZWU0Nzk5N2E5YzJhGAAgACgAMJLmh6bQMzjw8Iem0DNA8PCHptAzShxON1dPa3MreXo4a1U5NVkxK29jVmphTDZqdTQ9Wh4iHG9DN1lJNjF6eDFSL1JSUW05d0JKUk1TT3krRT1lAAAAAMI+AmAFEq0BCEYSqAEKHEZVRnd0eFByQkY2Vk1uZ2REZ3hTRU5Pd2g0OD0SJGE4OTFjNTYxLWYxODAtNDgwZC1hODYyLTA3Njg0MDQ4YzQyORgAIAAoADDx5Yem0DM49OeHptAzQPTnh6bQM0ocV0ZNSFhqVEE3ZStUMklhd01vS2VwWWJKMXYwPVofIh3aMElxTUFrTnI1VTBOVG5WTVdNeDgxZ0ZQUHRzPWWOZEdkwj4CYAUSrAEIRBKnAQocRFBVVGhHdHowUU1UZXRKYWp5dmVzcnlXQ2N3PRIkM2JhYTJjNjgtMWE0OC00NTg4LWJmOTEtZGYxYzMxMDUwZTdhGAAgACgAMO/lh6bQMziz54em0DNAs+eHptAzShxCai9WYTdUMmkrbU1Jb2lwTmJtSmV0cmExdkE9Wh4iHGs2SUdIcFlDZXhSSG5JazhoRTh1cys2djUxST1ljmRHZMI+AmAFEqwBCEMSpwEKHFkvY0tQSFVndWV5MW1yL3FmVVBnZFNuOWVOUT0SJDFmNzllNzAwLTBhN2EtNGNlMC1iZGVjLTRkNTFlYmIzY2U3ZhgAIAAoADDu5Yem0DM4k+eHptAzQJPnh6bQM0ocMFFXNzNTREFTREgzOXljaldQbE5Lc0VoWUxnPVoeIhxFblBRTDNSUnk3RVdFbHY0TWxEQ2VUVndqeW89ZY5kR2TCPgJgBRKvAQhMEqoBChx2RHhEK3I0OHpTcHpxWkRYaDM1RStML1BwVVk9EiQyZDE0MjMyNi05YmIzLTQ2MWItYjlhOC03ZmMxY2FiZDUwNTkYACAAKAAwjuaHptAzONbvh6bQM0DW74em0DNKHGkzb0Z0OXE2VERtMHpjakdrazRMUVRsNW1TZz1aISIfAAAEdzdqQ1pVUTJYVTV6RllJdHZ5R0tWUkNwNm84PWUAAAAAwj4CYAAStQEIJBKwAQocbEpPd045MWgxRGUvNjhGVkFyVEM0Tkt4clZNPRIkM2JjZGVjYWQtY2Y5Ny00Mjk1LTg5YjgtZTMwZDM1NjY0MTE4GAAgACgAMObd74CrMjiy3++AqzJAst/vgKsyShxDNVJxWHZCa2FZRGRQUFNUVXZ1RlBxR2hJYmM9WiciJf////8AAAAE1FV2T0kxbFZDbFNvSnNKQjJieERnT2MzQ082OD1laG0SMsI+AmAFErABCEESqwEKHFZJWVFudElPWHNndHdmbXN3WGMzc24wWkRYRT0SJDliMTBhOTY3LTc5M2MtNDQ4Ny04NGQ0LTU5Y2Y1ZTAzN2JmZBgAIAAoADCD5oem0DM43OyHptAzQNzsh6bQM0ocSHZjcUJCaTFvUGI5Tk9wRzg1ZHNWUVRrWndVPVoiIiAAAAApd2k1L1lLeHcrTVoyT3Bvb1hTd2ZtaEM0bzdrPWUAAAAAwj4CYAASrgEIEhKpAQocZHVHdnUzUkxEOEdCY25xWHdVellQbXFBMWpnPRIkNTgwYjk4MDctMjkxYy00N2I3LTg2OTMtNjdjOGQ2ZTkzZDcwGAAgACgAMNKCo+ODMjjDhaPjgzJAw4Wj44MyShxMeFBnSlluSzE3UmdiRlN2WC90NU80WG5Ed289WiAiHv/+UDVJclU5bVJyWTB0Q0hNR3lwQlBzeG8wc0hNPWVFJHFSwj4CYAUSsAEIQBKrAQoceVEwYVRrdjloUFc3ZUd0REFla3A0WHF6cmRrPRIkOGM3ODM1YjUtNjM0MC00NDVjLTgxMmItN2RkZmJjZWE5YWQ3GAAgACgAMOvOiPHSMzjI34jx0jNAyN+I8dIzShxDblU0eXExT1h5aWRKSU1lUlZZb2R1UmJmR1k9WiIiIAAAABR0NGZ1SWFXN0orLyt1T2pGcmpja0JkWTZMM2M9ZQAAAADCPgJgABKwAQg/EqsBChxGWUE3UTRoZzV5ekMxdDh3YnRSUmZ2VWNrb0U9EiQ4NTY4OTZmNC05YjA4LTQ0ZDItOTg5My0xMzIxZWUxNjVhYWMYACAAKAAw8JH1sOozOIGW9bDqM0CBlvWw6jNKHGJvejVxaWRrNm8xd2c0MnhldnQ5cU9iY3NHOD1aIiIgAAAAClhyTEUvK0RqeFBWK2N3K01WbEN6b0ZiUnJ6UT1lAAAAAMI+AmAAErUBCD0SsAEKHEV4dkZjZEhoTFlmRi9sL1J4UjdFMkswcEFvTT0SJGYxOWI5MmE0LTUwZjktNDJiYy04YmY2LTUwNmE5ODA1YzkwORgAIAAoADCciuuUyzI4pYzrlMsyQKWM65TLMkocTmNNT2tmcUJ2VnZqZjdXTENzQ01EQU5GRUFFPVonIiX/////AAAAB+1IaWhuMGpVVEgxL25DSEhrQ3BQcXN5UzMrZEU9ZVAuxFjCPgJgBRKtAQhiEqgBChxmL2dPTzlYT1VqdHloeTVJUVBVdkVzWlk0bjQ9EiQyN2IzZDYzNy1iMmYwLTRkZGYtYjIzNy02MzNkNjA2MzUzNzUYACAAKAAwjeaHptAzOLfvh6bQM0C374em0DNKHDVTc1hTQkY4Qm1FM2xjL1JaQUJsVVNLQXdNRT1aHyIdAzJOYmNTVS9KeUVzQlBLMnI5ZU15cVFaN3FqND1lAAAAAMI+AmAAErUBCDwSsAEKHGRsNDZlayt3VXVhUVZWdDNsVXpiekVwWnRlUT0SJDZhNmMyMzhiLTFlNjUtNGE3Ny1iODk2LTFhMDQ5NjU2NDYyYhgAIAAoADCm6ef50TM4vdr0uMkyQL3a9LjJMkocbjNyU0Z2VHIyOC8za0pEaWFySnBpNHJpUmwwPVonIiX/////AAAAB9txTFhMNnZCT3VlZVBubWFFYzc0dGh0SUZubTg9ZasM9pDCPgJgBRK1AQg7ErABChxhODBsUURyZTAxYWIrcXUrdVJsUXFTWW1PeEU9EiQ1NGVjMDgxYS0zM2JmLTQwMjItYmUyZi02ZDVlOWIzYzUwMjUYACAAKAAw5ZDNtckyOPGRzbXJMkDxkc21yTJKHGd2aXV4aE5oWWxBeUp4SmRIU1R5N3hzZkcyWT1aJyIl/////wAAAAe3MmxpbmFoN21hQTNGTU1xNXJ6RUd6b3d0Tlg0PWUAAAAAwj4CYAUStQEIJRKwAQocNmIwUkx5TjVibnZIVUUxNEhaRFdmNllua1FRPRIkM2QxYTJiMWEtNDYwOS00Njg3LWExNGEtN2RkMGQyNTIwMzEzGAAgACgAMNO/moGrMjjiwZqBqzJA4sGagasyShx6a2s1MmhnMFpGcGpjN2NDREsrczhwQ0grZFU9WiciJf////8AAAAE6mRBY0pDK2ZNL0xRenRIcktBUUI5SW9pMWljWT1lTea9fsI+AmAFErQBCDkSrwEKHDFSWUtZMkExcERZVUFhQlFMZFlXTTA2ZVNvMD0SJGJmZmVhNTFiLWFkOTgtNGY5MC1hMjM0LTExMWJlMDVhZjMzZRgAIAAoADDNyMz9yDI4pMrM/cgyQKTKzP3IMkocQmtsU2FydEhwVE1sY0trQTM3ODlGbWlJUUswPVomIiT/////AAAAB09qM3BlUzFJMmVoS2Y1bUp4akZHT3NMa3IyVT1lkD2GOMI+AmAFErUBCDYSsAEKHE5ER2lSdTYva1puT1p0TGs5TmFkTXRzUWNkdz0SJGIzN2Q4N2I4LWJhOWYtNDRhYS1iMDc1LTNjYzcwZDMxMTUxOBgAIAAoADCDr962uTI4+7DetrkyQPuw3ra5MkocbG4rOVBSbVhNampKM2dDMndST0lNUVVmVExjPVonIiX/////AAAABvVLOU1zUit6SmQ5Wk15dkRZQXlzb1BUTUpCUGs9ZTXix2nCPgJgBRKuAQhaEqkBChx5TnBBekVWS1pqemxRbjY0SGlVUUVHK1dCZVE9EiQ0NjhlNTgwOC1hNDVmLTRmN2MtOTI3MS0xOGM0MGE1ZTEyNTgYACAAKAAw9+WHptAzOMLph6bQM0DC6Yem0DNKHG5sRktzNm5oRmtTWWpDdmFnVE5TSEUyRWY4Yz1aICIeABpRR0RUdWhZY2dQUlBPZUlCWEEyUUNpNjBkWVE9ZQAAAADCPgJgABKtAQhSEqgBChxObzV2QkpDMU9HdHQvbmNCOWtQdndGNnU5V2s9EiQ4YTBmOGVhOS04ZWIwLTQxZjEtYTg4Zi1iZjVhOGEwMTg3MWUYACAAKAAwh+aHptAzOOzth6bQM0Ds7Yem0DNKHEQyRWNCQW1NWkNxMC9lUDg0Z3VaWmI2clFhVT1aHyIdtGhtZGVWQ21CQ3B1elQ5cElEa1JyRW96eEM3az1lAAAAAMI+AmAFErUBCC8SsAEKHFNVb1pySDZsYVNCM1p3STU4ZkJRay81UHJ6dz0SJDNjNzVlMTg3LWMxN2UtNGVjZi1hMDhiLWMwOTcyN2JiN2IwNhgAIAAoADDw6sTUsTI45uzE1LEyQObsxNSxMkocQUNrUlZpYk85Rkt0dG0rcFRUdjQ3eVI2bTFRPVonIiX/////AAAABftwSWxUV3RMNTZMd3FRZzkreXV0SjJPbGF4ejA9ZT9TWi/CPgJgBRKvAQhOEqoBChxtd3E0eDlGWHN2MzcydktMMENHL0lQMlpjZ009EiQ1YTUxMTY3Ni1kMmU2LTQxODYtYWU5NS1mMzNhNjU2MTEyNWMYACAAKAAwlOaHptAzOM3xh6bQM0DN8Yem0DNKHDE2ekQyRlhEWmVnT2pua1cyUWVCNG9TaHA1RT1aISIfAAATVWxqZUhxRFUvMnpiMGJzUlY1KzVzN2JCNHBVPWUAAAAAwj4CYAASsAEIIBKrAQoccXdCYWdUTXMyYnk2N2lkWDQycm02bmlRcHg4PRIkY2IxNzdlM2ItOTFjZi00ODJmLWE0ZmMtNjk2Yjg0NjRhNTc3GAAgACgAMKfp5/nRMzjJidXPozJAyYnVz6MyShxZUjE4dVpaSE1ENkt0YWY2dmlYUE5kSjBDZ0U9WiIiIP////1ndEo4NnZFa3h0dUtMQkJvSWdobTE1ZTAwbU09ZdB94drCPgJgBRK1AQgxErABChxzOUZLSG9QR0hWMm94QUtVblZDMXRrR1hNbzA9EiRiYmU0NzQ3Mi03YmVmLTQ5OTUtOWMxOC02M2I4MzljMWRhNzgYACAAKAAwounn+dEzOODex4OyMkDg3seDsjJKHHV6b2s3d1ptUDltWE45NTBqc0hvZXZGM0hmWT1aJyIl/////wAAAAX+LzVnZEFzSXllanBKYldabEhjT3ZmZDdSYWJ3PWUbD9gswj4CYAUSrQEIYxKoAQocRWYxV0F3bmpaZ3ppa0JUcFF5OW96ekkrTUMwPRIkOTMzMjVhZjAtMjQ3MS00YzFmLTk1OTItNGVjZTNjNWI1MGZhGAAgACgAMPzlh6bQMzjb6oem0DNA2+qHptAzShx2VjNBSDBtNllHbWpiMVNmRlRpdkNHS3VBOGc9Wh8iHQZ5NUFheTFIMnYveU1zZFRRZ2h3R0V4N3lINkE9ZQAAAADCPgJgABK1AQgwErABChxRM0hBK01NTy8vSldaZVdBTlJIUTNRMTJqb0U9EiQ2YjNjMWZkYy04NDgwLTQ1ODgtYjAzZi05MTFjNzljZTA5ZWUYACAAKAAw7Krt1LEyOKyv7dSxMkCsr+3UsTJKHFJJVCtRTXJUK2lNVUFyRXBvVEFDRmQwTG9sMD1aJyIl/////wAAAAX9a1pvV2lvbmpyeCs2MXlrL21TYTdPREhJMys0PWXPrxruwj4CYAUStQEIOBKwAQoceGxkcWo4a0ZNeVhReUpTb0VINnJ5UUpkYzJJPRIkYzk2NmE3MzctZDhjOC00NGRkLWI4M2UtYmMxMDFjNWRjMTQ1GAAgACgAMMyQx9S7Mjic8cbUuzJAnPHG1LsyShxWdHNYVFRSckd5ejE1RExYN1RWa0FrUXBQZUE9WiciJf////8AAAAG/k0vbmQ0RVBYekIzWUJHdG1CUm5saWUrSTZkMD1lfC1UgMI+AmAFErUBCC4SsAEKHGl5UmJqNkJCQXYzWmY1cE9SNU5aTTNhRUdmST0SJDE5Y2YyYTQ3LTQzNmItNDU3Yy05YWRlLTk4YWYxM2E5MjFjYRgAIAAoADDqx7bUsTI49ci21LEyQPXIttSxMkocaEt1Nzg2TkpYdllnUytDWXRsaFpnbEpyR3lVPVonIiX/////AAAABfczTjl6MDhLUlBhSVRiNmFLV1FjblFjWTdaWlk9ZbKEdJzCPgJgBRK1AQgsErABChxSSjIxNHdxcDY0dXBheXFkQ1ZKcnEzWjc5d1U9EiRjNTM1NzE4OS01M2Y2LTQ0MjAtYjI5OS1iMWZlNzQ5NzVjMzIYACAAKAAwoenn+dEzOImXobuxMkCJl6G7sTJKHGZ1eS9UQTJKSi9tMXBjZmwyWmU5dVBkTFI1UT1aJyIl/////wAAAAXceWZYdHZVV2NoMEZrWmN4djFLRGZXZkhrVEF3PWUbD9gswj4CYAUStQEIKxKwAQoccW8ramRQeFJPYmQ5ZWFMN0toenY0R1FxUTVVPRIkOWNhMTg5NzgtZDY2My00NzdmLWJhYjgtM2VmYmFkZmViYTZmGAAgACgAMK+Ui5qxMjimlouasTJAppaLmrEyShxVa3JIZktGQ3NacUZaWDZXS3M5Uk1pNHNVZ3c9WiciJf////8AAAAFuTdka0szaXp4Y1EzTjNWRFFoUzFoN2JsT1l5ST1l/ZyMSsI+AmAFErUBCDQSsAEKHE9uSUtaZVQ1b1NSa3hEeFJxaEIzbVVrbHlhcz0SJDEzOWQ5Y2M5LWRhMGUtNGE1Mi1hZmNlLWNmMDFhYTA3N2JkMRgAIAAoADCsuIKe6TM455Oz6LQyQOeTs+i0Mkocb0VXZTVFb2xreXBjRE5VSjdUZEV1MGpnYU9RPVonIiX/////AAAABtQ0T21wOTl3NkdwcnN0Y1dKZWd5M3AzbXJKK2M9ZVBCw9LCPgJgBRKvAQgZEqoBChxaUWh1M0hEa0xUVW4xWmdTdmdVeW1qR1FvNlk9EiQ1MDM1MDc1MS04MGYzLTQ5OTgtYTZkYy0wZGNlZTE4MjIwMjIYACAAKAAw6v/amZwyOLOD25mcMkCzg9uZnDJKHGw1RHE4bkpTVUhKTnBlVG5zaTJaRDhnM2lqbz1aISIf///+OUpvTlBsc0NYUzIvbGgxM2U2NW9iZTY1a3M4PWXurrLLwj4CYAUStAEIKhKvAQoccmV5L2xodjhickNtRkU5MUttYUJQb0ZkYVE0PRIkNmY4ZTI5YTQtNDFhMS00MWE2LWFiMTMtZjIwZDUyOThkNWJhGAAgACgAMJf8peuvMjiD/qXrrzJAg/6l668yShxwU3Y5OUFvaWh0YjI1ekY2cWFodGpVMzc4TTg9WiYiJP////8AAAAFc2NSQTBnZllzeE9xazZYanROMkV6MDRMZXRZPWUHaFObwj4CYAUStQEIKBKwAQocRnVtaW1kYWdiMnVxMFV1N0JPUXdXSW5xZVJVPRIkMGYzMzIxZjAtMTUzMS00YzIzLWEyNDgtZDJmZjg2MmY5NzhmGAAgACgAMP2ykt2uMji6s5LdrjJAurOS3a4yShxrZFFhS3lYMGRsT1lPb1JFY1VxZmNPTUtUZVE9WiciJf////8AAAAE/TFxZi9wQ09EWWhzb1A2c2RLUDJhYWR2VEpIVT1lAAAAAMI+AmAFEq8BCEISqgEKHDdHYityOTJKUVdLdmk3eXlxcHB5RzR1bTAxQT0SJDcyNmRkY2EzLWJhMmItNGM5Zi1iZjVkLWRlZmU2NzY4OWVlNxgAIAAoADDt5Yem0DM4wOaHptAzQMDmh6bQM0ocUzNsWElrWmlnemdDV243VmQxZ0tyT25zR3B3PVohIh8AAABSZm0yMmd5aWVIVDcxV2ZDQTFTVWJtZnVaSlk9ZQAAAADCPgJgABK1AQg1ErABChxzK2IraWlodFpDYkJ4SkE5Q3hGTjVPMnN2NkE9EiQ0MGM2YTU5NC0yMWNjLTQxYzItODVhNi04MzAxZWQzNjE3YjMYACAAKAAw4Iytm7kyONCPrZu5MkDQj62buTJKHFhYeGFqZEd1ckNRMHlpT0JwTURveWZsdkR1ST1aJyIl/////wAAAAbqTGJ5NmlhdHBqTHVucmdMQi81bWxFSFRjTVRNPWX5d3HZwj4CYAUSsAEIHxKrAQocWGpJZDhwaGxhcFcxT1VDYktkZkJzd3FRQm1NPRIkMTJlNTU1YjItYjFiOS00Y2JkLWJhYzMtZDQxYTM1NGM4YjM4GAAgACgAMKWFz+aiMjjChc/mojJAwoXP5qIyShw5bEZhcys1NmV6N3B6cExVL25ISy9Bc3NzNHM9WiIiIP////t5aWhleG5ON2s1MWJwdXo1QWRPV3dvbFNjVjQ9ZcekRtXCPgJgBRKwAQgeEqsBChxVeElyblJUT05nSzllOFN4Q2JvK3NKeDdITDQ9EiQyNWE0NzU4My02NzcwLTQ2OGItYWI3NS0zNWJhYmQ2N2E4ZTgYACAAKAAwpenn+dEzOKGJisiiMkChiYrIojJKHCt2dDF2SkVURnRRRXhKUWRhZ0RTTHJPam8xMD1aIiIg////91R5YWMyYlpUd2dZSWY2cnNyU2UyYkJOakZHST1l1gsposI+AmAFEq0BCEkSqAEKHDhJeC9JSWdSMk4zaTFNMW1HVWsreWVqTXpDQT0SJGY1N2VhM2NmLTgwYmMtNDZlMC1iNWEzLWUyYmU4Y2Q5NGJkMRgAIAAoADDsz+DS3TM43qLg0t0zQN6i4NLdM0ocNmtIcEw0ZXZzLytKNHp1Y2w3SzFQYmZOTkxrPVofIh37UVd0OGluanNkUHgxT1BvS29CS0hMbmZucW84PWXExhOowj4CYAUSrAEIbRKnAQocb0dMai92eHNNdmlKeTZ4YUcrdVM3Y01ibEp3PRIkMzk4MTEzOWEtYmI1YS00YTNjLThmNzAtM2E2MmU5OTMyY2RkGAAgACgAMOn0h6bQMzjOgoim0DNAzoKIptAzShwxSlBjZWJhcC9kczdIVWcyR3VZRFY4cU8yRG89Wh4iHDRqM0ZKNkJsM1pnaW41QnNyTnNKMWxvem1uVT1lAAAAAMI+AmAAErUBCD4SsAEKHFM0ZnlGaE54MnpUY1VoeCtNUGZnZlNaZzFlZz0SJGQ4NTRhZDMxLTU4OWEtNGI1ZS1iZWQzLTk4MjdiY2Y1MDY0NxgAIAAoADDx4qSpmzM4y+WkqZszQMvlpKmbM0ocVkY3bFFUMnJ6MjVqc0hSN2pOTENDSkNhQVBzPVonIiX/////AAAAB/Z3L1UxYVNQV1pWY0hKcXlIME5zZm55Mi8wS2M9ZU2ZCvDCPgJgBRKvAQgaEqoBChxHMVFkTUtZaDgyd2Q3Z2E4bURPcGlpdGp3dzg9EiQwMmM3ZjlhYi1kNmY4LTQ2YTQtYTI3MS1hMTBjMzAyM2NmOWMYACAAKAAwnreJmpwyOIa7iZqcMkCGu4manDJKHHo2ZnFUQmhHbXlsSk9WZnNZb1VlazBvajVIbz1aISIf////cDFvUFFNd2VOUDdnbTN0S01ETy9hWFdWYnlZPWVhM4yywj4CYAUSrQEIRxKoAQocbE1Mc0xGb1pTK0VoTGNNaHVuME8xczlGQ204PRIkNjc5ODg1MGEtNzQ0Zi00MmUyLTg2ODYtMzQ5OTE3YjJlY2EyGAAgACgAMPLlh6bQMzia6Iem0DNAmuiHptAzShxIY1VmSHM1dk1qTFV3dVd6YXVEU3ZmWEhjcUU9Wh8iHe1XdUQ1R2VpdlBwRnZpMzRCbkFDckdpOXVsUWM9ZWwZIQLCPgJgBRKwAQgbEqsBChxzNXV1M1BZamxZdmtScWxoMzhBNHVlVDFuMmc9EiQzZTZjNjU0NC00NzVkLTQ5MGItYjYzOS1iNzExMTY3NTM0MWUYACAAKAAwo+nn+dEzON7T/4+hMkDe0/+PoTJKHFZYbGpzdU43OEV3QTVLU0krQWlmYitwM0xEVT1aIiIg////uGUva2ZtNVFGREF5NnliSzFEYy9oei9rb2hrbz1l0H3h2sI+AmAFEq8BCBcSqgEKHHVqY29yU1kvenBFelV0ajhXTmgvOENxR2xMaz0SJDQxM2MwN2Y5LThhMDEtNDc3Mi05MGMxLWYzOWU4ZTYwOTFlZBgAIAAoADCo6ef50TM45OaWk5oyQOTmlpOaMkocem5Gd2xsektLTkpMNEZ6RFBpYTRGdmVUS1VnPVohIh////RuZU5FbEdDZU51SWVzcG03U1AvMWV1R0R0Slk9ZfiSA9XCPgJgBRK1AQg3ErABChxlNURlejZyVm9rQUwvRGtGYmh5anVlZ1R2UUE9EiQyZDhhMjhlNS03OWJmLTQzOTYtOTg2OC04NGIyMDkyMTA1OTAYACAAKAAwno/457kyONWR+Oe5MkDVkfjnuTJKHGlBY1R6RVdEOVNqbVRNWmN6ZzJXNkV3UlBZND1aJyIl/////wAAAAb6KzlHZ1UxZ3c3aFVSOGhNTjE5TGdURUZramswPWWakIAbwj4CYAUSjgEIAxKJAQocbmpnRHU4OGVDcnZYcDg2cEQ3ZkhHY3FGcDg4PRIkMzBkYmRmNWQtOTI0Yy01ZWJjLWJkOTItNzZmN2Y3MDFkNWQwGAAgACgAMKOzwO7hMTitu8Du4TFArbvA7uExShx5ek5CMDFjbjU0QTdjUlUwdVQrL1BnbVR0VW89WgBlAAAAAMI+AmAAEq8BCBYSqgEKHEU2eEZNYU9kdVhPckgyUmVVMDZoL0V5dEQ5MD0SJDViMmI0MzRhLWY1ZWMtNGMyMi05ZjA1LTJhNDdhMjBjNjAxMxgAIAAoADD6wImdlDI48sOJnZQyQPLDiZ2UMkocckpyNC9jdnljM2hxZ0J0ejQycEIrNFNqL2V3PVohIh///+lvQkp4TEtOQ3BzcGF4eDJMaXgzbUlHUDI3alE9ZQDqE0zCPgJgBRK1AQgtErABChxTRmJuOVpaQWZ4a050YzlRd3BTRzRydmRreGs9EiRjZWY3ZDQyZC0zMTFkLTQwNGMtOWJiYS1kZTRkOTVkZDBjN2UYACAAKAAwpam31LEyOOvUtNSxMkDr1LTUsTJKHCtTTlVIdXZCRUVGK2lCbDhtWmZzbUJKWUh0ND1aJyIl/////wAAAAXuMU1hMjA3ZGUrTEQ5QVRFbFY5cDVia1BHQ0MwPWXYoIZqwj4CYAUStQEIKRKwAQocekJlSGV4QVNrb2VwUDF2UkxzMUo2bW1CL1pvPRIkOTVmNTk0MmMtZGM0ZS00NGZkLTljMDQtZDU1OGRjZjgwMWZhGAAgACgAMLiu0N+uMjitsdDfrjJArbHQ364yShxCOTJKc2hKRGYxWUp0MC9xWXU5SUNUVitMR2s9WiciJf////8AAAAE/lpyY2t1QUdnRWRQRFlRdUlrbjZIRmxCZmdpRT1ln72ah8I+AmAFErQBCCMSrwEKHHB4MkZWRkZRSE9sbkRLQlFVYnQrTTBsRU1Taz0SJGQzYTdkMzc2LWI4ZjctNDQ4MS05YmJkLWM5NmVkZDhiMjhlMBgAIAAoADCjn82TpzI42p/Nk6cyQNqfzZOnMkocZ0g5dHpBL29HMXdPL01UTnFKZVVnejErWjZvPVomIiT/////AAAABFNuR0Rzdi9BRklYZGl2cVpWaTlsenRSSUpybz1lYjwRtcI+AmAFEq0BCAgSqAEKHGtCdnhGcnpBQmZieHlCWEtFa01nOVV3b0tUOD0SJDFlZDAzODE2LTQzZTMtNDM1NC1iNDNlLTJmNmRkMDY1ZDZkZBgAIAAoADC/zOm7kjM48oXu6uUxQPKF7urlMUocQ2pUWjIwWW8zUmhJaFpIa1NDWG53OXpNT1FJPVofIh3tVGM2MkRRMFNUZ3kwS2VQcEVaMXowM1BleGhvPWUAAAAAwj4CYAUSrwEIFBKqAQoccmFaVzlqR0k1MzNSY0l0YU5yTFM4QjFjUXdFPRIkNDViODY1ZjgtNzdmMi00MThhLTk0YWItOTYxMTI0Njk1YmNhGAAgACgAMPuB7c2NMjjEoOzNjTJAxKDszY0yShxjdGJUalZJM1g5eXYvV2l2bVJrVFA3OGhEY3c9WiEiH///pkY0ek9PM2tXOHNxS1JHRHhISGNBOFJOeHZKaz1lYKupUMI+AmAFEq8BCBUSqgEKHFJFZmFPbnJUYlVRVzRrU1prRzViZGRuZ1RMST0SJGRkZjZmMGYzLTRmN2UtNGYyMy1hNmI5LTgwNmFjNTAyZTU3MxgAIAAoADD5iejJkzI474royZMyQO+K6MmTMkocS0hoSVBIK3JzNmNXYXVCSEh4eDcwZkVaWWFJPVohIh///9NFVEVrUVZwSGFycmJrcGhtbE43YVBSRkhrZjQ9ZfTDMkbCPgJgBRKtAQhmEqgBChwyYWIram9VMGFvcGUrSnFNVC82WkMxNXNvVm89EiQwNjAxMThiMy1jNWI5LTQ2OWYtOWViNy01MWY5MjEwMTRhODkYACAAKAAw/+WHptAzOLnrh6bQM0C564em0DNKHC9OcWpnVHZCVVJDWFJGeTdyRnE1T3VlYzlLUT1aHyIduTYzVWJpcks0Mlh0aVhncm42WjBOVHpoN2U2QT1lkb+W08I+AmAFErABCBwSqwEKHDZuVFRwNVR3VUNKcVdrbjl2Qkc4MjV5TXpCRT0SJGYwMjI4MzBjLTQxNmMtNDdjYy1hYzM3LTlmZTg1NmVlYjRmZRgAIAAoADDrh+OfojI44onjn6IyQOKJ45+iMkocdDRjenE4U3ZubEwxSWp1K1J4Q3BqNnYvK1VBPVoiIiD////cZERGUkxsYjRubkVMYXo1SnBmam04SDhDMWVJPWV8LVSAwj4CYAUSrQEIYBKoAQocMW0wcWlCc21EODVGRW1sVURDQS9tcTY2K2drPRIkYTcwZGUzNzAtZjQwMS00MmY2LWI5MWQtNGMxOTRjNjNjYzhjGAAgACgAMInmh6bQMzik7oem0DNApO6HptAzShwwOFIvNElmUTg5ekNUdTBOUWl0R2ZMMmpwSDQ9Wh8iHQBoYzhOSC90Q3lDRFRHWFlLU2dlSHRNY0oxSGc9ZQAAAADCPgJgABKvAQgYEqoBChw0enBETlVLL1RWNUNrejNyYTdDOFdyR3dYMmM9EiRhNGY2OGUzOC00MDIyLTQ1Y2QtODdkYy0yZDI0YTBhNWQ2NWUYACAAKAAw66rnoJoyONCt56CaMkDQreegmjJKHGo4ZU1xQlUxa0xYa2Q1ek5vZmR1UFBFN2JXcz1aISIf///6emxnQlJydThBWXBoMUNCYTNVclBYaVo4ZkxrPWVgq6lQwj4CYAUSrQEIXhKoAQocd2Q4RXBKaGQraGY0Z0FLeFBXcFpzeFE5Y2RzPRIkNzc4ZTQyMjQtY2UxMi00MTAxLTg4OWYtMWU3YmE2ODRhM2E0GAAgACgAMPvlh6bQMzi46oem0DNAuOqHptAzShxNczZYeE5keVFPNkV1SzFEdkNubkNRLzlIMjA9Wh8iHe1pRGVQUzE1ZmcrOHRIeGY4SEc0U1F1RERrd1U9ZVq7OW/CPgJgBRKtAQhdEqgBChxOT0lKem9kV3V0cmZwMUlhZWJxekdKWGVmVlE9EiRmNWE4NzRiMi01NWE5LTQxNGMtODU3NS1jZmY3ZWYwZjAxMDEYACAAKAAw+uWHptAzOJrqh6bQM0Ca6oem0DNKHHdRQkExZzdtVDNZSWoyenZSRTRuT3UwWjNFOD1aHyId23E4c3h6WUl6R3lVbVc5VDJVMy9qMlZtYnNQYz1lAAAAAMI+AmAFEq0BCAcSqAEKHFRRemZpRjlUVklmM1BjZUM3czhuRURUVWFJQT0SJGIwY2JjYzBjLTQ5MmYtNGYzZS1iMjFiLTk5N2JjNjMyNjg4MBgAIAAoADC67qebxzI4+cX/yOMxQPnF/8jjMUocUytFVFlrdURQeUJiMHRDY0V1bTNUS0hsOWRZPVofIh3aZnF0SDV2VGE4aW5IOWZkRk53OEpwdm8yQnhrPWUAAAAAwj4CYAUSrgEIDhKpAQocL0k4MkNRN29kZDJVSldjL09GOGYzNVl5d3lFPRIkZjM5NTJjYWItMWJlZC00NDcxLTk1YTItYjE3NGM0ZTYyYjFmGAAgACgAMICus7D6Mjig7PjV9DFAoOz41fQxShxEMU5uREpVK2JmUWVWYzVialFsSzRoSU1ONVE9WiAiHv/uRGI3c3N0bHRUVEROTFJSbGdSb01LUWVGQ0JnPWUAAAAAwj4CYAUStAEIOhKvAQocU2ZuaUwyZ1VXZkRmRWVCc3Y0b0s2aC9SN2xrPRIkODdmMzIxNjItZjc0Ny00OTY3LTg0OTItZTFiNWI3NzI1NzJhGAAgACgAMPfq4P3IMjjA7OD9yDJAwOzg/cgyShxDNXVZNXRzcjhNTTVtbjFzRjZLTXVRS1NxSUU9WiYiJP////8AAAAHb2FtQkdjamQ5L3VvUWhjbmtML0RVU1R2SXlBPWWMsBQcwj4CYAUSrQEICRKoAQocUlFvQjZLMGZsSXIxVzFCNkljUjY5ZzRheHNFPRIkNjY0MGMwZTUtMmQ3Yy00Njc0LTk5NWEtNzYwZGNhMjEwNDk0GAAgACgAMMHup5vHMjikteOR7zFApLXjke8xShxPZ1hqcmc3aGhNK1dacXNBWDdhbHNoU3QzWHc9Wh8iHf12ZXJDUENyN05mSE5GOTJVOHltS0VPekhUa0E9ZQAAAADCPgJgBRKsAQhpEqcBChxoQWtvZlFvMTBIeDNHaE5nakZtV1d1THo1cEk9EiQxOGZhMjJjMy1hYTNkLTQxOTgtOWFkMS0zOTgxOGRlYzA4MzcYACAAKAAw9eWHptAzOIDph6bQM0CA6Yem0DNKHDFoTFVNek5zZzYxS3BkMVdkWkxHWlRnOFl5cz1aHiIcZzNjUmpHdU9CNTRHbW9kYm8vb0pqNzE5NUU4PWUJc94Wwj4CYAUSrgEIWBKpAQocRVFjVHUyckp6TXJrVGFidTZ2c3RGSGpXQVJNPRIkMDFhZGNjMzItMzFlZi00NzA3LWExMzItMjI2MTQ1Nzg5OTMzGAAgACgAMITmh6bQMzj67Iem0DNA+uyHptAzShxmWjJoUFJvVmsxd0Y4Q3VUaFZveXl5dzdvYlE9WiAiHgAGQzZINGRVS2JSeFVXWjlKS3pGL0p6RExSSXJZPWUAAAAAwj4CYAASrQEIahKoAQocL0dwYzcxbmNUZGxpTlBXdzFhL2RtMUVmM3d3PRIkMjA1N2RlY2YtN2Q5Mi00OGRiLTllNWQtOGQ2Mjg4YWQ0ZDFkGAAgACgAMPblh6bQMzio6Yem0DNAqOmHptAzShxKNWtJcEtCUVFDR0FLcWdyWGpUbXphWTV4TWM9Wh8iHbNFbmZOTWVpdXg2bGM1N09YMDVZSWNWZkxuMmc9ZcXrFMTCPgJgBRKwAQgdEqsBChxDb2NRRDhmcmQ5VSt1d1NiVVpTenNINkZBK0k9EiRjZmE0NDgxYS05MzdlLTRiYzUtYWU4NC03ZjRiNzljOWEyMDgYACAAKAAw1OmJyKIyOOfriciiMkDn64nIojJKHHFFSHNsQTliamZ5WXRVak9EQ2RIaTNxQkRTOD1aIiIg////7jZOVjBGUzhDVWZjekxra1BnaXN5MHZmUHlsTT1lx6RG1cI+AmAFEo4BCAUSiQEKHHdSQnJaTCs2UEE5YXZLZ2pOUDdKWERMY2Z2cz0SJGI2OWJhNDgwLWNjN2ItNTg2ZC1hMGM2LWU4ZWQ1MzJhZDk1ORgAIAAoADCv9NXIkTM4gfXVyJEzQIH11ciRM0ocbm14NjVzUUR2eEk4VGdFZXYrQStudHRvU240PVoAZQAAAADCPgJgABKOAQgCEokBChxZY1NUb252RVNQd3FDczRMMmNyVmh2NjhMOTg9EiQ3YzExZTA4Zi03YTBkLTVhYzEtYjVhOS02OThjZDIyODMzZGEYACAAKAAwnrPA7uExOPK6wO7hMUDyusDu4TFKHG9QVmtod0JSYlY2NUtDV1IyK0lPTkhXb091OD1aAGUAAAAAwj4CYAASrgEIDBKpAQocd2F4aERHOE93WFlJT1hHb1RtbFFxM1dUaThNPRIkMjhhN2NiOTctYzczOC00NDM4LTg3NDUtZmJkZTVkZTE2OWFmGAAgACgAML3up5vHMjiYofn98TFAmKH5/fExShwwU3dRUC9pb2NJUFNnYXhFdHJTSGFHVW9ZN2c9WiAiHv+5bHpLdVRNTWUzcWlMOVFFNGpjK0RKQ0t5SEU4PWUAAAAAwj4CYAUSrgEIEBKpAQocTm03N0JpTHc4Vy94K0JIVGt3QnNDUzBVc3djPRIkNjkyMmNhYTItYTI4ZC00MmVjLTgzNTItMzM3OTFmYTk0YTE3GAAgACgAMOna1+LwMjjIyfLlgTJAyMny5YEyShxQSk5wbFBLOEpKcFlFL2FHcERmRjJnSzBtb0U9WiAiHv/7ZHREeGhqWUZJc1JYVFg0cTNOTi9QRFNDenM0PWUAAAAAwj4CYAUSrgEIUxKpAQocWmMraFd3cUdvRHRZU3liVndtNmczOHZBcElJPRIkNTJjNWI0OWItNWUyNy00NzY4LTg1YWItOWI4NzliYmZjN2FiGAAgACgAMIHmh6bQMzin7Iem0DNAp+yHptAzShw2WEpkZEVIOTYwNmJhZUNuaTVqditaZnpESjg9WiAiHgABck5LeVlFTi9kQ25SNms1N3o0RUVnTFowODhJPWUAAAAAwj4CYAAStAEIMhKvAQocMjlKMjFLMkpOQ3JWTjZ3Y1RxSVRqR0w2UmJNPRIkN2FkMjA4NDctZTczNS00OGIxLThkYmItNjQ5NjZmNGUxZjhlGAAgACgAMJ7Sy4OyMjjJ1MuDsjJAydTLg7IyShxMQVVOam1VK0hxVWFjWjVFMTZvVVJ0MjJiZTQ9WiYiJP////8AAAAGUkJ1K2ZxQ25OMjVHT0k3RzhMdGdnNUFOckdnPWVARO8wwj4CYAUStQEIJhKwAQocZXovVHIvb2RveERWZTNTWFFNZ1dGTU5jUXdrPRIkNzViNGZlZWMtNWI3Ny00M2ZjLTgyNmMtOTQ2N2IxNjE0ZWEyGAAgACgAMKy5zKCrMjjNusygqzJAzbrMoKsyShxTZDA3VHo0Y2UvOU41QUE2dnExM3JiZE9Dd0U9WiciJf////8AAAAE9UtVdFVGeFZNbi93aTZQR1lON00rTlcraERJST1lfC1UgMI+AmAFEq0BCFwSqAEKHDloWnpVc1hlQUtPbURZR3Rod296UjQ5ajJabz0SJDRjNGQ2ZDBjLWM4YzUtNDc5OS05YzAxLTE0NjA4MjExOThiMhgAIAAoADD55Yem0DM4++mHptAzQPvph6bQM0ocK1JxZWFBRkFyME45ZnkzdEpLK1lwMHdWSEFFPVofIh23N052ZmJERlB6ZVVIbFB0YWM3YnNVR3l1UUdjPWVPerHowj4CYAUStQEIJxKwAQocb1pYQkswRmR4WXNHMVdmSjR1VTZUTlh1QXhvPRIkYzExMzZmYzgtNzVlZS00ZWI2LTg0ZTAtYWI4Y2FhYTE3MGIzGAAgACgAML7nyLCtMjju6MiwrTJA7ujIsK0yShxFdW5UaXYrS2w0ZVEyVjNaWUtUZVJTaXNoeGM9WiciJf////8AAAAE+mpHS0pBR3MyMWIvbHNrOGFRdnVWcUJvV0hocz1lyE6n+sI+AmAFErUBCDMSsAEKHDI2RUdKUlJHV2FhRDJ2WGhidkNKZVhnR0szST0SJDljZjczOWVmLTU4ZDUtNDlkNS05YTYyLTY5YjE1M2UyYmQ1YRgAIAAoADDOrZ3ZszI4/q6d2bMyQP6undmzMkocV253Zmg2V3FVZW5aVUU0KzNWNnNNcGlyOVBjPVonIiX/////AAAABqlIdlpjTTVkWW9UeDRuMDk2RnJhZndDdlpnK2M9ZSscAgzCPgJgBRKuAQgTEqkBChxQeWJhU3QzcHpZU0FmajVlZ3JnWnFUZmlrejg9EiRhYWQ5N2M2Yi1kYWYyLTRlNDQtYjI5Ni1kOWJlYmE2MTZmYmUYACAAKAAwpLPO5YMyOLa2zuWDMkC2ts7lgzJKHGNHZm84clYvREdUazcySStmcHNwdzNzdXZZcz1aICIe//9NZHlORkNKZkRJRFE0THhTc01NbEVrTFU4S289ZRK1JZvCPgJgBRKOAQgBEokBChx5eEovNmZ2a2VjcjdrcDVFUXpCNHRXTHBkYkU9EiQ4NTY1N2I4Yy03YTFlLTU2NjUtYjE2YS0yYjI2ZTYzOTg3MzcYACAAKAAwnbPA7uExONi6wO7hMUDYusDu4TFKHGFSQ1dMZ2hGOWI1SW5xS0lEdnVKL2p2UWtGYz1aAGUAAAAAwj4CYAASrgEIDRKpAQoca0lxMGdqQmhGSkJ4OEpzZFlnNkF6RDNCb3lFPRIkNGM2ZDAwOWMtMzhlNy00MGVjLWJlYmEtZTBiYzFiNTk5YmE2GAAgACgAMLzup5vHMjiJ742J8jFAie+NifIxShxaK0ZhQWUrNGwzaTFvSVl4NXR2OVNwNmZWNm89WiAiHv/ca2JkcEh0TUxMV05oN29WcHBid1NESFFKaWhnPWUAAAAAwj4CYAUSsAEIIRKrAQocNTVla2hZVEZkb3pEdkNFbW8xd3lLZkRZT1dFPRIkYWJhYWYzOGItNWE5OS00YmQ4LTg4Y2EtZTcwOTcwMTYyMjg4GAAgACgAMKTp5/nRMzjwrbvApDJA8K27wKQyShw5b1pPUGpTZzBidVdmb2N4UkYyMGdZeElRMEE9WiIiIP////5DYXlXT09JUk56YUZBRmpkcWJ1V2dxVmticEE9ZaUXpGbCPgJgBRKtAQhFEqgBChxIZ0tENEVXMnFEcUN1Q3JRNk5EK0F5QlRwdEE9EiRkMzNiZDA5Ny00MTMyLTQ1YjMtYTZmOC0yNjczNmQ5NTFlNzgYACAAKAAw8OWHptAzONLnh6bQM0DS54em0DNKHGpMbFF2MXZSazVnUzYvM0cvVGtLV2VuQ3dyRT1aHyIdtUxGV2EwS252V2N6VjJYZWI3ZUxOWFFad0grOD1lOxJx0MI+AmAFMAA4AA==",
+   "version": 1
+}
