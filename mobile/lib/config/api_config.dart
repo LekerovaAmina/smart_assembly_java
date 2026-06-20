@@ -1,5 +1,5 @@
 class ApiConfig {
-  static const String baseUrl = 'http://localhost:8080';
+  static const String baseUrl = 'http://109.235.117.121:8080';
 
   static const String loginEndpoint = '/api/auth/send-otp';
   static const String verifyOtpEndpoint = '/api/auth/verify-otp';
