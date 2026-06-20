@@ -75,23 +75,12 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .phone(user.getPhone())
-                .email(user.getEmail())
-                .iin(user.getIin())
                 .role(user.getRole())
                 .status(user.getStatus())
-                .photoUrl(user.getPhotoUrl())
-                .isActive(user.getIsActive())
-                .registrationDate(user.getRegistrationDate())
-                .lastActivity(user.getLastActivity())
-                .birthDate(user.getBirthDate())
-                .totalVolunteerHours(user.getTotalVolunteerHours())
-                .monthlyVolunteerHours(user.getMonthlyVolunteerHours())
-                .freeDays(user.getFreeDays())
-                .activeStrikes(user.getActiveStrikes())
-                .totalStrikes(user.getTotalStrikes())
-                .telegramUsername(user.getTelegramUsername())
-                .telegramId(user.getTelegramId())
-                .instagram(user.getInstagram())
+                .totalHours(user.getTotalVolunteerHours())
+                .strikeCount(user.getActiveStrikes())
+                .departmentId(user.getAssembly() != null ? user.getAssembly().getId() : null)
+                .createdAt(user.getRegistrationDate())
                 .build();
     }
 
@@ -126,7 +115,7 @@ public class UserService {
             throw new RuntimeException("Access denied");
         }
 
-        user.setStatus(request.getStatus());
+        user.setStatus(UserStatus.valueOf(request.getStatus().name())); 
         userRepository.save(user);
         return toDto(user);
     }
@@ -140,7 +129,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setRole(request.getRole());
+        user.setRole(UserRole.valueOf(request.getRole().name()));
         userRepository.save(user);
         return toDto(user);
     }
