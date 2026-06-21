@@ -15,6 +15,7 @@ import StrikesPage from './pages/StrikesPage';
 import AppealsPage from './pages/AppealsPage';
 import StatisticsPage from './pages/StatisticsPage';
 import SettingsPage from './pages/SettingsPage';
+import QrCheckinPage from './pages/QrCheckinPage';
 
 // Заглушка для страниц, которых ещё нет
 function PlaceholderPage({ title }) {
@@ -38,8 +39,9 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Публичная страница */}
-          <Route path="/events" element={<EventsPage />} />
+          {/* Публичные страницы */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/checkin/:id" element={<QrCheckinPage />} />
 
           {/* Защищённые страницы — AppLayout сам проверяет токен */}
           <Route element={<AppLayout />}>
