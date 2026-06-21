@@ -303,6 +303,19 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> selfCheckin(int eventId) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/self-checkin'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 201) {
+      throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка: ${res.statusCode}');
+    }
+    return _tryDecode(res.body);
+  }
+
   // ── Legacy respond/cancel (kept for compatibility) ────────────────────────
 
   Future<Attendance> respondToEvent(int eventId) async {

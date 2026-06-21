@@ -70,6 +70,14 @@ public class EventResponseController {
         return ResponseEntity.ok(volunteerHoursService.checkIn(id, phoneFrom(auth), userId, checkInTime));
     }
 
+    @PostMapping("/{id}/self-checkin")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> selfCheckIn(
+            @PathVariable Long id,
+            Authentication auth) {
+        return ResponseEntity.ok(volunteerHoursService.checkIn(id, phoneFrom(auth), null, null));
+    }
+
     @PatchMapping("/{id}/attendees/{userId}/hours")
     @PreAuthorize("hasAnyRole('HR', 'SUPER_ADMIN')")
     public ResponseEntity<Map<String, Object>> updateAttendeeHours(
