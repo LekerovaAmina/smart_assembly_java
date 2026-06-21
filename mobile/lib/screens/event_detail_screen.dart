@@ -1123,15 +1123,15 @@ class _AttendeeRowState extends State<_AttendeeRow> {
                 const Icon(Icons.check_circle_outline,
                     size: 14, color: Color(0xFF2E7D32)),
                 const SizedBox(width: 6),
-                Text(
-                  'Отмечен в ${() {
-                    final t = a.checkInTime!;
-                    if (t.length >= 16) return t.substring(11, 16);
-                    return t;
-                  }()}',
-                  style: const TextStyle(
-                      fontSize: 12, color: Color(0xFF2E7D32)),
-                ),
+                Builder(builder: (_) {
+                  final t = a.checkInTime!;
+                  final display = t.length >= 16 ? t.substring(11, 16) : t;
+                  return Text(
+                    'Отмечен в $display',
+                    style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF2E7D32)),
+                  );
+                }),
               ]),
             ),
           ],
