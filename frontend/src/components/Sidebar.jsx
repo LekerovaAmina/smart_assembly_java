@@ -122,11 +122,11 @@ const XIcon = () => (
   </svg>
 );
 
-export default function Sidebar({ onClose }) {
+export default function Sidebar({ isOpen, onClose }) {
   const { isHr } = useAuth();
 
   return (
-    <aside className="fixed top-0 left-0 h-screen w-[240px] bg-sidebar border-r border-border flex flex-col z-30">
+    <aside className={`fixed top-0 left-0 h-screen w-[240px] bg-sidebar border-r border-border flex flex-col z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-border">
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0">

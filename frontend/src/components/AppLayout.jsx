@@ -14,21 +14,18 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
-      {/* Desktop sidebar */}
-      <div className="hidden md:block">
-        <Sidebar />
-      </div>
-
-      {/* Mobile sidebar overlay */}
+      {/* Backdrop for mobile */}
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
-      <div className={`fixed top-0 left-0 h-screen z-50 md:hidden transition-transform duration-300 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <Sidebar onClose={() => setMobileMenuOpen(false)} />
-      </div>
+
+      <Sidebar
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
 
       <Header
         onMenuToggle={() => setMobileMenuOpen(prev => !prev)}
