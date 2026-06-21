@@ -113,7 +113,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           ? _primaryColor
                           : Colors.black87)),
               selected: widget.currentIndex == item.index,
-              selectedTileColor: _primaryColor.withOpacity(0.08),
+              selectedTileColor: _primaryColor.withValues(alpha: 0.08),
               onTap: () {
                 Navigator.pop(context);
                 widget.onNavTap(item.index);
