@@ -48,7 +48,7 @@ public class VolunteerHoursService {
     private final VolunteerHourTransactionRepository transactionRepository;
 
     @Transactional
-    public Map<String, Object> checkIn(Long eventId, String actorPhone, Long targetUserId) {
+    public Map<String, Object> checkIn(Long eventId, String actorPhone, Long targetUserId, LocalDateTime checkInTime) {
         User actor = getUserOrThrow(actorPhone);
         Long volunteerId = resolveCheckinUserId(actor, targetUserId);
 
@@ -60,16 +60,16 @@ public class VolunteerHoursService {
             throw new RuntimeException("Уже отмечен");
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        response.setCheckInTime(now);
+        LocalDateTime recordedTime = (checkInTime != null) ? checkInTime : LocalDateTime.now();
+        response.setCheckInTime(recordedTime);
         responseRepository.save(response);
 
-        log.info("Check-in: event={}, user={}, by={}", eventId, volunteerId, actorPhone);
+        log.info("Check-in: event={}, user={}, by={}, time={}", eventId, volunteerId, actorPhone, recordedTime);
         return Map.of(
                 "message", "Отметка о прибытии сохранена",
                 "eventId", eventId,
                 "userId", volunteerId,
-                "checkInTime", now.toString()
+                "checkInTime", recordedTime.toString()
         );
     }
 

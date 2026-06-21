@@ -284,12 +284,18 @@ class ApiService {
     }
   }
 
-  Future<void> checkinUser(int eventId, int userId) async {
+  Future<void> checkinUser(int eventId, int userId, {DateTime? checkInTime}) async {
     await _ensureToken();
+    final body = <String, dynamic>{'userId': userId};
+    if (checkInTime != null) {
+      final pad = (int n) => n.toString().padLeft(2, '0');
+      body['checkInTime'] =
+          '${checkInTime.year.toString().padLeft(4, '0')}-${pad(checkInTime.month)}-${pad(checkInTime.day)}T${pad(checkInTime.hour)}:${pad(checkInTime.minute)}:00';
+    }
     final res = await http.post(
       Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/checkin'),
       headers: _authHeaders(),
-      body: jsonEncode({'userId': userId}),
+      body: jsonEncode(body),
     );
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     if (res.statusCode != 200 && res.statusCode != 201) {

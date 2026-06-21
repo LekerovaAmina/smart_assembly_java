@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,11 @@ public class EventResponseController {
             @RequestBody Map<String, Object> body,
             Authentication auth) {
         Long userId = Long.valueOf(body.get("userId").toString());
-        return ResponseEntity.ok(volunteerHoursService.checkIn(id, phoneFrom(auth), userId));
+        LocalDateTime checkInTime = null;
+        if (body.get("checkInTime") != null) {
+            checkInTime = LocalDateTime.parse(body.get("checkInTime").toString());
+        }
+        return ResponseEntity.ok(volunteerHoursService.checkIn(id, phoneFrom(auth), userId, checkInTime));
     }
 
     @PatchMapping("/{id}/attendees/{userId}/hours")
