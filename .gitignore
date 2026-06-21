@@ -19,6 +19,12 @@ target/
 *.iml
 *.ipr
 
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

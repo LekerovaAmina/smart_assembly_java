@@ -39,7 +39,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* Публичная страница */}
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/events" element={<EventsPage />} />
 
           {/* Защищённые страницы — AppLayout сам проверяет токен */}
           <Route element={<AppLayout />}>

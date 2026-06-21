@@ -1,6 +1,6 @@
 class Event {
   final int id;
-  final String title;
+  final String eventName;
   final String description;
   final String location;
   final DateTime startDateTime;
@@ -8,12 +8,18 @@ class Event {
   final int maxVolunteers;
   final int currentVolunteers;
   final String status;
-  final int createdBy;
-  final DateTime createdAt;
+  final String? eventType;
+  final bool isRegistered;
+  final List<String> speakers;
+  final String? dressCode;
+  final String? objectives;
+  final String? tasks;
+  final String? coordinatorName;
+  final String? createdByName;
 
   Event({
     required this.id,
-    required this.title,
+    required this.eventName,
     required this.description,
     required this.location,
     required this.startDateTime,
@@ -21,63 +27,120 @@ class Event {
     required this.maxVolunteers,
     required this.currentVolunteers,
     required this.status,
-    required this.createdBy,
-    required this.createdAt,
+    this.eventType,
+    this.isRegistered = false,
+    this.speakers = const [],
+    this.dressCode,
+    this.objectives,
+    this.tasks,
+    this.coordinatorName,
+    this.createdByName,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    // Комбинируй eventDate + startTime в startDateTime
-    final eventDate = json['eventDate'] ?? '2026-01-01';
-    final startTime = json['startTime'] ?? '00:00:00';
-    final endTime = json['endTime'] ?? '01:00:00';
-    
+    final eventDate = json['eventDate'] as String? ?? '2026-01-01';
+    final startTime = json['startTime'] as String? ?? '00:00:00';
+    final endTime = json['endTime'] as String? ?? '01:00:00';
+
+    DateTime safeDate(String time) {
+      try {
+        final t = time.length >= 5 ? time.substring(0, 5) : time;
+        return DateTime.parse('$eventDate $t:00');
+      } catch (_) {
+        return DateTime.now();
+      }
+    }
+
+    List<String> speakers = [];
+    final raw = json['speakers'];
+    if (raw is List) {
+      speakers = raw
+          .map((s) => s.toString().trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    } else if (raw is String && raw.isNotEmpty) {
+      speakers = raw
+          .split(',')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+
     return Event(
       id: json['id'] as int,
-      title: json['eventName'] as String? ?? 'Без названия',
+      eventName: json['eventName'] as String? ?? 'Без названия',
       description: json['description'] as String? ?? '',
       location: json['location'] as String? ?? '',
-      startDateTime: DateTime.parse('$eventDate $startTime'),
-      endDateTime: DateTime.parse('$eventDate $endTime'),
+      startDateTime: safeDate(startTime),
+      endDateTime: safeDate(endTime),
       maxVolunteers: json['maxParticipants'] as int? ?? 0,
       currentVolunteers: json['currentParticipants'] as int? ?? 0,
-      status: (json['status'] as String?)?.toLowerCase() ?? 'draft',
-      createdBy: json['createdById'] as int? ?? 0,
-      createdAt: DateTime.now(), // Нет в ответе, используй now()
+      status: json['status'] as String? ?? 'DRAFT',
+      eventType: json['eventType'] as String?,
+      isRegistered: json['isRegistered'] as bool? ?? false,
+      speakers: speakers,
+      dressCode: json['dressCode'] as String?,
+      objectives: json['objectives'] as String?,
+      tasks: json['tasks'] as String?,
+      coordinatorName: json['coordinatorName'] as String?,
+      createdByName: json['createdByName'] as String?,
     );
   }
 
-  bool get isFull => currentVolunteers >= maxVolunteers;
-  bool get isPublished => status == 'open';
-  bool get isDraft => status == 'draft';
-  bool get isCompleted => status == 'completed';
+  bool get isFull => maxVolunteers > 0 && currentVolunteers >= maxVolunteers;
+  bool get isDraft => status == 'DRAFT';
+  bool get isCompleted => status == 'COMPLETED';
+  bool get isActive =>
+      status == 'OPEN' || status == 'IN_PROGRESS' || status == 'CLOSED';
 
   String get statusDisplay {
     switch (status) {
-      case 'open':
-        return 'Открыто';
-      case 'draft':
+      case 'OPEN':
+        return 'Открыта запись';
+      case 'DRAFT':
         return 'Черновик';
-      case 'completed':
+      case 'IN_PROGRESS':
+        return 'Идёт сейчас';
+      case 'COMPLETED':
         return 'Завершено';
-      case 'cancelled':
+      case 'CANCELLED':
         return 'Отменено';
+      case 'CLOSED':
+        return 'Запись закрыта';
       default:
         return status;
     }
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'eventName': title,
-      'description': description,
-      'location': location,
-      'startDateTime': startDateTime.toIso8601String(),
-      'endDateTime': endDateTime.toIso8601String(),
-      'maxParticipants': maxVolunteers,
-      'currentParticipants': currentVolunteers,
-      'status': status,
-      'createdById': createdBy,
-    };
+  String get eventTypeDisplay {
+    switch (eventType) {
+      case 'CONFERENCE':
+        return 'Конференция';
+      case 'ROUNDTABLE':
+        return 'Круглый стол';
+      case 'WORKSHOP':
+        return 'Воркшоп';
+      case 'CHARITY':
+        return 'Благотворительность';
+      case 'CULTURAL':
+        return 'Культурное';
+      case 'EDUCATIONAL':
+        return 'Образовательное';
+      default:
+        return eventType ?? '';
+    }
   }
+
+  Map<String, dynamic> toJson() => {
+        'eventName': eventName,
+        'description': description,
+        'location': location,
+        'maxParticipants': maxVolunteers,
+        'status': status,
+        'eventType': eventType,
+        'dressCode': dressCode,
+        'objectives': objectives,
+        'tasks': tasks,
+        'speakers': speakers,
+      };
 }

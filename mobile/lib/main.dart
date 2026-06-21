@@ -2,17 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'services/api_service.dart';
+import 'models/user.dart';
 import 'screens/login_screen.dart';
 import 'screens/events_list_screen.dart';
 import 'screens/profile_screen.dart';
 import 'widgets/app_drawer.dart';
 
+const kPrimary = Color(0xFFFF6B00);
+const kPrimaryHover = Color(0xFFE55F00);
+
+class UserState extends ChangeNotifier {
+  User? _user;
+  User? get user => _user;
+
+  bool get isHr =>
+      _user?.role == 'HR' ||
+      _user?.role == 'ADMIN' ||
+      _user?.role == 'SUPER_ADMIN';
+
+  void setUser(User? user) {
+    _user = user;
+    notifyListeners();
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ru', null);
   runApp(
-    Provider<ApiService>(
-      create: (_) => ApiService(),
+    MultiProvider(
+      providers: [
+        Provider<ApiService>(create: (_) => ApiService()),
+        ChangeNotifierProvider<UserState>(create: (_) => UserState()),
+      ],
       child: const SmartAssemblyApp(),
     ),
   );
@@ -27,7 +49,7 @@ class SmartAssemblyApp extends StatelessWidget {
       title: 'Ассамблея Жастары',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1B5E20)),
+        colorScheme: ColorScheme.fromSeed(seedColor: kPrimary),
         useMaterial3: true,
         fontFamily: 'Roboto',
         appBarTheme: const AppBarTheme(elevation: 0),
@@ -57,10 +79,27 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Future<void> _checkAuth() async {
     final api = context.read<ApiService>();
     final loggedIn = await api.isLoggedIn();
-    setState(() {
-      _isLoggedIn = loggedIn;
-      _checking = false;
-    });
+    if (loggedIn) {
+      try {
+        final user = await api.getMe();
+        if (mounted) context.read<UserState>().setUser(user);
+      } catch (_) {}
+    }
+    if (mounted) {
+      setState(() {
+        _isLoggedIn = loggedIn;
+        _checking = false;
+      });
+    }
+  }
+
+  Future<void> _handleLoginSuccess() async {
+    final api = context.read<ApiService>();
+    try {
+      final user = await api.getMe();
+      if (mounted) context.read<UserState>().setUser(user);
+    } catch (_) {}
+    if (mounted) setState(() => _isLoggedIn = true);
   }
 
   @override
@@ -71,7 +110,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: Color(0xFF1B5E20)),
+              CircularProgressIndicator(color: kPrimary),
               SizedBox(height: 16),
               Text('Загрузка...', style: TextStyle(color: Colors.grey)),
             ],
@@ -82,12 +121,15 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
     if (!_isLoggedIn) {
       return LoginScreen(
-        onLoginSuccess: () => setState(() => _isLoggedIn = true),
+        onLoginSuccess: () => _handleLoginSuccess(),
       );
     }
 
     return HomeScreen(
-      onLogout: () => setState(() => _isLoggedIn = false),
+      onLogout: () {
+        context.read<UserState>().setUser(null);
+        setState(() => _isLoggedIn = false);
+      },
     );
   }
 }
@@ -103,8 +145,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-
-  static const _primaryColor = Color(0xFF1B5E20);
 
   late final List<Widget> _screens;
 
@@ -132,16 +172,16 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
-        indicatorColor: _primaryColor.withOpacity(0.15),
+        indicatorColor: kPrimary.withOpacity(0.15),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.event_outlined),
-            selectedIcon: Icon(Icons.event, color: _primaryColor),
+            selectedIcon: Icon(Icons.event, color: kPrimary),
             label: 'Мероприятия',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person, color: _primaryColor),
+            selectedIcon: Icon(Icons.person, color: kPrimary),
             label: 'Профиль',
           ),
         ],

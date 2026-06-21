@@ -46,7 +46,7 @@ public class SmsService {
                     .queryParam("apiKey", apiKey)
                     .queryParam("recipient", normalizedPhone)
                     .queryParam("text", encodedMessage)
-                    .toUriString();
+                    .toUriString(); 
 
             log.debug("📤 Отправляем SMS на {} (нормализованный: {})", phone, normalizedPhone);
 

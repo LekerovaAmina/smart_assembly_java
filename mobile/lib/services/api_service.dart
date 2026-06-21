@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../config/api_config.dart';
 import '../models/user.dart';
 import '../models/event.dart';
+import '../models/attendee.dart';
 import '../models/attendance.dart';
 
 class ApiService {
@@ -37,215 +38,290 @@ class ApiService {
     return token != null && token.isNotEmpty;
   }
 
-  Map<String, String> _getHeaders() {
-    final headers = {'Content-Type': 'application/json'};
-    if (_token != null) {
-      headers['Authorization'] = 'Bearer $_token';
-    }
-    return headers;
-  }
-
-  Future<Map<String, dynamic>> sendOtp(String phone) async {
-    try {
-      final response = await http.post(
-        Uri.parse(ApiConfig.getFullUrl(ApiConfig.loginEndpoint)),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'phone': phone}),
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return jsonDecode(response.body);
-      } else {
-        final body = _tryDecodeBody(response.body);
-        throw Exception(body['message'] ?? 'Ошибка отправки OTP: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка подключения: $e');
-    }
-  }
-
-  Future<Map<String, dynamic>> verifyOtp(String phone, String otp) async {
-    try {
-      final response = await http.post(
-        Uri.parse(ApiConfig.getFullUrl(ApiConfig.verifyOtpEndpoint)),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'phone': phone, 'code': otp}),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        if (data['token'] != null) {
-          await saveToken(data['token'] as String);
-        }
-        return data;
-      } else {
-        final body = _tryDecodeBody(response.body);
-        throw Exception(body['message'] ?? 'Неверный код: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка верификации: $e');
-    }
-  }
-
-  Future<User> getMe() async {
-    await _ensureToken();
-    try {
-      final response = await http.get(
-        Uri.parse(ApiConfig.getFullUrl(ApiConfig.meEndpoint)),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
-      } else if (response.statusCode == 401) {
-        await logout();
-        throw Exception('Сессия истекла. Войдите снова.');
-      } else {
-        throw Exception('Ошибка загрузки профиля: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка получения профиля: $e');
-    }
-  }
-
-  Future<List<Event>> getEvents({String? status, int page = 0, int limit = 20}) async {
-    await _ensureToken();
-    try {
-      final params = <String, String>{
-        'page': page.toString(),
-        'size': limit.toString(),
-      };
-      if (status != null) params['status'] = status;
-
-      final uri = Uri.parse(ApiConfig.getFullUrl(ApiConfig.eventsEndpoint))
-          .replace(queryParameters: params);
-
-      final response = await http.get(uri, headers: _getHeaders());
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        // Поддержка как pageable ответа, так и простого списка
-        final List<dynamic> items = data is List ? data : (data['content'] as List? ?? []);
-        return items.map((e) => Event.fromJson(e as Map<String, dynamic>)).toList();
-      } else if (response.statusCode == 401) {
-        await logout();
-        throw Exception('Сессия истекла. Войдите снова.');
-      } else {
-        throw Exception('Ошибка загрузки мероприятий: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка получения мероприятий: $e');
-    }
-  }
-
-  Future<Event> getEvent(int eventId) async {
-    await _ensureToken();
-    try {
-      final response = await http.get(
-        Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        return Event.fromJson(jsonDecode(response.body));
-      } else if (response.statusCode == 401) {
-        await logout();
-        throw Exception('Сессия истекла. Войдите снова.');
-      } else if (response.statusCode == 404) {
-        throw Exception('Мероприятие не найдено');
-      } else {
-        throw Exception('Ошибка загрузки мероприятия: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка получения мероприятия: $e');
-    }
-  }
-
-  Future<Attendance> respondToEvent(int eventId) async {
-    await _ensureToken();
-    try {
-      final response = await http.post(
-        Uri.parse(ApiConfig.getFullUrl(ApiConfig.attendanceEndpoint)),
-        headers: _getHeaders(),
-        body: jsonEncode({'eventId': eventId, 'status': 'INTERESTED'}),
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return Attendance.fromJson(jsonDecode(response.body));
-      } else if (response.statusCode == 401) {
-        await logout();
-        throw Exception('Сессия истекла. Войдите снова.');
-      } else {
-        final body = _tryDecodeBody(response.body);
-        throw Exception(body['message'] ?? 'Ошибка при отклике: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка при отклике: $e');
-    }
-  }
-
-  Future<void> cancelAttendance(int attendanceId) async {
-    await _ensureToken();
-    try {
-      final response = await http.delete(
-        Uri.parse('${ApiConfig.getFullUrl(ApiConfig.attendanceEndpoint)}/$attendanceId'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 401) {
-        await logout();
-        throw Exception('Сессия истекла. Войдите снова.');
-      } else if (response.statusCode != 200 && response.statusCode != 204) {
-        throw Exception('Ошибка отмены отклика: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка при отмене: $e');
-    }
-  }
-
-  Future<List<User>> getEventAttendees(int eventId) async {
-    await _ensureToken();
-    try {
-      final response = await http.get(
-        Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/attendees'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        return (jsonDecode(response.body) as List)
-            .map((u) => User.fromJson(u as Map<String, dynamic>))
-            .toList();
-      } else if (response.statusCode == 401) {
-        await logout();
-        throw Exception('Сессия истекла. Войдите снова.');
-      } else {
-        throw Exception('Ошибка загрузки участников: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Ошибка получения участников: $e');
-    }
+  Map<String, String> _authHeaders() {
+    final h = {'Content-Type': 'application/json'};
+    if (_token != null) h['Authorization'] = 'Bearer $_token';
+    return h;
   }
 
   Future<void> _ensureToken() async {
     final token = await getToken();
-    if (token == null || token.isEmpty) {
-      throw Exception('Необходима авторизация');
-    }
+    if (token == null || token.isEmpty) throw Exception('Необходима авторизация');
   }
 
-  Map<String, dynamic> _tryDecodeBody(String body) {
+  Map<String, dynamic> _tryDecode(String body) {
     try {
       return jsonDecode(body) as Map<String, dynamic>;
     } catch (_) {
       return {};
+    }
+  }
+
+  // ── Auth ──────────────────────────────────────────────────────────────────
+
+  Future<Map<String, dynamic>> sendOtp(String phone) async {
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl(ApiConfig.loginEndpoint)),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'phone': phone}),
+    );
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      return jsonDecode(res.body);
+    }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка отправки OTP');
+  }
+
+  Future<Map<String, dynamic>> verifyOtp(String phone, String otp) async {
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl(ApiConfig.verifyOtpEndpoint)),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'phone': phone, 'code': otp}),
+    );
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      if (data['token'] != null) await saveToken(data['token'] as String);
+      return data;
+    }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Неверный код');
+  }
+
+  // ── Users ─────────────────────────────────────────────────────────────────
+
+  Future<User> getMe() async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse(ApiConfig.getFullUrl(ApiConfig.meEndpoint)),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) return User.fromJson(jsonDecode(res.body));
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки профиля: ${res.statusCode}');
+  }
+
+  // ── Events (volunteer) ────────────────────────────────────────────────────
+
+  Future<List<Event>> getEvents() async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse(ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      final List<dynamic> items =
+          data is List ? data : (data['content'] as List? ?? []);
+      return items.map((e) => Event.fromJson(e as Map<String, dynamic>)).toList();
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки мероприятий: ${res.statusCode}');
+  }
+
+  // ── Events (HR) ───────────────────────────────────────────────────────────
+
+  Future<List<Event>> getHrEvents() async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse(ApiConfig.getFullUrl('${ApiConfig.eventsEndpoint}/hr')),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      final List<dynamic> items =
+          data is List ? data : (data['content'] as List? ?? []);
+      return items.map((e) => Event.fromJson(e as Map<String, dynamic>)).toList();
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки мероприятий HR: ${res.statusCode}');
+  }
+
+  Future<Event> getEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) return Event.fromJson(jsonDecode(res.body));
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode == 404) throw Exception('Мероприятие не найдено');
+    throw Exception('Ошибка: ${res.statusCode}');
+  }
+
+  Future<Event> createEvent(Map<String, dynamic> data) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)),
+      headers: _authHeaders(),
+      body: jsonEncode(data),
+    );
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      return Event.fromJson(jsonDecode(res.body));
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка создания: ${res.statusCode}');
+  }
+
+  Future<Event> updateEvent(int eventId, Map<String, dynamic> data) async {
+    await _ensureToken();
+    final res = await http.put(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId'),
+      headers: _authHeaders(),
+      body: jsonEncode(data),
+    );
+    if (res.statusCode == 200) return Event.fromJson(jsonDecode(res.body));
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка обновления: ${res.statusCode}');
+  }
+
+  Future<void> publishEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/publish'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 201) {
+      throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка публикации: ${res.statusCode}');
+    }
+  }
+
+  Future<void> deleteEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.delete(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 204) {
+      throw Exception('Ошибка удаления: ${res.statusCode}');
+    }
+  }
+
+  Future<Map<String, dynamic>> completeEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/complete'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      return _tryDecode(res.body);
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка завершения: ${res.statusCode}');
+  }
+
+  Future<String> getEventQr(int eventId) async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/qr'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      return data['qrBase64'] as String? ?? '';
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки QR: ${res.statusCode}');
+  }
+
+  // ── Event registration ────────────────────────────────────────────────────
+
+  Future<void> registerEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/register'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 201) {
+      throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка регистрации: ${res.statusCode}');
+    }
+  }
+
+  Future<void> unregisterEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.delete(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/register'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 204) {
+      throw Exception('Ошибка отмены: ${res.statusCode}');
+    }
+  }
+
+  // ── Attendees ─────────────────────────────────────────────────────────────
+
+  Future<List<Attendee>> getAttendees(int eventId) async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/attendees'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      return (jsonDecode(res.body) as List)
+          .map((a) => Attendee.fromJson(a as Map<String, dynamic>))
+          .toList();
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки участников: ${res.statusCode}');
+  }
+
+  Future<void> updateAttendeeHours(
+    int eventId,
+    int userId,
+    Map<String, dynamic> data,
+  ) async {
+    await _ensureToken();
+    final res = await http.patch(
+      Uri.parse(
+          '${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/attendees/$userId/hours'),
+      headers: _authHeaders(),
+      body: jsonEncode(data),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200) {
+      throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка сохранения: ${res.statusCode}');
+    }
+  }
+
+  Future<void> checkinUser(int eventId, int userId) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.eventsEndpoint)}/$eventId/checkin'),
+      headers: _authHeaders(),
+      body: jsonEncode({'userId': userId}),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 201) {
+      throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка чекина: ${res.statusCode}');
+    }
+  }
+
+  // ── Legacy respond/cancel (kept for compatibility) ────────────────────────
+
+  Future<Attendance> respondToEvent(int eventId) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl(ApiConfig.attendanceEndpoint)),
+      headers: _authHeaders(),
+      body: jsonEncode({'eventId': eventId, 'status': 'INTERESTED'}),
+    );
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      return Attendance.fromJson(jsonDecode(res.body));
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка: ${res.statusCode}');
+  }
+
+  Future<void> cancelAttendance(int attendanceId) async {
+    await _ensureToken();
+    final res = await http.delete(
+      Uri.parse('${ApiConfig.getFullUrl(ApiConfig.attendanceEndpoint)}/$attendanceId'),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 204) {
+      throw Exception('Ошибка отмены: ${res.statusCode}');
     }
   }
 }
