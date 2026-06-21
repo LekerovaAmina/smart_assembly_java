@@ -33,11 +33,8 @@ public class SmsService {
         }
 
         try {
-            // Нормализуем номер: удаляем всё кроме цифр
-            String digits = phone.replaceAll("[^0-9]", "");
-
-            // Добавляем + если его нет
-            String normalizedPhone = digits.startsWith("+") ? digits : "+" + digits;
+            // Нормализуем номер: удаляем всё кроме цифр (Mobizon требует формат без +)
+            String normalizedPhone = phone.replaceAll("[^0-9]", "");
 
             // URL-кодируем текст (важно для кириллицы!)
             String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
