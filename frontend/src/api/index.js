@@ -102,7 +102,7 @@ export const updateAttendeeHours = (eventId, userId, data) =>
   api.patch(`/events/${eventId}/attendees/${userId}/hours`, data);
 
 export const checkinSelf = (eventId) =>
-  api.post(`/events/${eventId}/checkin`, {});
+  api.post(`/events/${eventId}/self-checkin`);
 
 export const checkinUser = (eventId, userId) =>
   api.post(`/events/${eventId}/checkin`, { userId });
