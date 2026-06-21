@@ -127,3 +127,13 @@
 2026-06-20 13:50:44.237: [INFO] BookmarkModelLoaded, ids_reassigned: 0
 2026-06-20 13:50:44.237: [INFO] OnDoneLoading sync enabled: 1
 2026-06-20 13:50:56.031: [INFO] Sync initialization duration: 2370ms
+2026-06-20 15:00:14.080: [INFO] VisibilityChanged: 0
+2026-06-20 15:00:14.170: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-06-20 15:00:14.170: [INFO] OnDoneLoading sync enabled: 0
+2026-06-20 15:00:17.247: [INFO] Primary account changed.
+2026-06-20 15:00:17.247: [INFO] OnPrimaryAccountChanged PrimaryAccountChangeEvent::Type::kSet
+2026-06-20 15:01:04.889: [INFO] Sync initialization duration: 50714ms
+2026-06-20 15:48:55.120: [INFO] VisibilityChanged: 0
+2026-06-20 15:48:55.201: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-06-20 15:48:55.201: [INFO] OnDoneLoading sync enabled: 1
+2026-06-20 15:49:04.949: [INFO] Sync initialization duration: 2650ms
