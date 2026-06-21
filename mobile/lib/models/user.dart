@@ -27,17 +27,19 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] as int,
-      uniqueId: json['uniqueId'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      phone: json['phone'] as String,
-      role: json['role'] as String,
-      status: json['status'] as String,
-      totalHours: json['totalHours'] as int,
-      strikeCount: json['strikeCount'] as int,
-      departmentId: json['departmentId'] as int?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      id: (json['id'] as num).toInt(),
+      uniqueId: json['uniqueId'] as String? ?? '',
+      firstName: json['firstName'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      phone: json['phone'] as String? ?? '',
+      role: json['role'] as String? ?? 'VOLUNTEER',
+      status: json['status'] as String? ?? 'ACTIVE',
+      totalHours: (json['totalHours'] as num?)?.toInt() ?? 0,
+      strikeCount: (json['strikeCount'] as num?)?.toInt() ?? 0,
+      departmentId: (json['departmentId'] as num?)?.toInt(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -45,12 +47,16 @@ class User {
 
   String get roleDisplay {
     switch (role) {
+      case 'HR':
+        return 'HR';
       case 'ADMIN':
         return 'Администратор';
+      case 'SUPER_ADMIN':
+        return 'Супер-администратор';
       case 'COORDINATOR':
         return 'Координатор';
       case 'VOLUNTEER':
-        return 'Волонтер';
+        return 'Волонтёр';
       default:
         return role;
     }
