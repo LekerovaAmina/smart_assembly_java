@@ -373,7 +373,9 @@ public class VolunteerHoursService {
     }
 
     private LocalDateTime eventEndDateTime(Event event) {
-        LocalTime end = event.getEndTime() != null ? event.getEndTime() : event.getStartTime();
+        LocalTime end = event.getEndTime() != null ? event.getEndTime()
+                : event.getStartTime() != null ? event.getStartTime()
+                : LocalTime.of(23, 59);
         return LocalDateTime.of(event.getEventDate(), end);
     }
 
@@ -394,6 +396,13 @@ public class VolunteerHoursService {
         if (targetUserId != null) {
             if (!isHr) {
                 throw new RuntimeException("Только HR может отмечать других участников");
+            }
+            if (actor.getRole() == UserRole.HR) {
+                User target = userRepository.findById(targetUserId)
+                        .orElseThrow(() -> new RuntimeException("Волонтёр не найден"));
+                if (!target.getAssembly().getId().equals(actor.getAssembly().getId())) {
+                    throw new RuntimeException("Нет доступа к волонтёрам другого отделения");
+                }
             }
             return targetUserId;
         }

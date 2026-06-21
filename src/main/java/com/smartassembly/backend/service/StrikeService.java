@@ -252,9 +252,7 @@ public class StrikeService {
         User volunteer = strike.getUser();
         AppealStatus appealStatus = strike.getAppeal() != null
                 ? strike.getAppeal().getStatus()
-                : appealRepository.findByStrikeId(strike.getId())
-                        .map(StrikeAppeal::getStatus)
-                        .orElse(null);
+                : null;
 
         return StrikeResponseDto.builder()
                 .id(strike.getId())

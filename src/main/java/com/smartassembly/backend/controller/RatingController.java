@@ -6,6 +6,10 @@ import com.smartassembly.backend.enums.UserRole;
 import com.smartassembly.backend.repository.StrikeRepository;
 import com.smartassembly.backend.repository.UserRepository;
 import com.smartassembly.backend.service.VolunteerHoursService;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,10 +60,10 @@ public class RatingController {
         return ResponseEntity.ok(entries);
     }
 
-    @lombok.Data
-    @lombok.Builder
-    @lombok.NoArgsConstructor
-    @lombok.AllArgsConstructor
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RatingEntryDto {
         private Long id;
         private String uniqueId;
