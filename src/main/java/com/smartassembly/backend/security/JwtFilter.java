@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -30,20 +32,18 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-        System.out.println("[JWT] URI: " + request.getRequestURI());
-        System.out.println("[JWT] Auth header: " + authHeader);
+        log.debug("[JWT] URI: {}", request.getRequestURI());
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             boolean valid = jwtUtil.validateToken(token);
-            System.out.println("[JWT] Token valid: " + valid);
+            log.debug("[JWT] Token valid: {}", valid);
 
             if (valid) {
                 String phone = jwtUtil.extractPhone(token);
-                System.out.println("[JWT] Phone extracted: '" + phone + "'");
 
                 User user = userRepository.findByPhone(phone).orElse(null);
-                System.out.println("[JWT] User found: " + (user != null ? user.getPhone() + " role=" + user.getRole() + " active=" + user.getIsActive() : "NULL"));
+                log.debug("[JWT] User found: {}", user != null ? "role=" + user.getRole() + " active=" + user.getIsActive() : "NULL");
 
                 if (user != null && user.getIsActive()) {
                     var authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
@@ -51,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
                             user, null, List.of(authority)
                     );
                     SecurityContextHolder.getContext().setAuthentication(auth);
-                    System.out.println("[JWT] Auth set: ROLE_" + user.getRole().name());
+                    log.debug("[JWT] Auth set: ROLE_{}", user.getRole().name());
                 }
             }
         }
