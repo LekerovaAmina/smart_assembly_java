@@ -54,6 +54,12 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     super.dispose();
   }
 
+  String? _parseDate(String display) {
+    final parts = display.split('.');
+    if (parts.length != 3) return null;
+    return '${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}';
+  }
+
   String? _cleanTime(String t) {
     final s = t.trim();
     if (s.isEmpty) return null;
@@ -92,7 +98,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
       'eventName': _nameCtrl.text.trim(),
       'eventType': _eventType,
       'description': _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
-      'eventDate': _dateCtrl.text.isEmpty ? null : _dateCtrl.text,
+      'eventDate': _dateCtrl.text.isEmpty ? null : _parseDate(_dateCtrl.text),
       'startTime': _cleanTime(_startCtrl.text),
       'endTime': _cleanTime(_endCtrl.text),
       'location': _locationCtrl.text.trim().isEmpty ? null : _locationCtrl.text.trim(),

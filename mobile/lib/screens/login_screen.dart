@@ -22,8 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   String? _error;
 
-  static const _primaryColor = Color(0xFF1B5E20);
-  static const _accentColor = Color(0xFF4CAF50);
+  static const _primaryColor = Color(0xFFFF6B00);
+  static const _accentColor = Color(0xFFE55F00);
 
   @override
   void dispose() {

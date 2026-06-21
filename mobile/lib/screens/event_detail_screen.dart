@@ -706,6 +706,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   .map((a) => _AttendeeRow(
                         attendee: a,
                         eventId: widget.eventId,
+                        isCompleted: _event?.isCompleted ?? false,
                         onSaved: _loadAttendees,
                       ))
                   .toList()),
@@ -767,7 +768,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   Widget _buildQrModal() {
-    final bytes = base64Decode(_qrBase64!);
+    var raw = _qrBase64!;
+    if (raw.contains(',')) raw = raw.split(',').last;
+    final bytes = base64Decode(raw);
     return GestureDetector(
       onTap: () => setState(() => _showQr = false),
       child: Container(
@@ -823,12 +826,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 class _AttendeeRow extends StatefulWidget {
   final Attendee attendee;
   final int eventId;
+  final bool isCompleted;
   final VoidCallback onSaved;
 
   const _AttendeeRow({
     required this.attendee,
     required this.eventId,
     required this.onSaved,
+    this.isCompleted = false,
   });
 
   @override
@@ -1001,7 +1006,7 @@ class _AttendeeRowState extends State<_AttendeeRow> {
                   style: const TextStyle(
                       fontSize: 11, color: Color(0xFF2E7D32)),
                 )
-              else
+              else if (!widget.isCompleted)
                 TextButton(
                   onPressed: _checkinLoading ? null : _checkin,
                   style: TextButton.styleFrom(
@@ -1056,6 +1061,10 @@ class _AttendeeRowState extends State<_AttendeeRow> {
           ),
 
           const SizedBox(height: 8),
+          if (widget.isCompleted)
+            const Text('Мероприятие завершено — часы зафиксированы',
+                style: TextStyle(fontSize: 12, color: Color(0xFF999999)))
+          else
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
