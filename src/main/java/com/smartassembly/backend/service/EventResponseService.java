@@ -114,13 +114,16 @@ public class EventResponseService {
     public List<Map<String, Object>> myResponses(String phone) {
         User user = getUserOrThrow(phone);
         return responseRepository.findByUserId(user.getId()).stream()
-                .map(r -> Map.<String, Object>of(
-                        "eventId", r.getEvent().getId(),
-                        "eventName", r.getEvent().getEventName(),
-                        "eventDate", r.getEvent().getEventDate().toString(),
-                        "status", r.getStatus().name(),
-                        "responseTime", r.getResponseTime() != null ? r.getResponseTime().toString() : ""
-                ))
+                .map(r -> {
+                    Map<String, Object> m = new java.util.HashMap<>();
+                    m.put("eventId", r.getEvent().getId());
+                    m.put("eventName", r.getEvent().getEventName());
+                    m.put("eventDate", r.getEvent().getEventDate().toString());
+                    m.put("status", r.getStatus().name());
+                    m.put("responseTime", r.getResponseTime() != null ? r.getResponseTime().toString() : "");
+                    m.put("checkInTime", r.getCheckInTime() != null ? r.getCheckInTime().toString() : null);
+                    return m;
+                })
                 .toList();
     }
 
