@@ -39,6 +39,7 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final AssemblyRepository assemblyRepository;
     private final GoogleSheetsService googleSheetsService;
+    private final SmsService smsService;
 
     @Transactional
     public void importFromGoogleSheet(GoogleSheetRegistrationDto dto) {
@@ -182,9 +183,8 @@ public class RegistrationService {
         request.setCreatedUser(newUser);
         requestRepository.save(request);
 
-        // TODO: отправить SMS о принятии
-        // smsService.send(newUser.getPhone(), "Поздравляем! Вы приняты в Smart Assembly.");
-        log.info("Пользователь {} {} принят. SMS будет отправлено на {}",
+        smsService.send(newUser.getPhone(), "Поздравляем! Вы приняты в Smart Assembly.");
+        log.info("Пользователь {} {} принят, SMS отправлено на {}",
                 newUser.getFirstName(), newUser.getLastName(), newUser.getPhone());
 
         return newUser;

@@ -2,6 +2,7 @@ package com.smartassembly.backend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class SmsService {
 
@@ -21,7 +23,7 @@ public class SmsService {
     @Value("${mobizon.enabled:false}")
     private boolean enabled;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void send(String phone, String message) {

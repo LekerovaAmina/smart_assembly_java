@@ -26,10 +26,16 @@ public class GoogleSheetsConfig {
 
     @Bean
     public Sheets sheetsService() throws Exception {
-        GoogleCredentials credentials;
+        ClassPathResource resource = new ClassPathResource(credentialsPath.replace("classpath:", ""));
+        if (!resource.exists()) {
+            throw new IllegalStateException(
+                "Файл Google Sheets credentials не найден: " + credentialsPath +
+                ". Поместите service-account.json в src/main/resources/ и укажите путь в application.properties."
+            );
+        }
 
-        try (InputStream in = new ClassPathResource(
-                credentialsPath.replace("classpath:", "")).getInputStream()) {
+        GoogleCredentials credentials;
+        try (InputStream in = resource.getInputStream()) {
             credentials = GoogleCredentials
                     .fromStream(in)
                     .createScoped(List.of(SheetsScopes.SPREADSHEETS));
