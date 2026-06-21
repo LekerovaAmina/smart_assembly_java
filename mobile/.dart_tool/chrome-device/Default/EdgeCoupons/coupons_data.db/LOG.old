@@ -1,19 +1,12 @@
-2026/06/21-22:52:39.383 73fc Reusing MANIFEST C:\Users\Min\AppData\Local\Temp\flutter_tools.508d31c0\flutter_tools_chrome_device.d0ce720f\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/06/21-22:52:39.384 73fc Recovering log #16
-2026/06/21-22:52:39.385 73fc Reusing old log C:\Users\Min\AppData\Local\Temp\flutter_tools.508d31c0\flutter_tools_chrome_device.d0ce720f\Default\EdgeCoupons/coupons_data.db/000016.log 
-2026/06/21-22:52:39.387 73fc Delete type=0 #4
-2026/06/21-22:52:39.387 73fc Delete type=0 #7
-2026/06/21-22:52:39.390 73fc Delete type=0 #10
-2026/06/21-22:52:39.391 73fc Delete type=0 #13
-2026/06/21-23:01:22.092 6754 Level-0 table #20: started
-2026/06/21-23:01:22.097 6754 Level-0 table #20: 682852 bytes OK
-2026/06/21-23:01:22.100 6754 Delete type=0 #16
-2026/06/21-23:01:22.102 6754 Compacting 4@0 + 1@1 files
-2026/06/21-23:01:22.110 6754 Generated table #21@0: 4 keys, 682759 bytes
-2026/06/21-23:01:22.110 6754 Compacted 4@0 + 1@1 files => 682759 bytes
-2026/06/21-23:01:22.112 6754 compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/06/21-23:01:22.112 6754 Delete type=2 #8
-2026/06/21-23:01:22.112 6754 Delete type=2 #11
-2026/06/21-23:01:22.112 6754 Delete type=2 #14
-2026/06/21-23:01:22.112 6754 Delete type=2 #17
-2026/06/21-23:01:22.113 6754 Delete type=2 #20
+2026/06/21-23:08:13.502 25a8 Reusing MANIFEST C:\Users\Min\AppData\Local\Temp\flutter_tools.3821b5f3\flutter_tools_chrome_device.7b2e8e74\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/06/21-23:08:13.502 25a8 Recovering log #19
+2026/06/21-23:08:13.503 25a8 Reusing old log C:\Users\Min\AppData\Local\Temp\flutter_tools.3821b5f3\flutter_tools_chrome_device.7b2e8e74\Default\EdgeCoupons/coupons_data.db/000019.log 
+2026/06/21-23:08:13.503 25a8 Delete type=0 #4
+2026/06/21-23:08:13.503 25a8 Delete type=0 #7
+2026/06/21-23:08:13.503 25a8 Delete type=2 #8
+2026/06/21-23:08:13.503 25a8 Delete type=0 #10
+2026/06/21-23:08:13.503 25a8 Delete type=2 #11
+2026/06/21-23:08:13.503 25a8 Delete type=0 #13
+2026/06/21-23:08:13.503 25a8 Delete type=2 #14
+2026/06/21-23:08:13.529 25a8 Delete type=0 #16
+2026/06/21-23:08:13.590 25a8 Delete type=2 #17

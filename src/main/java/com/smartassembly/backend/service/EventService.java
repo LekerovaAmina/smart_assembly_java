@@ -12,6 +12,7 @@ import com.smartassembly.backend.repository.EventResponseRepository;
 import com.smartassembly.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class EventService {
     private final UserRepository userRepository;
     private final EventResponseRepository eventResponseRepository;
     private final QrCodeService qrCodeService;
+
+    @Value("${app.frontend.url:https://smart-assembly.kz}")
+    private String frontendUrl;
 
     // ── Создать мероприятие (только HR) ──────────────────────────────────────
     @Transactional
@@ -193,7 +197,7 @@ public class EventService {
                 && !event.getAssembly().getId().equals(user.getAssembly().getId())) {
             throw new RuntimeException("Нет доступа к мероприятию");
         }
-        String qrContent = "https://smart-assembly.org/events/" + event.getId();
+        String qrContent = frontendUrl + "/#/checkin/" + event.getId();
         return Map.of("qrBase64", qrCodeService.generateBase64Png(qrContent));
     }
 

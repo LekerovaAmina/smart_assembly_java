@@ -6,6 +6,7 @@ import 'models/user.dart';
 import 'screens/login_screen.dart';
 import 'screens/events_list_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/qr_checkin_screen.dart';
 import 'widgets/app_drawer.dart';
 
 const kPrimary = Color(0xFFFF6B00);
@@ -40,11 +41,22 @@ void main() async {
   );
 }
 
+/// Reads the URL hash on web to detect QR checkin: /#/checkin/{id}
+int? _parseCheckinId() {
+  try {
+    final fragment = Uri.base.fragment; // e.g. "/checkin/3"
+    final match = RegExp(r'^/checkin/(\d+)$').firstMatch(fragment);
+    if (match != null) return int.tryParse(match.group(1)!);
+  } catch (_) {}
+  return null;
+}
+
 class SmartAssemblyApp extends StatelessWidget {
   const SmartAssemblyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final checkinId = _parseCheckinId();
     return MaterialApp(
       title: 'Ассамблея Жастары',
       debugShowCheckedModeBanner: false,
@@ -54,7 +66,9 @@ class SmartAssemblyApp extends StatelessWidget {
         fontFamily: 'Roboto',
         appBarTheme: const AppBarTheme(elevation: 0),
       ),
-      home: const AuthWrapper(),
+      home: checkinId != null
+          ? QrCheckinScreen(eventId: checkinId)
+          : const AuthWrapper(),
     );
   }
 }

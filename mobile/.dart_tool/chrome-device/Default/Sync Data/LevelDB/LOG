@@ -1,13 +1,31 @@
-2026/06/21-23:08:06.927 73b8 Reusing MANIFEST C:\Users\Min\AppData\Local\Temp\flutter_tools.3821b5f3\flutter_tools_chrome_device.7b2e8e74\Default\Sync Data\LevelDB/MANIFEST-000001
-2026/06/21-23:08:06.930 73b8 Recovering log #29
-2026/06/21-23:08:06.931 73b8 Reusing old log C:\Users\Min\AppData\Local\Temp\flutter_tools.3821b5f3\flutter_tools_chrome_device.7b2e8e74\Default\Sync Data\LevelDB/000029.log 
-2026/06/21-23:08:06.932 73b8 Delete type=0 #6
-2026/06/21-23:08:06.932 73b8 Delete type=2 #7
-2026/06/21-23:08:06.933 73b8 Delete type=2 #10
-2026/06/21-23:08:06.933 73b8 Delete type=2 #12
-2026/06/21-23:08:06.933 73b8 Delete type=0 #13
-2026/06/21-23:08:06.933 73b8 Delete type=2 #14
-2026/06/21-23:08:06.933 73b8 Delete type=2 #18
-2026/06/21-23:08:06.933 73b8 Delete type=2 #20
-2026/06/21-23:08:06.933 73b8 Delete type=0 #21
-2026/06/21-23:08:06.933 73b8 Delete type=2 #22
+2026/06/22-00:40:44.570 3604 Reusing MANIFEST C:\Users\Min\AppData\Local\Temp\flutter_tools.f14a7507\flutter_tools_chrome_device.b198cb4f\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/06/22-00:40:44.579 3604 Recovering log #29
+2026/06/22-00:40:44.580 3604 Reusing old log C:\Users\Min\AppData\Local\Temp\flutter_tools.f14a7507\flutter_tools_chrome_device.b198cb4f\Default\Sync Data\LevelDB/000029.log 
+2026/06/22-00:40:44.580 3604 Delete type=0 #6
+2026/06/22-00:40:44.580 3604 Delete type=2 #7
+2026/06/22-00:40:44.581 3604 Delete type=2 #10
+2026/06/22-00:40:44.581 3604 Delete type=2 #12
+2026/06/22-00:40:44.581 3604 Delete type=0 #13
+2026/06/22-00:40:44.581 3604 Delete type=2 #14
+2026/06/22-00:40:44.581 3604 Delete type=2 #18
+2026/06/22-00:40:44.582 3604 Delete type=2 #20
+2026/06/22-00:40:44.582 3604 Delete type=0 #21
+2026/06/22-00:40:44.582 3604 Delete type=2 #22
+2026/06/22-00:41:32.068 3978 Level-0 table #33: started
+2026/06/22-00:41:32.073 3978 Level-0 table #33: 295721 bytes OK
+2026/06/22-00:41:32.075 3978 Delete type=0 #29
+2026/06/22-00:41:32.088 62e0 Level-0 table #35: started
+2026/06/22-00:41:32.092 62e0 Level-0 table #35: 438703 bytes OK
+2026/06/22-00:41:32.093 62e0 Delete type=0 #32
+2026/06/22-00:41:32.108 3604 Level-0 table #37: started
+2026/06/22-00:41:32.113 3604 Level-0 table #37: 564948 bytes OK
+2026/06/22-00:41:32.114 3604 Delete type=0 #34
+2026/06/22-00:41:32.114 3604 Compacting 4@0 + 1@1 files
+2026/06/22-00:41:32.130 3604 Generated table #38@0: 4190 keys, 1051017 bytes
+2026/06/22-00:41:32.130 3604 Compacted 4@0 + 1@1 files => 1051017 bytes
+2026/06/22-00:41:32.130 3604 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/06/22-00:41:32.131 3604 Delete type=2 #28
+2026/06/22-00:41:32.131 3604 Delete type=2 #30
+2026/06/22-00:41:32.131 3604 Delete type=2 #33
+2026/06/22-00:41:32.131 3604 Delete type=2 #35
+2026/06/22-00:41:32.131 3604 Delete type=2 #37
