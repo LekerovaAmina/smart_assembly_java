@@ -70,7 +70,7 @@ class ApiService {
       final response = await http.post(
         Uri.parse(ApiConfig.getFullUrl(ApiConfig.verifyOtpEndpoint)),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'phone': phone, 'otp': otp}),
+        body: jsonEncode({'phone': phone, 'code': otp}),
       );
 
       if (response.statusCode == 200) {

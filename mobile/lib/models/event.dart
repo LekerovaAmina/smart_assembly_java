@@ -10,7 +10,6 @@ class Event {
   final String status;
   final int createdBy;
   final DateTime createdAt;
-  final DateTime? updatedAt;
 
   Event({
     required this.id,
@@ -24,37 +23,38 @@ class Event {
     required this.status,
     required this.createdBy,
     required this.createdAt,
-    this.updatedAt,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
+    // Комбинируй eventDate + startTime в startDateTime
+    final eventDate = json['eventDate'] ?? '2026-01-01';
+    final startTime = json['startTime'] ?? '00:00:00';
+    final endTime = json['endTime'] ?? '01:00:00';
+    
     return Event(
       id: json['id'] as int,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      location: json['location'] as String,
-      startDateTime: DateTime.parse(json['startDateTime'] as String),
-      endDateTime: DateTime.parse(json['endDateTime'] as String),
-      maxVolunteers: json['maxVolunteers'] as int,
-      currentVolunteers: json['currentVolunteers'] as int? ?? 0,
-      status: (json['status'] as String).toLowerCase(),
-      createdBy: json['createdBy'] as int,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : null,
+      title: json['eventName'] as String? ?? 'Без названия',
+      description: json['description'] as String? ?? '',
+      location: json['location'] as String? ?? '',
+      startDateTime: DateTime.parse('$eventDate $startTime'),
+      endDateTime: DateTime.parse('$eventDate $endTime'),
+      maxVolunteers: json['maxParticipants'] as int? ?? 0,
+      currentVolunteers: json['currentParticipants'] as int? ?? 0,
+      status: (json['status'] as String?)?.toLowerCase() ?? 'draft',
+      createdBy: json['createdById'] as int? ?? 0,
+      createdAt: DateTime.now(), // Нет в ответе, используй now()
     );
   }
 
   bool get isFull => currentVolunteers >= maxVolunteers;
-  bool get isPublished => status == 'published';
+  bool get isPublished => status == 'open';
   bool get isDraft => status == 'draft';
   bool get isCompleted => status == 'completed';
 
   String get statusDisplay {
     switch (status) {
-      case 'published':
-        return 'Опубликовано';
+      case 'open':
+        return 'Открыто';
       case 'draft':
         return 'Черновик';
       case 'completed':
@@ -69,16 +69,15 @@ class Event {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': title,
+      'eventName': title,
       'description': description,
       'location': location,
       'startDateTime': startDateTime.toIso8601String(),
       'endDateTime': endDateTime.toIso8601String(),
-      'maxVolunteers': maxVolunteers,
-      'currentVolunteers': currentVolunteers,
+      'maxParticipants': maxVolunteers,
+      'currentParticipants': currentVolunteers,
       'status': status,
-      'createdBy': createdBy,
-      'createdAt': createdAt.toIso8601String(),
+      'createdById': createdBy,
     };
   }
 }
