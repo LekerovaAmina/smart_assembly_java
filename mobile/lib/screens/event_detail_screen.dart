@@ -917,16 +917,35 @@ class _AttendeeRowState extends State<_AttendeeRow> {
   }
 
   Future<void> _checkin() async {
+    // Показываем диалог выбора времени (для опоздавших)
+    final now = TimeOfDay.now();
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: now,
+      helpText: 'Время прибытия участника',
+      builder: (ctx, child) => MediaQuery(
+        data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      ),
+    );
+    if (!mounted) return;
+    if (picked == null) return; // HR отменил
+
     setState(() {
       _checkinLoading = true;
       _msg = null;
     });
     try {
+      final now2 = DateTime.now();
+      final checkInDateTime = DateTime(
+          now2.year, now2.month, now2.day, picked.hour, picked.minute);
       await context.read<ApiService>().checkinUser(
             widget.eventId,
             widget.attendee.userId,
+            checkInTime: checkInDateTime,
           );
-      setState(() => _msg = '✅ Чекин проставлен');
+      setState(() => _msg =
+          '✅ Чекин ${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}');
       widget.onSaved();
     } catch (e) {
       setState(() =>
@@ -1045,10 +1064,11 @@ class _AttendeeRowState extends State<_AttendeeRow> {
               const SizedBox(width: 8),
               Expanded(
                 child: _Field(
-                  label: 'Доп. часы',
+                  label: 'Доп. часы (−опозд.)',
                   controller: _extraCtrl,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  hint: '0',
+                  keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true, signed: true),
                 ),
               ),
             ],
