@@ -337,6 +337,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             const SizedBox(height: 12),
           ],
 
+          // Чекин-статус для волонтёра
+          if (!_isHr && event.isRegistered) ...[
+            _buildCheckinCard(event),
+            const SizedBox(height: 12),
+          ],
+
           // Кнопка для волонтёра
           if (!_isHr && event.status != 'DRAFT') ...[
             _buildVolunteerButton(event),
@@ -716,6 +722,67 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
+  Widget _buildCheckinCard(Event event) {
+    final checkinTime = event.checkInTime;
+    if (checkinTime != null && checkinTime.isNotEmpty) {
+      // Показываем время чекина
+      String displayTime = checkinTime;
+      try {
+        final dt = DateTime.parse(checkinTime);
+        displayTime =
+            '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+      } catch (_) {
+        if (checkinTime.length >= 16) displayTime = checkinTime.substring(11, 16);
+      }
+      return Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE8F5E9),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFA5D6A7)),
+        ),
+        child: Row(children: [
+          const Icon(Icons.check_circle, color: Color(0xFF2E7D32), size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Присутствие подтверждено',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF2E7D32))),
+                Text('Время отметки: $displayTime',
+                    style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF388E3C))),
+              ],
+            ),
+          ),
+        ]),
+      );
+    }
+    // Не отмечался ещё
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF3E0),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFFFCC80)),
+      ),
+      child: const Row(children: [
+        Icon(Icons.schedule, color: Color(0xFFE65100), size: 22),
+        SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            'Отметка о присутствии ещё не сделана.\nСканируйте QR-код на мероприятии.',
+            style: TextStyle(fontSize: 13, color: Color(0xFFE65100)),
+          ),
+        ),
+      ]),
+    );
+  }
+
   Widget _buildVolunteerButton(Event event) {
     if (event.isFull && !event.isRegistered) {
       return Container(
@@ -1018,14 +1085,8 @@ class _AttendeeRowState extends State<_AttendeeRow> {
                         color: _statusFg)),
               ),
               const SizedBox(width: 6),
-              // Чекин
-              if (a.checkInTime != null)
-                Text(
-                  '🕐 ${a.checkInTime!.length >= 16 ? a.checkInTime!.substring(11, 16) : ''}',
-                  style: const TextStyle(
-                      fontSize: 11, color: Color(0xFF2E7D32)),
-                )
-              else if (!widget.isCompleted)
+              // Кнопка чекина (только если не отмечен и мероприятие не завершено)
+              if (a.checkInTime == null && !widget.isCompleted)
                 TextButton(
                   onPressed: _checkinLoading ? null : _checkin,
                   style: TextButton.styleFrom(
@@ -1047,6 +1108,33 @@ class _AttendeeRowState extends State<_AttendeeRow> {
                 ),
             ],
           ),
+
+          // Строка с временем чекина (если отмечен)
+          if (a.checkInTime != null) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8F5E9),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: const Color(0xFFA5D6A7)),
+              ),
+              child: Row(children: [
+                const Icon(Icons.check_circle_outline,
+                    size: 14, color: Color(0xFF2E7D32)),
+                const SizedBox(width: 6),
+                Text(
+                  'Отмечен в ${() {
+                    final t = a.checkInTime!;
+                    if (t.length >= 16) return t.substring(11, 16);
+                    return t;
+                  }()}',
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFF2E7D32)),
+                ),
+              ]),
+            ),
+          ],
 
           const SizedBox(height: 10),
 

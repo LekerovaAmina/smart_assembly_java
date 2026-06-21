@@ -209,9 +209,13 @@ public class EventService {
 
         if (phone != null && !phone.equals("anonymousUser")) {
             userRepository.findByPhone(phone).ifPresent(user -> {
-                dto.setIsRegistered(
-                        eventResponseRepository.existsByEventIdAndUserId(event.getId(), user.getId())
-                );
+                eventResponseRepository.findByEventIdAndUserId(event.getId(), user.getId())
+                        .ifPresentOrElse(r -> {
+                            dto.setIsRegistered(true);
+                            if (r.getCheckInTime() != null) {
+                                dto.setCheckInTime(r.getCheckInTime().toString());
+                            }
+                        }, () -> dto.setIsRegistered(false));
             });
         }
 
