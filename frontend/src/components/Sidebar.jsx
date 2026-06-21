@@ -90,11 +90,12 @@ const hrNavItems = [
   { to: '/hr/volunteers', label: 'Волонтёры', Icon: ListIcon },
 ];
 
-function NavItem({ to, label, Icon, badge }) {
+function NavItem({ to, label, Icon, badge, onClick }) {
   return (
     <li>
       <NavLink
         to={to}
+        onClick={onClick}
         className={({ isActive }) =>
           `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
             isActive
@@ -115,14 +116,17 @@ function NavItem({ to, label, Icon, badge }) {
   );
 }
 
-export default function Sidebar() {
+const XIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+export default function Sidebar({ onClose }) {
   const { isHr } = useAuth();
 
   return (
-    <aside
-      className="fixed top-0 left-0 h-screen w-60 bg-sidebar border-r border-border flex flex-col z-30"
-      style={{ width: '240px' }}
-    >
+    <aside className="fixed top-0 left-0 h-screen w-[240px] bg-sidebar border-r border-border flex flex-col z-30">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-border">
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
@@ -131,13 +135,22 @@ export default function Sidebar() {
         <span className="font-semibold text-text-primary text-sm leading-tight">
           Ассамблея Жастары
         </span>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="ml-auto p-1 text-text-secondary hover:text-text-primary rounded transition-colors"
+            aria-label="Закрыть меню"
+          >
+            <XIcon />
+          </button>
+        )}
       </div>
 
       {/* Nav */}
       <nav className="flex-1 py-3 overflow-y-auto">
         <ul className="space-y-0.5 px-2">
           {volunteerNavItems.map(item => (
-            <NavItem key={item.to} {...item} />
+            <NavItem key={item.to} {...item} onClick={onClose} />
           ))}
         </ul>
 
@@ -149,7 +162,7 @@ export default function Sidebar() {
             </p>
             <ul className="space-y-0.5 px-2">
               {hrNavItems.map(item => (
-                <NavItem key={item.to} {...item} badge="HR" />
+                <NavItem key={item.to} {...item} badge="HR" onClick={onClose} />
               ))}
             </ul>
           </>
@@ -160,6 +173,7 @@ export default function Sidebar() {
       <div className="px-2 py-3 border-t border-border">
         <NavLink
           to="/settings"
+          onClick={onClose}
           className={({ isActive }) =>
             `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
               isActive

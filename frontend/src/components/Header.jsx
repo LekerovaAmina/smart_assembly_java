@@ -38,7 +38,19 @@ function formatRelativeTime(dateStr) {
   } catch { return ''; }
 }
 
-export default function Header() {
+const MenuIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+const XIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+export default function Header({ onMenuToggle, mobileMenuOpen }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -120,10 +132,16 @@ export default function Header() {
   };
 
   return (
-    <header
-      className="fixed top-0 right-0 bg-surface border-b border-border flex items-center justify-end px-6 h-14 z-20 gap-3"
-      style={{ left: '240px' }}
-    >
+    <header className="fixed top-0 left-0 right-0 md:left-[240px] bg-surface border-b border-border flex items-center justify-end px-4 md:px-6 h-14 z-20 gap-3">
+      {/* Mobile hamburger */}
+      <button
+        className="md:hidden mr-auto p-2 text-text-secondary hover:text-text-primary rounded-lg hover:bg-gray-50 transition-colors"
+        onClick={onMenuToggle}
+        aria-label="Меню"
+      >
+        {mobileMenuOpen ? <XIcon /> : <MenuIcon />}
+      </button>
+
       {/* Notifications */}
       <div className="relative" ref={notifRef}>
         <button
