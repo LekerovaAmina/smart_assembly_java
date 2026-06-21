@@ -17,7 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _loading = true;
   String? _error;
 
-  static const _primaryColor = Color(0xFF1B5E20);
+  static const _primaryColor = Color(0xFFE55F00);
 
   @override
   void initState() {
