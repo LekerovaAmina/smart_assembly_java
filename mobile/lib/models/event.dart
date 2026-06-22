@@ -10,6 +10,7 @@ class Event {
   final String status;
   final String? eventType;
   final bool isRegistered;
+  final String? checkInTime;
   final List<String> speakers;
   final String? dressCode;
   final String? objectives;
@@ -29,6 +30,7 @@ class Event {
     required this.status,
     this.eventType,
     this.isRegistered = false,
+    this.checkInTime,
     this.speakers = const [],
     this.dressCode,
     this.objectives,
@@ -78,6 +80,7 @@ class Event {
       status: json['status'] as String? ?? 'DRAFT',
       eventType: json['eventType'] as String?,
       isRegistered: json['isRegistered'] as bool? ?? false,
+      checkInTime: json['checkInTime'] as String?,
       speakers: speakers,
       dressCode: json['dressCode'] as String?,
       objectives: json['objectives'] as String?,

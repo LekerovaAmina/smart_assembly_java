@@ -42,6 +42,8 @@ public class EventResponseDto {
 
     // Для волонтёра — зарегистрирован ли он на это мероприятие
     private Boolean isRegistered;
+    // Время чекина волонтёра (null если не отмечался)
+    private String checkInTime;
 
     public static EventResponseDto from(Event event) {
         return EventResponseDto.builder()
