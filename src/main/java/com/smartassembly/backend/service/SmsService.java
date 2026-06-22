@@ -62,8 +62,9 @@ public class SmsService {
             if (code == 0) {
                 log.info("✅ SMS отправлено на {}", phone);
             } else {
-                log.error("❌ Mobizon ошибка {}: {} | Номер: {} | Текст: {}",
-                        code, json.path("message").asText(), normalizedPhone, message);
+                log.error("❌ Mobizon ошибка {}: {} | data: {} | response: {} | Номер: {} | Текст: {}",
+                        code, json.path("message").asText(), json.path("data"),
+                        response, normalizedPhone, message);
             }
 
         } catch (Exception e) {
