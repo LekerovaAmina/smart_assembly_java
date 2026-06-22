@@ -3,6 +3,7 @@ package com.smartassembly.backend.service;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.smartassembly.backend.entity.Event;
+import com.smartassembly.backend.entity.RegistrationRequest;
 import com.smartassembly.backend.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class GoogleSheetsService {
 
     @Value("${google.sheets.spreadsheet-id}")
     private String spreadsheetId;
+
+    @Value("${google.sheets.applications-spreadsheet-id:}")
+    private String applicationsSpreadsheetId;
 
     // Записать список пользователей (полная перезапись листа)
     public void exportUsers(List<User> users) throws IOException {
@@ -121,6 +125,50 @@ public class GoogleSheetsService {
                 .update(spreadsheetId, range, body)
                 .setValueInputOption("USER_ENTERED")
                 .execute();
+    }
+
+    // Добавить заявку на вступление в отдельную таблицу «Заявки на вступление».
+    // Вызывается из вебхука Google Forms — заявка ещё не одобрена, пользователь
+    // в БД не создан, в таблицу users не пишем.
+    public void appendApplicationRequest(RegistrationRequest request) throws IOException {
+        if (applicationsSpreadsheetId == null || applicationsSpreadsheetId.isBlank()) {
+            log.warn("google.sheets.applications-spreadsheet-id не задан — заявка id={} не выгружена в Sheets",
+                    request.getId());
+            return;
+        }
+
+        String fullName = String.join(" ",
+                nullToEmpty(request.getLastName()),
+                nullToEmpty(request.getFirstName()),
+                nullToEmpty(request.getMiddleName())).trim();
+
+        List<List<Object>> rows = List.of(List.of(
+                request.getId() != null ? request.getId() : "",
+                fullName,
+                nullToEmpty(request.getPhone()),
+                nullToEmpty(request.getEmail()),
+                nullToEmpty(request.getIin()),
+                request.getBirthDate() != null ? request.getBirthDate().toString() : "",
+                nullToEmpty(request.getStudyPlace()),
+                nullToEmpty(request.getWorkPlace()),
+                nullToEmpty(request.getMotivation()),
+                request.getStatus() != null ? request.getStatus().name() : "",
+                request.getCreatedAt() != null ? request.getCreatedAt().toString() : ""
+        ));
+
+        ValueRange body = new ValueRange().setValues(rows);
+
+        sheetsService.spreadsheets().values()
+                .append(applicationsSpreadsheetId, "Заявки!A1", body)
+                .setValueInputOption("USER_ENTERED")
+                .setInsertDataOption("INSERT_ROWS")
+                .execute();
+
+        log.info("Добавлена заявка id={} в Google Sheets (applications)", request.getId());
+    }
+
+    private static String nullToEmpty(String s) {
+        return s == null ? "" : s;
     }
 
     // Вспомогательный метод — полная перезапись диапазона
