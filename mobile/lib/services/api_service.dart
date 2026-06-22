@@ -288,7 +288,7 @@ class ApiService {
     await _ensureToken();
     final body = <String, dynamic>{'userId': userId};
     if (checkInTime != null) {
-      final pad = (int n) => n.toString().padLeft(2, '0');
+      String pad(int n) => n.toString().padLeft(2, '0');
       body['checkInTime'] =
           '${checkInTime.year.toString().padLeft(4, '0')}-${pad(checkInTime.month)}-${pad(checkInTime.day)}T${pad(checkInTime.hour)}:${pad(checkInTime.minute)}:00';
     }

@@ -55,10 +55,12 @@ class _QrCheckinScreenState extends State<QrCheckinScreen> {
       final event = await context.read<ApiService>().getEvent(widget.eventId);
       if (mounted) setState(() { _event = event; _loadingEvent = false; });
     } catch (e) {
-      if (mounted) setState(() {
+      if (mounted) {
+        setState(() {
         _eventError = e.toString().replaceAll('Exception: ', '');
         _loadingEvent = false;
       });
+      }
     }
   }
 
@@ -68,9 +70,11 @@ class _QrCheckinScreenState extends State<QrCheckinScreen> {
       await context.read<ApiService>().selfCheckin(widget.eventId);
       if (mounted) setState(() => _confirmed = true);
     } catch (e) {
-      if (mounted) setState(() {
+      if (mounted) {
+        setState(() {
         _confirmError = e.toString().replaceAll('Exception: ', '');
       });
+      }
     } finally {
       if (mounted) setState(() => _confirming = false);
     }
