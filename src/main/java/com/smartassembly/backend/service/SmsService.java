@@ -37,12 +37,11 @@ public class SmsService {
             // Нормализуем номер: удаляем всё кроме цифр (Mobizon требует формат без +)
             String normalizedPhone = phone.replaceAll("[^0-9]", "");
 
-            // apiKey передаём в body КАЖДОГО запроса — Spring сам корректно
-            // form-url-encode'ит значения, исключая двойное кодирование URL.
+            // output=json / api=v1 — роутинговые URL-параметры Mobizon, должны
+            // идти в query string. apiKey/recipient/text — в form body POST,
+            // Spring сам корректно их URL-кодирует.
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             form.add("apiKey", apiKey);
-            form.add("output", "json");
-            form.add("api", "v1");
             form.add("recipient", normalizedPhone);
             form.add("text", message);
 
@@ -53,7 +52,7 @@ public class SmsService {
             log.debug("📤 Отправляем SMS на {} (нормализованный: {})", phone, normalizedPhone);
 
             String response = restTemplate.postForObject(
-                    "https://api.mobizon.kz/service/message/sendsmsmessage",
+                    "https://api.mobizon.kz/service/message/sendsmsmessage?output=json&api=v1",
                     request,
                     String.class);
 
