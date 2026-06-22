@@ -6,6 +6,7 @@ import '../models/user.dart';
 import '../models/event.dart';
 import '../models/attendee.dart';
 import '../models/attendance.dart';
+import '../models/strike.dart';
 
 class ApiService {
   static const String _tokenKey = 'jwt_token';
@@ -345,93 +346,112 @@ class ApiService {
   }
 
   // ── Rating ────────
-  Future<List<Map<String, dynamic>>> getRating() async {
+  Future<List<RatingEntry>> getRating() async {
     await _ensureToken();
     final res = await http.get(
-      Uri.parse(ApiConfig.getFullUrl('/api/users/rating')),
+      Uri.parse(ApiConfig.getFullUrl('/api/rating')),
       headers: _authHeaders(),
     );
     if (res.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(jsonDecode(res.body) as List);
+      final list = jsonDecode(res.body) as List;
+      return list
+          .map((e) => RatingEntry.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception('Ошибка: ${res.statusCode}');
   }
 
-  Future<List<Map<String, dynamic>>> getUsers() async {
+  Future<List<User>> getUsers({String? search}) async {
     await _ensureToken();
+    final query = (search != null && search.isNotEmpty)
+        ? '?search=${Uri.encodeQueryComponent(search)}'
+        : '';
     final res = await http.get(
-      Uri.parse(ApiConfig.getFullUrl('/api/users')),
+      Uri.parse(ApiConfig.getFullUrl('/api/users$query')),
       headers: _authHeaders(),
     );
     if (res.statusCode == 200) {
       final data = jsonDecode(res.body);
       final List<dynamic> items = data is List ? data : (data['content'] as List? ?? []);
-      return List<Map<String, dynamic>>.from(items);
+      return items
+          .map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception('Ошибка: ${res.statusCode}');
   }
 
-  Future<Map<String, dynamic>> getUserById(int userId) async {
+  Future<User> getUserById(int userId) async {
     await _ensureToken();
     final res = await http.get(
       Uri.parse(ApiConfig.getFullUrl('/api/users/$userId')),
       headers: _authHeaders(),
     );
-    if (res.statusCode == 200) return jsonDecode(res.body) as Map<String, dynamic>;
+    if (res.statusCode == 200) {
+      return User.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
+    }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception('Ошибка: ${res.statusCode}');
   }
 
-  Future<List<Map<String, dynamic>>> getMyStrikes() async {
+  Future<List<Strike>> getMyStrikes() async {
     await _ensureToken();
     final res = await http.get(
       Uri.parse(ApiConfig.getFullUrl('/api/strikes/my')),
       headers: _authHeaders(),
     );
     if (res.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(jsonDecode(res.body) as List);
+      final list = jsonDecode(res.body) as List;
+      return list
+          .map((e) => Strike.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception('Ошибка: ${res.statusCode}');
   }
 
-  Future<List<Map<String, dynamic>>> getVolunteerStrikes(int volunteerId) async {
+  Future<List<Strike>> getVolunteerStrikes(int volunteerId) async {
     await _ensureToken();
     final res = await http.get(
-      Uri.parse(ApiConfig.getFullUrl('/api/strikes/user/$volunteerId')),
+      Uri.parse(ApiConfig.getFullUrl('/api/strikes/volunteer/$volunteerId')),
       headers: _authHeaders(),
     );
     if (res.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(jsonDecode(res.body) as List);
+      final list = jsonDecode(res.body) as List;
+      return list
+          .map((e) => Strike.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception('Ошибка: ${res.statusCode}');
   }
 
-  Future<Map<String, dynamic>> createStrike(int volunteerId, String reason) async {
+  Future<Strike> createStrike(int volunteerId, Map<String, dynamic> data) async {
     await _ensureToken();
     final res = await http.post(
-      Uri.parse(ApiConfig.getFullUrl('/api/strikes')),
+      Uri.parse(ApiConfig.getFullUrl('/api/strikes/$volunteerId')),
       headers: _authHeaders(),
-      body: jsonEncode({'volunteerId': volunteerId, 'reason': reason}),
+      body: jsonEncode(data),
     );
     if (res.statusCode == 200 || res.statusCode == 201) {
-      return jsonDecode(res.body) as Map<String, dynamic>;
+      return Strike.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
     }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка: ${res.statusCode}');
   }
 
-  Future<List<Map<String, dynamic>>> getPendingAppeals() async {
+  Future<List<Appeal>> getPendingAppeals() async {
     await _ensureToken();
     final res = await http.get(
-      Uri.parse(ApiConfig.getFullUrl('/api/appeals/pending')),
+      Uri.parse(ApiConfig.getFullUrl('/api/strikes/appeals/pending')),
       headers: _authHeaders(),
     );
     if (res.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(jsonDecode(res.body) as List);
+      final list = jsonDecode(res.body) as List;
+      return list
+          .map((e) => Appeal.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception('Ошибка: ${res.statusCode}');
@@ -439,8 +459,8 @@ class ApiService {
 
   Future<Map<String, dynamic>> approveAppeal(int appealId) async {
     await _ensureToken();
-    final res = await http.patch(
-      Uri.parse(ApiConfig.getFullUrl('/api/appeals/$appealId/approve')),
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl('/api/strikes/appeals/$appealId/approve')),
       headers: _authHeaders(),
     );
     if (res.statusCode == 200) return jsonDecode(res.body) as Map<String, dynamic>;
@@ -448,11 +468,12 @@ class ApiService {
     throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка: ${res.statusCode}');
   }
 
-  Future<Map<String, dynamic>> rejectAppeal(int appealId) async {
+  Future<Map<String, dynamic>> rejectAppeal(int appealId, [String? comment]) async {
     await _ensureToken();
-    final res = await http.patch(
-      Uri.parse(ApiConfig.getFullUrl('/api/appeals/$appealId/reject')),
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl('/api/strikes/appeals/$appealId/reject')),
       headers: _authHeaders(),
+      body: jsonEncode({'comment': comment ?? ''}),
     );
     if (res.statusCode == 200) return jsonDecode(res.body) as Map<String, dynamic>;
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
@@ -462,9 +483,9 @@ class ApiService {
   Future<Map<String, dynamic>> createAppeal(int strikeId, String reason) async {
     await _ensureToken();
     final res = await http.post(
-      Uri.parse(ApiConfig.getFullUrl('/api/appeals')),
+      Uri.parse(ApiConfig.getFullUrl('/api/strikes/$strikeId/appeal')),
       headers: _authHeaders(),
-      body: jsonEncode({'strikeId': strikeId, 'reason': reason}),
+      body: jsonEncode({'reason': reason}),
     );
     if (res.statusCode == 200 || res.statusCode == 201) {
       return jsonDecode(res.body) as Map<String, dynamic>;
