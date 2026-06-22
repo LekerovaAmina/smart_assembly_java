@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (i) => setState(() => _currentIndex = i),
-        indicatorColor: kPrimary.withOpacity(0.15),
+        indicatorColor: kPrimary.withAlpha(38),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.event_outlined),
