@@ -3,7 +3,6 @@ package com.smartassembly.backend.service;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.smartassembly.backend.entity.Event;
-import com.smartassembly.backend.entity.RegistrationRequest;
 import com.smartassembly.backend.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +22,6 @@ public class GoogleSheetsService {
 
     @Value("${google.sheets.spreadsheet-id}")
     private String spreadsheetId;
-
-    @Value("${google.sheets.applications-spreadsheet-id:}")
-    private String applicationsSpreadsheetId;
 
     // Записать список пользователей (полная перезапись листа)
     public void exportUsers(List<User> users) throws IOException {
@@ -126,79 +121,6 @@ public class GoogleSheetsService {
                 .update(spreadsheetId, range, body)
                 .setValueInputOption("USER_ENTERED")
                 .execute();
-    }
-
-    // Форматы соответствуют тому, как Google Forms сама пишет в линкованный лист.
-    private static final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    // Лист, привязанный к Google Form. Имя в кавычках, потому что содержит пробелы и скобки.
-    private static final String APPLICATIONS_SHEET_RANGE = "'Ответы на форму (1)'!A1";
-
-    // Добавить заявку на вступление в лист, привязанный к Google Форме.
-    // Порядок колонок ОБЯЗАН совпадать с колонками формы:
-    //  A Отметка времени
-    //  B Фамилия, имя, отчество (если имеется)
-    //  C Дата рождения
-    //  D Номер телефона в формате (+7 ХХХ ХХХ ХХ ХХ)
-    //  E ИИН
-    //  F Адрес электронной почты
-    //  G Страница в Instagram
-    //  H Место учебы (при наличии)
-    //  I Место работы (при наличии)
-    //  J Имеется ли опыт в волонтерстве или общественной деятельности?
-    //  K Хобби и интересы
-    //  L Свободные дни в неделе
-    //  M Какими языками владеете и их уровень (А1-А2)
-    //  N Фото лица (без фильтров и масок)
-    //  O Какие мероприятия Вам интересны?
-    //  P Как узнали о нас?
-    //  Q Почему вы решили вступить в "Ассамблея Жастары"
-    public void appendApplicationRequest(RegistrationRequest request) throws IOException {
-        if (applicationsSpreadsheetId == null || applicationsSpreadsheetId.isBlank()) {
-            log.warn("google.sheets.applications-spreadsheet-id не задан — заявка id={} не выгружена в Sheets",
-                    request.getId());
-            return;
-        }
-
-        String fullName = String.join(" ",
-                nullToEmpty(request.getLastName()),
-                nullToEmpty(request.getFirstName()),
-                nullToEmpty(request.getMiddleName())).trim();
-
-        List<List<Object>> rows = List.of(List.of(
-                request.getCreatedAt() != null ? request.getCreatedAt().format(TS_FMT) : "",
-                fullName,
-                request.getBirthDate() != null ? request.getBirthDate().format(DATE_FMT) : "",
-                nullToEmpty(request.getPhone()),
-                nullToEmpty(request.getIin()),
-                nullToEmpty(request.getEmail()),
-                nullToEmpty(request.getInstagram()),
-                nullToEmpty(request.getStudyPlace()),
-                nullToEmpty(request.getWorkPlace()),
-                nullToEmpty(request.getVolunteeringExperience()),
-                nullToEmpty(request.getHobbies()),
-                nullToEmpty(request.getFreeDays()),
-                nullToEmpty(request.getLanguages()),
-                nullToEmpty(request.getPhotoUrl()),
-                nullToEmpty(request.getInterestedEvents()),
-                nullToEmpty(request.getDiscoverySource()),
-                nullToEmpty(request.getMotivation())
-        ));
-
-        ValueRange body = new ValueRange().setValues(rows);
-
-        sheetsService.spreadsheets().values()
-                .append(applicationsSpreadsheetId, APPLICATIONS_SHEET_RANGE, body)
-                .setValueInputOption("USER_ENTERED")
-                .setInsertDataOption("INSERT_ROWS")
-                .execute();
-
-        log.info("Добавлена заявка id={} в Google Sheets (applications)", request.getId());
-    }
-
-    private static String nullToEmpty(String s) {
-        return s == null ? "" : s;
     }
 
     // Вспомогательный метод — полная перезапись диапазона

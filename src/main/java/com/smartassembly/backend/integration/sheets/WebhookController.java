@@ -4,7 +4,6 @@ import com.smartassembly.backend.entity.Assembly;
 import com.smartassembly.backend.entity.RegistrationRequest;
 import com.smartassembly.backend.repository.AssemblyRepository;
 import com.smartassembly.backend.repository.RegistrationRequestRepository;
-import com.smartassembly.backend.service.GoogleSheetsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -30,7 +28,6 @@ public class WebhookController {
 
     private final RegistrationRequestRepository requestRepository;
     private final AssemblyRepository assemblyRepository;
-    private final GoogleSheetsService googleSheetsService;
 
     @Value("${google.sheets.default-assembly-id}")
     private Long defaultAssemblyId;
@@ -75,16 +72,6 @@ public class WebhookController {
 
         log.info("Заявка сохранена в registration_requests: id={}, email={}, phone={}",
                 saved.getId(), saved.getEmail(), saved.getPhone());
-
-        // Выгружаем заявку в отдельную таблицу Sheets «Заявки на вступление».
-        // В таблицу users НЕ пишем — это произойдёт только после одобрения HR.
-        try {
-            googleSheetsService.appendApplicationRequest(saved);
-        } catch (IOException e) {
-            log.error("Ошибка выгрузки заявки id={} в Google Sheets (applications): {}",
-                    saved.getId(), e.getMessage());
-            // Sheets не должен ломать основную логику вебхука.
-        }
 
         return ResponseEntity.ok(Map.of(
                 "status", "ok",
