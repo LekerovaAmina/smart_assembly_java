@@ -5,12 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -36,21 +37,25 @@ public class SmsService {
             // Нормализуем номер: удаляем всё кроме цифр (Mobizon требует формат без +)
             String normalizedPhone = phone.replaceAll("[^0-9]", "");
 
-            // URL-кодируем текст (важно для кириллицы!)
-            String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
+            // apiKey передаём в body КАЖДОГО запроса — Spring сам корректно
+            // form-url-encode'ит значения, исключая двойное кодирование URL.
+            MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+            form.add("apiKey", apiKey);
+            form.add("output", "json");
+            form.add("api", "v1");
+            form.add("recipient", normalizedPhone);
+            form.add("text", message);
 
-            String url = UriComponentsBuilder
-                    .fromHttpUrl("https://api.mobizon.kz/service/message/sendsmsmessage")
-                    .queryParam("output", "json")
-                    .queryParam("api", "v1")
-                    .queryParam("apiKey", apiKey)
-                    .queryParam("recipient", normalizedPhone)
-                    .queryParam("text", encodedMessage)
-                    .toUriString(); 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
 
             log.debug("📤 Отправляем SMS на {} (нормализованный: {})", phone, normalizedPhone);
 
-            String response = restTemplate.getForObject(url, String.class);
+            String response = restTemplate.postForObject(
+                    "https://api.mobizon.kz/service/message/sendsmsmessage",
+                    request,
+                    String.class);
 
             // Проверяем код ответа
             JsonNode json = objectMapper.readTree(response);
