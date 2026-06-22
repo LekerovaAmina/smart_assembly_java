@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,9 +128,32 @@ public class GoogleSheetsService {
                 .execute();
     }
 
-    // Добавить заявку на вступление в отдельную таблицу «Заявки на вступление».
-    // Вызывается из вебхука Google Forms — заявка ещё не одобрена, пользователь
-    // в БД не создан, в таблицу users не пишем.
+    // Форматы соответствуют тому, как Google Forms сама пишет в линкованный лист.
+    private static final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    // Лист, привязанный к Google Form. Имя в кавычках, потому что содержит пробелы и скобки.
+    private static final String APPLICATIONS_SHEET_RANGE = "'Ответы на форму (1)'!A1";
+
+    // Добавить заявку на вступление в лист, привязанный к Google Форме.
+    // Порядок колонок ОБЯЗАН совпадать с колонками формы:
+    //  A Отметка времени
+    //  B Фамилия, имя, отчество (если имеется)
+    //  C Дата рождения
+    //  D Номер телефона в формате (+7 ХХХ ХХХ ХХ ХХ)
+    //  E ИИН
+    //  F Адрес электронной почты
+    //  G Страница в Instagram
+    //  H Место учебы (при наличии)
+    //  I Место работы (при наличии)
+    //  J Имеется ли опыт в волонтерстве или общественной деятельности?
+    //  K Хобби и интересы
+    //  L Свободные дни в неделе
+    //  M Какими языками владеете и их уровень (А1-А2)
+    //  N Фото лица (без фильтров и масок)
+    //  O Какие мероприятия Вам интересны?
+    //  P Как узнали о нас?
+    //  Q Почему вы решили вступить в "Ассамблея Жастары"
     public void appendApplicationRequest(RegistrationRequest request) throws IOException {
         if (applicationsSpreadsheetId == null || applicationsSpreadsheetId.isBlank()) {
             log.warn("google.sheets.applications-spreadsheet-id не задан — заявка id={} не выгружена в Sheets",
@@ -143,23 +167,29 @@ public class GoogleSheetsService {
                 nullToEmpty(request.getMiddleName())).trim();
 
         List<List<Object>> rows = List.of(List.of(
-                request.getId() != null ? request.getId() : "",
+                request.getCreatedAt() != null ? request.getCreatedAt().format(TS_FMT) : "",
                 fullName,
+                request.getBirthDate() != null ? request.getBirthDate().format(DATE_FMT) : "",
                 nullToEmpty(request.getPhone()),
-                nullToEmpty(request.getEmail()),
                 nullToEmpty(request.getIin()),
-                request.getBirthDate() != null ? request.getBirthDate().toString() : "",
+                nullToEmpty(request.getEmail()),
+                nullToEmpty(request.getInstagram()),
                 nullToEmpty(request.getStudyPlace()),
                 nullToEmpty(request.getWorkPlace()),
-                nullToEmpty(request.getMotivation()),
-                request.getStatus() != null ? request.getStatus().name() : "",
-                request.getCreatedAt() != null ? request.getCreatedAt().toString() : ""
+                nullToEmpty(request.getVolunteeringExperience()),
+                nullToEmpty(request.getHobbies()),
+                nullToEmpty(request.getFreeDays()),
+                nullToEmpty(request.getLanguages()),
+                nullToEmpty(request.getPhotoUrl()),
+                nullToEmpty(request.getInterestedEvents()),
+                nullToEmpty(request.getDiscoverySource()),
+                nullToEmpty(request.getMotivation())
         ));
 
         ValueRange body = new ValueRange().setValues(rows);
 
         sheetsService.spreadsheets().values()
-                .append(applicationsSpreadsheetId, "Заявки!A1", body)
+                .append(applicationsSpreadsheetId, APPLICATIONS_SHEET_RANGE, body)
                 .setValueInputOption("USER_ENTERED")
                 .setInsertDataOption("INSERT_ROWS")
                 .execute();
