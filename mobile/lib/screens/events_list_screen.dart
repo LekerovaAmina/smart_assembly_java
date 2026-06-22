@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../main.dart' show kPrimary, UserState;
+import '../main.dart' show kPrimary, UserState, homeScaffoldKey;
 import '../models/event.dart';
 import '../services/api_service.dart';
 import 'event_detail_screen.dart';
@@ -141,6 +141,10 @@ class _EventsListScreenState extends State<EventsListScreen>
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: () => homeScaffoldKey.currentState?.openDrawer(),
+        ),
         title: Text(
           _isHr ? 'Управление мероприятиями' : 'Мероприятия',
           style: const TextStyle(

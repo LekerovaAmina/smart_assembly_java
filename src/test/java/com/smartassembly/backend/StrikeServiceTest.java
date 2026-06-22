@@ -53,7 +53,7 @@ class StrikeServiceTest {
     void createStrike_success() {
         StrikeCreateRequest request = new StrikeCreateRequest();
         request.setReason("Опоздание");
-        request.setSeverity(StrikeSeverity.YELLOW);
+        request.setSeverity(StrikeSeverity.WARNING);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(volunteer));
         when(strikeRepository.save(any())).thenAnswer(inv -> {
@@ -79,7 +79,7 @@ class StrikeServiceTest {
 
         StrikeCreateRequest request = new StrikeCreateRequest();
         request.setReason("Тест");
-        request.setSeverity(StrikeSeverity.YELLOW);
+        request.setSeverity(StrikeSeverity.WARNING);
 
         when(userRepository.findById(3L)).thenReturn(Optional.of(otherVolunteer));
 

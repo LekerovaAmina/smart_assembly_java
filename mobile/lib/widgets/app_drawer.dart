@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
+import '../screens/appeals_screen.dart';
+import '../screens/strikes_screen.dart';
+import '../screens/top_volunteers_screen.dart';
+import '../screens/volunteers_screen.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -36,6 +40,16 @@ class _AppDrawerState extends State<AppDrawer> {
       final user = await api.getMe();
       if (mounted) setState(() => _user = user);
     } catch (_) {}
+  }
+
+  bool get _isHr {
+    final role = _user?.role ?? '';
+    return role == 'HR' || role == 'ADMIN' || role == 'SUPER_ADMIN';
+  }
+
+  void _openScreen(BuildContext context, Widget screen) {
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
   }
 
   @override
@@ -119,6 +133,35 @@ class _AppDrawerState extends State<AppDrawer> {
                 widget.onNavTap(item.index);
               },
             )),
+        const Divider(height: 24),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+          child: Text('СООБЩЕСТВО',
+              style: TextStyle(fontSize: 11, color: Colors.grey, letterSpacing: 1)),
+        ),
+        ListTile(
+          leading: const Icon(Icons.emoji_events_outlined, color: Colors.grey),
+          title: const Text('Топ волонтёров'),
+          onTap: () => _openScreen(context, const TopVolunteersScreen()),
+        ),
+        if (_isHr)
+          ListTile(
+            leading: const Icon(Icons.groups_outlined, color: Colors.grey),
+            title: const Text('Волонтёры'),
+            onTap: () => _openScreen(context, const VolunteersScreen()),
+          ),
+        if (_isHr)
+          ListTile(
+            leading: const Icon(Icons.gavel_outlined, color: Colors.grey),
+            title: const Text('Апелляции'),
+            onTap: () => _openScreen(context, const AppealsScreen()),
+          ),
+        if (_user != null && !_isHr)
+          ListTile(
+            leading: const Icon(Icons.warning_amber_outlined, color: Colors.grey),
+            title: const Text('Мои страйки'),
+            onTap: () => _openScreen(context, const StrikesScreen()),
+          ),
       ],
     );
   }

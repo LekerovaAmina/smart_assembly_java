@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../main.dart' show homeScaffoldKey;
 import '../models/user.dart';
 import '../services/api_service.dart';
 
@@ -73,6 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: () => homeScaffoldKey.currentState?.openDrawer(),
+        ),
         title: const Text('Профиль',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: _primaryColor,

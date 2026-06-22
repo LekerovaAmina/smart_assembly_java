@@ -12,6 +12,10 @@ import 'widgets/app_drawer.dart';
 const kPrimary = Color(0xFFFF6B00);
 const kPrimaryHover = Color(0xFFE55F00);
 
+/// Глобальный ключ Scaffold-а HomeScreen — позволяет дочерним экранам
+/// открывать drawer через `homeScaffoldKey.currentState?.openDrawer()`.
+final GlobalKey<ScaffoldState> homeScaffoldKey = GlobalKey<ScaffoldState>();
+
 class UserState extends ChangeNotifier {
   User? _user;
   User? get user => _user;
@@ -174,6 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: homeScaffoldKey,
       drawer: AppDrawer(
         onLogout: widget.onLogout,
         currentIndex: _currentIndex,

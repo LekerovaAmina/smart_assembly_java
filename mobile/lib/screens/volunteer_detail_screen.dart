@@ -210,7 +210,7 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
 
   void _showStrikeDialog() {
     final reasonController = TextEditingController();
-    String severity = 'LOW';
+    String severity = 'WARNING';
 
     showDialog(
       context: context,
@@ -232,10 +232,8 @@ class _VolunteerDetailScreenState extends State<VolunteerDetailScreen> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'LOW', child: Text('Лёгкий')),
-                  DropdownMenuItem(value: 'MEDIUM', child: Text('Средний')),
-                  DropdownMenuItem(value: 'HIGH', child: Text('Серьёзный')),
-                  DropdownMenuItem(value: 'CRITICAL', child: Text('Критический')),
+                  DropdownMenuItem(value: 'WARNING', child: Text('Предупреждение')),
+                  DropdownMenuItem(value: 'STRIKE', child: Text('Страйк')),
                 ],
                 onChanged: (v) => setDialogState(() => severity = v!),
               ),
