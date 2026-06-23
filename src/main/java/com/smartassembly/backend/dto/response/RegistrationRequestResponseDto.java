@@ -18,13 +18,23 @@ public class RegistrationRequestResponseDto {
     private String status;
     private String assemblyName;
 
-    // Добавляем новые поля для отображения HR-у
+    // Поля для отображения HR-у в детальном окне
     private String iin;
     private String instagram;
     private String studyPlace;
     private String workPlace;
     private String hobbies;
     private String photoUrl;
+    private String volunteeringExperience;
+    private String freeDays;
+    private String languages;
+    private String interestedEvents;
+    private String discoverySource;
+
+    // Метаданные заявки и HR-аудит
+    private LocalDateTime createdAt;
+    private String hrComment;
+    private LocalDateTime reviewedAt;
 
     public static RegistrationRequestResponseDto from(RegistrationRequest r) {
         RegistrationRequestResponseDto dto = new RegistrationRequestResponseDto();
@@ -39,13 +49,21 @@ public class RegistrationRequestResponseDto {
         dto.setStatus(r.getStatus().name());
         dto.setAssemblyName(r.getAssembly().getAssemblyName());
 
-        // Мапим новые поля
         dto.setIin(r.getIin());
         dto.setInstagram(r.getInstagram());
         dto.setStudyPlace(r.getStudyPlace());
         dto.setWorkPlace(r.getWorkPlace());
         dto.setHobbies(r.getHobbies());
         dto.setPhotoUrl(r.getPhotoUrl());
+        dto.setVolunteeringExperience(r.getVolunteeringExperience());
+        dto.setFreeDays(r.getFreeDays());
+        dto.setLanguages(r.getLanguages());
+        dto.setInterestedEvents(r.getInterestedEvents());
+        dto.setDiscoverySource(r.getDiscoverySource());
+
+        dto.setCreatedAt(r.getCreatedAt());
+        dto.setHrComment(r.getHrComment());
+        dto.setReviewedAt(r.getReviewedAt());
 
         return dto;
     }

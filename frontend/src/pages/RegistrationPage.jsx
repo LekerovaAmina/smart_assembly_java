@@ -28,6 +28,165 @@ function SkeletonRow() {
   );
 }
 
+function formatDate(value) {
+  if (!value) return '—';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString('ru-RU');
+}
+
+function formatDateTime(value) {
+  if (!value) return '—';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleString('ru-RU');
+}
+
+function DetailField({ label, value, full = false }) {
+  return (
+    <div className={full ? 'col-span-2' : ''}>
+      <div className="text-xs text-text-muted mb-0.5">{label}</div>
+      <div className="text-sm text-text-primary break-words whitespace-pre-wrap">
+        {value && String(value).trim() ? value : '—'}
+      </div>
+    </div>
+  );
+}
+
+function DetailModal({ request, onApprove, onReject, onClose, actionLoading }) {
+  const isLoading = actionLoading === request.id;
+  const fullName = [request.lastName, request.firstName, request.middleName]
+    .filter(Boolean)
+    .join(' ');
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-surface rounded-card border border-border w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-start justify-between gap-3 z-10">
+          <div className="flex items-center gap-3">
+            {request.photoUrl ? (
+              <img
+                src={request.photoUrl}
+                alt={fullName}
+                className="w-12 h-12 rounded-full object-cover bg-gray-100 flex-shrink-0"
+                onError={e => { e.currentTarget.style.display = 'none'; }}
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-text-muted font-semibold flex-shrink-0">
+                {(request.firstName?.[0] ?? '') + (request.lastName?.[0] ?? '')}
+              </div>
+            )}
+            <div>
+              <h3 className="text-lg font-semibold text-text-primary">{fullName}</h3>
+              <p className="text-xs text-text-muted">
+                Заявка #{request.id} · создана {formatDateTime(request.createdAt)}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`text-xs font-medium px-2.5 py-1 rounded-badge ${STATUS_COLORS[request.status] ?? 'bg-gray-100 text-gray-600'}`}>
+              {STATUS_LABELS[request.status] ?? request.status}
+            </span>
+            <button
+              onClick={onClose}
+              className="text-text-muted hover:text-text-primary text-xl leading-none px-1"
+              aria-label="Закрыть"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <div className="px-6 py-5 space-y-5">
+          <section>
+            <h4 className="text-xs font-semibold text-text-muted uppercase mb-2">Контакты</h4>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <DetailField label="Телефон" value={request.phone} />
+              <DetailField label="Email" value={request.email} />
+              <DetailField label="Instagram" value={request.instagram} />
+              <DetailField label="Отделение" value={request.assemblyName} />
+            </div>
+          </section>
+
+          <section>
+            <h4 className="text-xs font-semibold text-text-muted uppercase mb-2">Личные данные</h4>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <DetailField label="Дата рождения" value={formatDate(request.birthDate)} />
+              <DetailField label="ИИН" value={request.iin} />
+              <DetailField label="Место учёбы" value={request.studyPlace} />
+              <DetailField label="Место работы" value={request.workPlace} />
+              <DetailField label="Свободные дни" value={request.freeDays} />
+              <DetailField label="Языки" value={request.languages} />
+            </div>
+          </section>
+
+          <section>
+            <h4 className="text-xs font-semibold text-text-muted uppercase mb-2">О себе</h4>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <DetailField label="Опыт волонтёрства" value={request.volunteeringExperience} full />
+              <DetailField label="Хобби и интересы" value={request.hobbies} full />
+              <DetailField label="Интересные мероприятия" value={request.interestedEvents} full />
+              <DetailField label="Как узнал о нас" value={request.discoverySource} full />
+              <DetailField label="Почему хочет вступить" value={request.motivation} full />
+            </div>
+          </section>
+
+          {(request.hrComment || request.reviewedAt) && (
+            <section>
+              <h4 className="text-xs font-semibold text-text-muted uppercase mb-2">Решение HR</h4>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                <DetailField label="Когда рассмотрено" value={formatDateTime(request.reviewedAt)} />
+                <DetailField label="Комментарий HR" value={request.hrComment} full />
+              </div>
+            </section>
+          )}
+        </div>
+
+        <div className="sticky bottom-0 bg-surface border-t border-border px-6 py-3 flex justify-end gap-2">
+          {request.status === 'PENDING' ? (
+            <>
+              <button
+                onClick={onClose}
+                disabled={isLoading}
+                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
+              >
+                Закрыть
+              </button>
+              <button
+                onClick={() => onReject(request)}
+                disabled={isLoading}
+                className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-sm font-medium rounded-btn transition-colors disabled:opacity-50"
+              >
+                ✕ Отклонить
+              </button>
+              <button
+                onClick={() => onApprove(request.id)}
+                disabled={isLoading}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-btn transition-colors disabled:opacity-50"
+              >
+                {isLoading ? 'Обработка...' : '✓ Принять'}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-btn transition-colors"
+            >
+              Закрыть
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RejectModal({ request, onConfirm, onCancel }) {
   const [comment, setComment] = useState('');
   return (
@@ -69,11 +228,23 @@ function RejectModal({ request, onConfirm, onCancel }) {
   );
 }
 
-function RequestCard({ request, onApprove, onReject, actionLoading }) {
+function RequestCard({ request, onApprove, onReject, onOpenDetails, actionLoading }) {
   const isLoading = actionLoading === request.id;
+  const stop = e => e.stopPropagation();
 
   return (
-    <div className="bg-surface rounded-card border border-border p-5 flex flex-col gap-3">
+    <div
+      onClick={() => onOpenDetails(request)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpenDetails(request);
+        }
+      }}
+      className="bg-surface rounded-card border border-border p-5 flex flex-col gap-3 cursor-pointer hover:border-primary/40 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-primary/30"
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-text-muted font-semibold text-sm flex-shrink-0">
@@ -101,13 +272,13 @@ function RequestCard({ request, onApprove, onReject, actionLoading }) {
       </div>
 
       {request.motivation && (
-        <div className="bg-gray-50 rounded-lg px-3 py-2 text-xs text-text-secondary border-l-2 border-primary italic">
+        <div className="bg-gray-50 rounded-lg px-3 py-2 text-xs text-text-secondary border-l-2 border-primary italic line-clamp-2">
           {request.motivation}
         </div>
       )}
 
       {request.status === 'PENDING' && (
-        <div className="flex gap-2 pt-1">
+        <div className="flex gap-2 pt-1" onClick={stop}>
           <button
             onClick={() => onApprove(request.id)}
             disabled={isLoading}
@@ -138,6 +309,7 @@ export default function RegistrationPage() {
   const [activeTab, setActiveTab] = useState('PENDING');
   const [actionLoading, setActionLoading] = useState(null);
   const [rejectTarget, setRejectTarget] = useState(null);
+  const [detailTarget, setDetailTarget] = useState(null);
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => {
@@ -175,6 +347,7 @@ export default function RegistrationPage() {
     try {
       const res = await approveRegistration(id);
       showToast(`Заявка принята. ID: ${res.data?.uniqueId ?? '—'}`);
+      setDetailTarget(null);
       fetchRequests();
     } catch (err) {
       showToast(err.response?.data?.message || 'Ошибка при одобрении', 'error');
@@ -190,6 +363,7 @@ export default function RegistrationPage() {
     try {
       await rejectRegistration(id, comment);
       showToast('Заявка отклонена');
+      setDetailTarget(null);
       fetchRequests();
     } catch (err) {
       showToast(err.response?.data?.message || 'Ошибка при отклонении', 'error');
@@ -227,6 +401,16 @@ export default function RegistrationPage() {
           request={rejectTarget}
           onConfirm={handleRejectConfirm}
           onCancel={() => setRejectTarget(null)}
+        />
+      )}
+
+      {detailTarget && (
+        <DetailModal
+          request={detailTarget}
+          onApprove={handleApprove}
+          onReject={setRejectTarget}
+          onClose={() => setDetailTarget(null)}
+          actionLoading={actionLoading}
         />
       )}
 
@@ -279,6 +463,7 @@ export default function RegistrationPage() {
                 request={req}
                 onApprove={handleApprove}
                 onReject={setRejectTarget}
+                onOpenDetails={setDetailTarget}
                 actionLoading={actionLoading}
               />
             ))
