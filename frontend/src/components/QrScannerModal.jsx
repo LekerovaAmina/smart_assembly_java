@@ -1,11 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 /**
- * Компонент для сканирования QR-кода с камеры телефона
- * Волонтер наводит камеру на QR - чекин происходит автоматически
- * БЕЗ кнопок подтверждения
+ * Извлекает eventId из содержимого QR-кода.
+ * Поддерживаемые форматы:
+ *   "event_123"
+ *   "123"
+ *   "https://smart-assembly.org/events/123"
+ *   любая строка, содержащая /events/<id> или event_<id>
  */
-export default function QrScannerModal({ eventId, onSuccess, onClose }) {
+function parseEventIdFromQr(qrData) {
+  if (!qrData) return null;
+  const data = String(qrData).trim();
+
+  const eventPrefix = data.match(/event_(\d+)/i);
+  if (eventPrefix) return eventPrefix[1];
+
+  const urlMatch = data.match(/\/events\/(\d+)/i);
+  if (urlMatch) return urlMatch[1];
+
+  if (/^\d+$/.test(data)) return data;
+
+  return null;
+}
+
+/**
+ * Сканер QR. Парсит eventId из QR и навигирует на страницу события
+ * с параметром ?from_qr=true. Сам чекин делает уже EventDetailPage.
+ */
+export default function QrScannerModal({ onClose }) {
+  const navigate = useNavigate();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [scanning, setScanning] = useState(true);
@@ -119,61 +143,29 @@ export default function QrScannerModal({ eventId, onSuccess, onClose }) {
   };
 
   /**
-   * Обработка отсканированного QR-кода
-   * Сразу отправляем check-in БЕЗ подтверждения
+   * Обработка отсканированного QR-кода.
+   * Парсим eventId и навигируем на страницу события с флагом from_qr.
+   * Сам чекин происходит уже там по нажатию кнопки.
    */
-  const handleQrScanned = async (qrData) => {
+  const handleQrScanned = (qrData) => {
     setScannedData(qrData);
-    setScanning(false); // Останавливаем сканирование
+    setScanning(false);
 
-    try {
-      // Извлекаем токен из QR-кода (если он зашифрован в формате)
-      // Предполагаем, что бэкенд ожидает строку вида: "eventUuid:token" или просто "token"
-      const token = qrData.includes(':')
-        ? qrData.split(':')[1]
-        : qrData;
-
-      // Отправляем check-in на сервер
-      const response = await fetch(`/api/v1/responses/check-in/${eventId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          qrToken: token
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message ||
-          `Ошибка чекина: ${response.status}`
-        );
-      }
-
-      const data = await response.json();
-      console.log('✅ Чекин успешен:', data);
-
-      // Сигнализируем об успехе и закрываем модаль
-      onSuccess?.({
-        message: data.message || '✅ Твой приход отмечен!',
-        checkInTime: data.checkInTime
-      });
-
-      // Закрываем модаль с небольшой задержкой для отображения сообщения
-      setTimeout(onClose, 800);
-    } catch (err) {
-      console.error('Ошибка при отправке чекина:', err);
-      setError(err.message);
-
-      // Восстанавливаем сканирование при ошибке
+    const eventId = parseEventIdFromQr(qrData);
+    if (!eventId) {
+      setError('QR не содержит идентификатор мероприятия');
       setTimeout(() => {
         setScannedData(null);
         setScanning(true);
       }, 2000);
+      return;
     }
+
+    // Небольшая задержка, чтобы показать «✅ Отсканировано», и переходим.
+    setTimeout(() => {
+      onClose?.();
+      navigate(`/events/${eventId}?from_qr=true`);
+    }, 400);
   };
 
   return (

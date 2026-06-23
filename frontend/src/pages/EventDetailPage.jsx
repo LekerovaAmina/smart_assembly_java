@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   getEventById, registerEvent, unregisterEvent, publishEvent,
   deleteEvent, completeEvent, getEventQr, getAttendees,
-  updateAttendeeHours, checkinUser,
+  updateAttendeeHours, checkinUser, checkinSelf,
 } from '../api';
 import { useAuth } from '../context/AuthContext';
 import Badge from '../components/Badge';
@@ -174,6 +174,8 @@ function QrModal({ eventId, onClose }) {
 export default function EventDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const fromQr = searchParams.get('from_qr') === 'true';
   const { isHr } = useAuth();
 
   const [event, setEvent] = useState(null);
@@ -189,6 +191,11 @@ export default function EventDetailPage() {
   const [showQr, setShowQr] = useState(false);
   const [showQrScanner, setShowQrScanner] = useState(false);
   const [completeMsg, setCompleteMsg] = useState(null);
+
+  // QR-checkin состояние
+  const [qrCheckinLoading, setQrCheckinLoading] = useState(false);
+  const [qrCheckinDone, setQrCheckinDone] = useState(false);
+  const [qrCheckinError, setQrCheckinError] = useState(null);
 
   const fetchEvent = useCallback(async () => {
     setLoading(true);
@@ -272,6 +279,27 @@ export default function EventDetailPage() {
     }
   };
 
+  const handleQrCheckin = async () => {
+    setQrCheckinLoading(true);
+    setQrCheckinError(null);
+    try {
+      await checkinSelf(id);
+      setQrCheckinDone(true);
+      // Снимаем флаг from_qr из URL, чтобы рефреш страницы не показывал
+      // баннер заново.
+      const next = new URLSearchParams(searchParams);
+      next.delete('from_qr');
+      setSearchParams(next, { replace: true });
+      await fetchEvent();
+      // Возвращаем на список через 2.5 секунды
+      setTimeout(() => navigate('/events'), 2500);
+    } catch (e) {
+      setQrCheckinError(e.response?.data?.message || 'Не удалось подтвердить присутствие');
+    } finally {
+      setQrCheckinLoading(false);
+    }
+  };
+
   const handleComplete = async () => {
     if (!window.confirm('Завершить мероприятие и начислить часы всем участникам? Это действие необратимо.')) return;
     setActionLoading(true);
@@ -314,19 +342,64 @@ export default function EventDetailPage() {
   const isCompleted = event.status === 'COMPLETED';
 
   return (
-    <div>
+    <div className="relative">
       {showQr && <QrModal eventId={id} onClose={() => setShowQr(false)} />}
 
-      {/* QR Scanner Modal для волонтеров */}
+      {/* QR Scanner Modal — теперь только парсит QR и навигирует */}
       {showQrScanner && (
-        <QrScannerModal
-          eventId={id}
-          onSuccess={(result) => {
-            alert(result.message);
-            fetchEvent();
-          }}
-          onClose={() => setShowQrScanner(false)}
-        />
+        <QrScannerModal onClose={() => setShowQrScanner(false)} />
+      )}
+
+      {/* Баннер подтверждения присутствия после сканирования QR */}
+      {fromQr && !qrCheckinDone && (
+        <div className="mb-6 rounded-card border-2 border-primary bg-orange-50 p-6 shadow-md">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-xl flex-shrink-0">📍</div>
+            <div className="flex-1">
+              <h2 className="text-base font-bold text-text-primary">
+                Подтвердите присутствие
+              </h2>
+              <p className="text-sm text-text-secondary">
+                Вы отсканировали QR мероприятия «{event.eventName}».
+              </p>
+            </div>
+          </div>
+
+          {qrCheckinError && (
+            <div className="mb-3 px-3 py-2 rounded bg-red-50 border border-red-200 text-sm text-red-700">
+              {qrCheckinError}
+            </div>
+          )}
+
+          <button
+            onClick={handleQrCheckin}
+            disabled={qrCheckinLoading}
+            className="w-full px-5 py-3 bg-primary hover:bg-primary-hover text-white text-base font-semibold rounded-btn transition-colors shadow-sm cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {qrCheckinLoading ? (
+              <>
+                <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Подтверждаем...
+              </>
+            ) : (
+              <>✓ Подтвердить присутствие</>
+            )}
+          </button>
+          <p className="text-xs text-text-muted text-center mt-2">
+            Часы начнут начисляться сразу после подтверждения
+          </p>
+        </div>
+      )}
+
+      {/* Тост об успешном QR-чекине */}
+      {qrCheckinDone && (
+        <div className="mb-6 rounded-card border-2 border-green-300 bg-green-50 p-5 shadow-md text-center">
+          <div className="text-4xl mb-2">✅</div>
+          <p className="text-base font-bold text-green-700">
+            Вы зарегистрированы! Часы начали считаться.
+          </p>
+          <p className="text-xs text-green-600 mt-1">Возвращаемся к списку мероприятий…</p>
+        </div>
       )}
 
       {/* Заголовок */}
