@@ -7,6 +7,8 @@ import '../models/event.dart';
 import '../models/attendee.dart';
 import '../models/attendance.dart';
 import '../models/strike.dart';
+import '../models/registration_request.dart';
+import '../models/hours_history.dart';
 
 class ApiService {
   static const String _tokenKey = 'jwt_token';
@@ -478,6 +480,104 @@ class ApiService {
     if (res.statusCode == 200) return jsonDecode(res.body) as Map<String, dynamic>;
     if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
     throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка: ${res.statusCode}');
+  }
+
+  // ── Registration (HR) ─────────────────────────────────────────────────────
+
+  Future<List<RegistrationRequest>> getRegistrationRequests({
+    String status = 'PENDING',
+    int page = 0,
+    int size = 50,
+  }) async {
+    await _ensureToken();
+    final qp = 'status=$status&page=$page&size=$size';
+    final res = await http.get(
+      Uri.parse(ApiConfig.getFullUrl('/api/registration/all?$qp')),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      final List<dynamic> items =
+          data is List ? data : (data['content'] as List? ?? []);
+      return items
+          .map((e) => RegistrationRequest.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки заявок: ${res.statusCode}');
+  }
+
+  Future<Map<String, dynamic>> approveRegistration(int id) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl('/api/registration/$id/approve')),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      return _tryDecode(res.body);
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка одобрения: ${res.statusCode}');
+  }
+
+  Future<void> rejectRegistration(int id, String comment) async {
+    await _ensureToken();
+    final res = await http.post(
+      Uri.parse(ApiConfig.getFullUrl('/api/registration/$id/reject')),
+      headers: _authHeaders(),
+      body: jsonEncode({'comment': comment}),
+    );
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    if (res.statusCode != 200 && res.statusCode != 201) {
+      throw Exception(_tryDecode(res.body)['message'] ?? 'Ошибка отклонения: ${res.statusCode}');
+    }
+  }
+
+  // ── Volunteer hours ───────────────────────────────────────────────────────
+
+  Future<HoursSummary> getMyHoursSummary() async {
+    await _ensureToken();
+    final res = await http.get(
+      Uri.parse(ApiConfig.getFullUrl('/api/volunteers/me/hours')),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      return HoursSummary.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки часов: ${res.statusCode}');
+  }
+
+  Future<HoursHistoryPage> getMyHoursHistory({
+    String? type,
+    String? from,
+    String? to,
+    int page = 0,
+    int size = 20,
+  }) async {
+    await _ensureToken();
+    final qp = <String, String>{
+      'page': '$page',
+      'size': '$size',
+      'sort': 'createdAt,desc',
+    };
+    if (type != null && type.isNotEmpty) qp['type'] = type;
+    if (from != null && from.isNotEmpty) qp['from'] = from;
+    if (to != null && to.isNotEmpty) qp['to'] = to;
+
+    final query = qp.entries
+        .map((e) => '${e.key}=${Uri.encodeQueryComponent(e.value)}')
+        .join('&');
+
+    final res = await http.get(
+      Uri.parse(ApiConfig.getFullUrl('/api/volunteers/me/hours/history?$query')),
+      headers: _authHeaders(),
+    );
+    if (res.statusCode == 200) {
+      return HoursHistoryPage.fromJson(jsonDecode(res.body));
+    }
+    if (res.statusCode == 401) { await logout(); throw Exception('Сессия истекла'); }
+    throw Exception('Ошибка загрузки истории: ${res.statusCode}');
   }
 
   Future<Map<String, dynamic>> createAppeal(int strikeId, String reason) async {

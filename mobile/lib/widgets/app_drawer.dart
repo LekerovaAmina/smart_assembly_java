@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 import '../screens/appeals_screen.dart';
+import '../screens/registration_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/statistics_screen.dart';
 import '../screens/strikes_screen.dart';
 import '../screens/top_volunteers_screen.dart';
 import '../screens/volunteers_screen.dart';
@@ -152,6 +155,12 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
         if (_isHr)
           ListTile(
+            leading: const Icon(Icons.how_to_reg_outlined, color: Colors.grey),
+            title: const Text('Заявки на вступление'),
+            onTap: () => _openScreen(context, const RegistrationScreen()),
+          ),
+        if (_isHr)
+          ListTile(
             leading: const Icon(Icons.gavel_outlined, color: Colors.grey),
             title: const Text('Апелляции'),
             onTap: () => _openScreen(context, const AppealsScreen()),
@@ -162,6 +171,23 @@ class _AppDrawerState extends State<AppDrawer> {
             title: const Text('Мои страйки'),
             onTap: () => _openScreen(context, const StrikesScreen()),
           ),
+        if (_user != null && !_isHr)
+          ListTile(
+            leading: const Icon(Icons.bar_chart_outlined, color: Colors.grey),
+            title: const Text('Статистика часов'),
+            onTap: () => _openScreen(context, const StatisticsScreen()),
+          ),
+        const Divider(height: 24),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+          child: Text('АККАУНТ',
+              style: TextStyle(fontSize: 11, color: Colors.grey, letterSpacing: 1)),
+        ),
+        ListTile(
+          leading: const Icon(Icons.settings_outlined, color: Colors.grey),
+          title: const Text('Настройки'),
+          onTap: () => _openScreen(context, SettingsScreen(onLogout: widget.onLogout)),
+        ),
       ],
     );
   }
