@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  // Относительный URL — фронт и бэк отдаются с одного домена.
+  // В деве `npm run dev` Vite проксирует /api → localhost:8080
+  // (см. vite.config.js). В проде nginx сам маршрутизирует /api на бэкенд.
+  baseURL: '/api',
 });
 
 // ── Интерцепторы ──────────────────────────────────────────────────────────────
