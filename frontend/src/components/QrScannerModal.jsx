@@ -3,21 +3,22 @@ import { useNavigate } from 'react-router-dom';
 
 /**
  * Извлекает eventId из содержимого QR-кода.
- * Поддерживаемые форматы:
- *   "event_123"
- *   "123"
- *   "https://smart-assembly.org/events/123"
- *   любая строка, содержащая /events/<id> или event_<id>
+ * Бэкенд кладёт в QR `${app.frontend.url}/checkin/{id}`, поэтому первым
+ * матчим именно этот формат. Дополнительно поддерживаем event_NN, /events/NN
+ * и голое число — на случай ручных QR.
  */
 function parseEventIdFromQr(qrData) {
   if (!qrData) return null;
   const data = String(qrData).trim();
 
+  const checkinMatch = data.match(/\/checkin\/(\d+)/i);
+  if (checkinMatch) return checkinMatch[1];
+
   const eventPrefix = data.match(/event_(\d+)/i);
   if (eventPrefix) return eventPrefix[1];
 
-  const urlMatch = data.match(/\/events\/(\d+)/i);
-  if (urlMatch) return urlMatch[1];
+  const eventsUrlMatch = data.match(/\/events\/(\d+)/i);
+  if (eventsUrlMatch) return eventsUrlMatch[1];
 
   if (/^\d+$/.test(data)) return data;
 
