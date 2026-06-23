@@ -77,7 +77,6 @@ const SettingsIcon = () => (
 const volunteerNavItems = [
   { to: '/events', label: 'Мероприятия', Icon: CalendarIcon },
   { to: '/rating', label: 'Рейтинг', Icon: TrophyIcon },
-  { to: '/my-events', label: 'Мои мероприятия', Icon: ListIcon },
   { to: '/strikes', label: 'Страйки', Icon: AlertIcon },
   { to: '/statistics', label: 'Статистика', Icon: BarChartIcon },
 ];
