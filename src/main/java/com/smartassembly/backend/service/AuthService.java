@@ -1,14 +1,19 @@
 package com.smartassembly.backend.service;
 
+import com.smartassembly.backend.dto.request.LoginRequest;
 import com.smartassembly.backend.dto.request.VerifyOtpRequest;
 import com.smartassembly.backend.dto.response.AuthResponse;
 import com.smartassembly.backend.entity.OtpCode;
 import com.smartassembly.backend.entity.User;
+import com.smartassembly.backend.exception.EntityNotFoundException;
+import com.smartassembly.backend.exception.InvalidCredentialsException;
+import com.smartassembly.backend.exception.UserNotApprovedException;
 import com.smartassembly.backend.repository.OtpCodeRepository;
 import com.smartassembly.backend.repository.UserRepository;
 import com.smartassembly.backend.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +29,38 @@ public class AuthService {
     private final OtpCodeRepository otpCodeRepository;
     private final JwtUtil jwtUtil;
     private final SmsService smsService;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public AuthResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден."));
+
+        if (user.getPasswordHash() == null) {
+            throw new InvalidCredentialsException("Пароль ещё не установлен. Проверьте почту — мы отправили ссылку для установки пароля.");
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            throw new InvalidCredentialsException("Неверный email или пароль.");
+        }
+
+        if (!user.getIsActive()) {
+            throw new UserNotApprovedException("Ваша заявка ещё не одобрена HR.");
+        }
+
+        user.setLastActivity(LocalDateTime.now());
+        userRepository.save(user);
+
+        return buildAuthResponse(user);
+    }
 
     @Transactional
     public void sendOtp(String phone) {
         User user = userRepository.findByPhone(phone)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден. Сначала подайте заявку на вступление."));
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден. Сначала подайте заявку на вступление."));
 
         if (!user.getIsActive()) {
-            throw new RuntimeException("Ваша заявка ещё не одобрена HR.");
+            throw new UserNotApprovedException("Ваша заявка ещё не одобрена HR.");
         }
 
         otpCodeRepository.invalidateAllByPhone(phone);
@@ -57,22 +86,26 @@ public class AuthService {
                 .findTopByPhoneAndIsUsedFalseAndExpiresAtAfterOrderByCreatedAtDesc(
                         request.getPhone(), LocalDateTime.now()
                 )
-                .orElseThrow(() -> new RuntimeException("Код не найден или истёк. Запросите новый."));
+                .orElseThrow(() -> new InvalidCredentialsException("Код не найден или истёк. Запросите новый."));
 
         if (!otpCode.getCode().equals(request.getCode())) {
-            throw new RuntimeException("Неверный код.");
+            throw new InvalidCredentialsException("Неверный код.");
         }
 
         otpCode.setIsUsed(true);
         otpCodeRepository.save(otpCode);
 
         User user = userRepository.findByPhone(request.getPhone())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден."));
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден."));
 
         user.setLastActivity(LocalDateTime.now());
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getPhone());
+        return buildAuthResponse(user);
+    }
+
+    private AuthResponse buildAuthResponse(User user) {
+        String token = jwtUtil.generateToken(user.getEmail());
 
         return AuthResponse.builder()
                 .token(token)

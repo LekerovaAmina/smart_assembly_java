@@ -91,6 +91,13 @@ public class User {
     @Builder.Default
     private Boolean isActive = false; // false до одобрения HR
 
+    // Вход по email+паролю
+    @Column(name = "password_hash")
+    private String passwordHash;
+
+    @Column(name = "password_set_at")
+    private LocalDateTime passwordSetAt;
+
     @CreationTimestamp
     @Column(name = "registration_date", updatable = false)
     private LocalDateTime registrationDate;

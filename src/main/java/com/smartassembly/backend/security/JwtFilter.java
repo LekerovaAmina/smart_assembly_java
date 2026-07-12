@@ -40,9 +40,9 @@ public class JwtFilter extends OncePerRequestFilter {
             log.debug("[JWT] Token valid: {}", valid);
 
             if (valid) {
-                String phone = jwtUtil.extractPhone(token);
+                String email = jwtUtil.extractEmail(token);
 
-                User user = userRepository.findByPhone(phone).orElse(null);
+                User user = userRepository.findByEmail(email).orElse(null);
                 log.debug("[JWT] User found: {}", user != null ? "role=" + user.getRole() + " active=" + user.getIsActive() : "NULL");
 
                 if (user != null && user.getIsActive()) {

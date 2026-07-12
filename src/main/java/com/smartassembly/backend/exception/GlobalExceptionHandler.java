@@ -46,6 +46,16 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, "DUPLICATE_ENTITY", ex.getMessage(), request, null);
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex, HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", ex.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(UserNotApprovedException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotApproved(UserNotApprovedException ex, HttpServletRequest request) {
+        return build(HttpStatus.FORBIDDEN, "USER_NOT_APPROVED", ex.getMessage(), request, null);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntime(RuntimeException ex, HttpServletRequest request) {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", ex.getMessage(), request, null);
