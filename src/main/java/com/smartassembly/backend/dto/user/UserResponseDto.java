@@ -15,7 +15,9 @@ public class UserResponseDto {
     private String uniqueId;
     private String firstName;
     private String lastName;
+    private String middleName;
     private String phone;
+    private String email;
     private UserRole role;
     private UserStatus status;
     private BigDecimal totalHours;

@@ -59,6 +59,12 @@ const ScaleIcon = () => (
   </svg>
 );
 
+const ShieldIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
 const ClipboardIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -87,6 +93,11 @@ const hrNavItems = [
   { to: '/analytics', label: 'Аналитика', Icon: TrendingUpIcon },
   { to: '/appeals', label: 'Апелляции', Icon: ScaleIcon },
   { to: '/hr/volunteers', label: 'Волонтёры', Icon: ListIcon },
+];
+
+// Навигация только для SUPER_ADMIN
+const adminNavItems = [
+  { to: '/admin/users', label: 'Пользователи', Icon: ShieldIcon },
 ];
 
 function NavItem({ to, label, Icon, badge, onClick }) {
@@ -122,7 +133,7 @@ const XIcon = () => (
 );
 
 export default function Sidebar({ isOpen, onClose }) {
-  const { isHr } = useAuth();
+  const { isHr, isSuperAdmin } = useAuth();
 
   return (
     <aside className={`fixed top-0 left-0 h-screen w-[240px] bg-sidebar border-r border-border flex flex-col z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
@@ -162,6 +173,20 @@ export default function Sidebar({ isOpen, onClose }) {
             <ul className="space-y-0.5 px-2">
               {hrNavItems.map(item => (
                 <NavItem key={item.to} {...item} badge="HR" onClick={onClose} />
+              ))}
+            </ul>
+          </>
+        )}
+
+        {isSuperAdmin && (
+          <>
+            <div className="mx-4 my-2 border-t border-border" />
+            <p className="px-4 py-1 text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+              Администрирование
+            </p>
+            <ul className="space-y-0.5 px-2">
+              {adminNavItems.map(item => (
+                <NavItem key={item.to} {...item} badge="ADMIN" onClick={onClose} />
               ))}
             </ul>
           </>
