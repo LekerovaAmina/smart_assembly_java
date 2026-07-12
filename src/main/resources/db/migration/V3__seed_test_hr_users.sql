@@ -19,5 +19,12 @@ VALUES
         'Милана', 'Сондрагайло', 'Григорьевна',
         'milmila0307@gmail.com', '+77474150577', 'ACTIVE', 'HR', TRUE,
         '$2a$10$TanO.cJFpllujIJhUlu4c.I0C3O9wHhkHAtGXcCq/CDocgQ55/U26', now()
-    )
+    ),
+    (
+        (SELECT assembly_id FROM assemblies ORDER BY assembly_id LIMIT 1),
+        'Мариель', 'Негматьянова', 'Айратовна',
+        'mariel.2007.zorro@gmail.com', '+77768124650', 'ACTIVE', 'HR', TRUE,
+        '$2a$12$ZHM.mbjY.PfCt2Nm23zj6exf8K394Ij0UWQFSmrp8nK4J8bEr7oDi', now()
+    ),
+
 ON CONFLICT (email) DO NOTHING;

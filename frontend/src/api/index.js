@@ -28,6 +28,9 @@ api.interceptors.response.use(
 );
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
+export const login = (email, password) =>
+  api.post('/auth/login', { email, password });
+
 export const sendCode = (phone) =>
   api.post('/auth/send-code', { phone });
 
