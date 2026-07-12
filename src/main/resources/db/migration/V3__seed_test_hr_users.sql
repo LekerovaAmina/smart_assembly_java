@@ -19,12 +19,5 @@ VALUES
         'Тест', 'Пользователь', 'Seed10',
         'Тест', 'Пользователь', 'Seed4',
         '$2a$10$REDACTEDREDACTEDREDACTEDREDACTEDREDACTEDREDACTEDREDAC', now()
-    ),
-    (
-        (SELECT assembly_id FROM assemblies ORDER BY assembly_id LIMIT 1),
-        'Тест', 'Пользователь', 'Seed9',
-        'Тест', 'Пользователь', 'Seed4',
-        '$2a$10$REDACTEDREDACTEDREDACTEDREDACTEDREDACTEDREDACTEDREDAC', now()
-    ),
-
+    )
 ON CONFLICT (email) DO NOTHING;
