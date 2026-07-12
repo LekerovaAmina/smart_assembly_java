@@ -1,5 +1,6 @@
 package com.smartassembly.backend.controller;
 
+import com.smartassembly.backend.dto.request.LoginRequest;
 import com.smartassembly.backend.dto.request.SendOtpRequest;
 import com.smartassembly.backend.dto.request.VerifyOtpRequest;
 import com.smartassembly.backend.dto.response.AuthResponse;
@@ -17,6 +18,13 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+
+    // POST /api/auth/login  { "email": "user@example.com", "password": "..." }
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
 
     // POST /api/auth/send-code  { "phone": "+77771234567" }
     @PostMapping("/send-code")

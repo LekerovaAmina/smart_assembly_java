@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.smartassembly.backend.service.GoogleSheetsService;
+import com.smartassembly.backend.integration.sheets.GoogleSheetsImportService;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
@@ -37,6 +38,21 @@ class AjApplicationTests {
 
     @MockBean
     RegistrationRequestRepository registrationRequestRepository;
+
+    @MockBean
+    VolunteerHourTransactionRepository volunteerHourTransactionRepository;
+
+    @MockBean
+    StrikeRepository strikeRepository;
+
+    @MockBean
+    StrikeAppealRepository strikeAppealRepository;
+
+    @MockBean
+    NotificationRepository notificationRepository;
+
+    @MockBean
+    GoogleSheetsImportService googleSheetsImportService;
 
     @Test
     void contextLoads() {

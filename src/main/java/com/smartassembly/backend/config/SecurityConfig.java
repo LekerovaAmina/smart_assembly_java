@@ -4,15 +4,13 @@ import com.smartassembly.backend.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,23 +27,10 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
-    /**
-     * ✅ AuthenticationProvider, который отключает встроенную аутентификацию.
-     * Это предотвращает генерацию автоматического пароля Spring Security.
-     */
+    // Хэширование паролей для входа по email+паролю
     @Bean
-    public AuthenticationProvider disabledAuthenticationProvider() {
-        return new AuthenticationProvider() {
-            @Override
-            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                throw new BadCredentialsException("Built-in authentication is disabled. Use JWT with /api/auth/send-code");
-            }
-
-            @Override
-            public boolean supports(Class<?> authentication) {
-                return true;
-            }
-        };
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -54,8 +39,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // ✅ Добавить provider, который отключает встроенную аутентификацию
-                .authenticationProvider(disabledAuthenticationProvider())
                 .authorizeHttpRequests(auth -> auth
                         // 1. Публичные эндпоинты — без токена
                         .requestMatchers(
