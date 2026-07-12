@@ -53,6 +53,12 @@ export const updateUserStatus = (id, status) =>
 export const updateUserRole = (id, role) =>
   api.patch(`/users/${id}/role`, { role });
 
+export const updateUserProfile = (id, data) =>
+  api.patch(`/users/${id}`, data);
+
+export const setUserPassword = (id, newPassword) =>
+  api.patch(`/users/${id}/password`, { newPassword });
+
 // ── Events ────────────────────────────────────────────────────────────────────
 export const getEvents = () =>
   api.get('/events');

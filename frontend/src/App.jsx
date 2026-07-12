@@ -11,6 +11,8 @@ import EventEditPage from './pages/EventEditPage';
 import RegistrationPage from './pages/RegistrationPage';
 import HrVolunteersPage from './pages/HrVolunteersPage';
 import HrVolunteerDetailPage from './pages/HrVolunteerDetailPage';
+import AdminUsersPage from './pages/AdminUsersPage';
+import AdminUserDetailPage from './pages/AdminUserDetailPage';
 import StrikesPage from './pages/StrikesPage';
 import AppealsPage from './pages/AppealsPage';
 import StatisticsPage from './pages/StatisticsPage';
@@ -70,6 +72,10 @@ export default function App() {
             <Route path="/hr/volunteers" element={<HrVolunteersPage />} />
             <Route path="/hr/volunteers/:id" element={<HrVolunteerDetailPage />} />
             <Route path="/analytics" element={<PlaceholderPage title="Аналитика" />} />
+
+            {/* ── Админ-панель (SUPER_ADMIN) ── */}
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
 
             {/* ── Редиректы ── */}
             <Route path="/" element={<Navigate to="/events" replace />} />
