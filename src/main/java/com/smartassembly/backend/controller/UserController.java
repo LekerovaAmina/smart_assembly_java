@@ -1,5 +1,7 @@
 package com.smartassembly.backend.controller;
 
+import com.smartassembly.backend.dto.user.UserAdminSetPasswordRequest;
+import com.smartassembly.backend.dto.user.UserAdminUpdateRequest;
 import com.smartassembly.backend.dto.user.UserResponseDto;
 import com.smartassembly.backend.dto.user.UserUpdateRoleRequest;
 import com.smartassembly.backend.dto.user.UserUpdateStatusRequest;
@@ -66,5 +68,24 @@ public class UserController {
             @Valid @RequestBody UserUpdateRoleRequest request,
             @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(userService.updateRole(id, request, currentUser));
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<UserResponseDto> updateProfile(
+            @PathVariable Long id,
+            @Valid @RequestBody UserAdminUpdateRequest request,
+            @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(userService.updateProfile(id, request, currentUser));
+    }
+
+    @PatchMapping("/{id}/password")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<Void> setPassword(
+            @PathVariable Long id,
+            @Valid @RequestBody UserAdminSetPasswordRequest request,
+            @AuthenticationPrincipal User currentUser) {
+        userService.setPassword(id, request, currentUser);
+        return ResponseEntity.noContent().build();
     }
 }
