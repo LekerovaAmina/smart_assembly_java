@@ -58,7 +58,6 @@ function StrikeCard({ strike, onRevoke }) {
 
 function CreateStrikeForm({ volunteerId, onCreated }) {
   const [reason, setReason] = useState('');
-  const [severity, setSeverity] = useState('STRIKE');
   const [eventId, setEventId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -72,12 +71,11 @@ function CreateStrikeForm({ volunteerId, onCreated }) {
     try {
       await createStrike(volunteerId, {
         reason: reason.trim(),
-        severity,
+        severity: 'STRIKE',
         eventId: eventId ? Number(eventId) : undefined,
       });
       setReason('');
       setEventId('');
-      setSeverity('STRIKE');
       setShow(false);
       onCreated();
     } catch (e) {
@@ -90,7 +88,7 @@ function CreateStrikeForm({ volunteerId, onCreated }) {
   if (!show) return (
     <button onClick={() => setShow(true)}
       className="w-full py-2.5 border-2 border-dashed border-red-200 text-red-600 text-sm font-medium rounded-card hover:bg-red-50 transition-colors cursor-pointer">
-      + Выдать страйк / предупреждение
+      + Выдать страйк
     </button>
   );
 
@@ -98,14 +96,6 @@ function CreateStrikeForm({ volunteerId, onCreated }) {
     <form onSubmit={handleSubmit} className="border border-red-200 bg-red-50 rounded-card p-4 space-y-3">
       <h4 className="text-sm font-semibold text-red-700">Новый страйк</h4>
       {error && <p className="text-xs text-red-600">{error}</p>}
-      <div>
-        <label className="block text-xs text-text-muted mb-1">Тип</label>
-        <select value={severity} onChange={e => setSeverity(e.target.value)}
-          className="w-full border border-border rounded px-2 py-1.5 text-sm focus:outline-none focus:border-primary bg-white">
-          <option value="WARNING">Предупреждение</option>
-          <option value="STRIKE">Страйк</option>
-        </select>
-      </div>
       <div>
         <label className="block text-xs text-text-muted mb-1">Причина *</label>
         <textarea value={reason} onChange={e => setReason(e.target.value)} rows={3}

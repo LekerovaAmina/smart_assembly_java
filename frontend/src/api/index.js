@@ -1,190 +1,224 @@
-import axios from 'axios';
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const api = axios.create({
-  // Относительный URL — фронт и бэк отдаются с одного домена.
-  // В деве `npm run dev` Vite проксирует /api → localhost:8080
-  // (см. vite.config.js). В проде nginx сам маршрутизирует /api на бэкенд.
-  baseURL: '/api',
-});
-
-// ── Интерцепторы ──────────────────────────────────────────────────────────────
-
-api.interceptors.request.use((cfg) => {
-  const token = localStorage.getItem('sa_token');
-  if (token) cfg.headers.Authorization = `Bearer ${token}`;
-  return cfg;
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('sa_token');
-      localStorage.removeItem('sa_user');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
+const CalendarIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  </svg>
 );
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-export const login = (email, password) =>
-  api.post('/auth/login', { email, password });
+const TrophyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="8 21 12 17 16 21" />
+    <line x1="12" y1="17" x2="12" y2="11" />
+    <path d="M7 4H17L15 11H9L7 4z" />
+    <path d="M7 4C7 4 5 4 5 7C5 9 7 11 7 11H9" />
+    <path d="M17 4C17 4 19 4 19 7C19 9 17 11 17 11H15" />
+  </svg>
+);
 
-export const sendCode = (phone) =>
-  api.post('/auth/send-code', { phone });
+const ListIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" />
+    <line x1="8" y1="18" x2="21" y2="18" />
+    <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" />
+    <line x1="3" y1="18" x2="3.01" y2="18" />
+  </svg>
+);
 
-export const verifyCode = (phone, code) =>
-  api.post('/auth/verify-code', { phone, code });
+const AlertIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
 
-// ── Users ─────────────────────────────────────────────────────────────────────
-export const getMe = () =>
-  api.get('/users/me');
+const BarChartIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" />
+    <line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
+  </svg>
+);
 
-export const getUsers = (params = {}) =>
-  api.get('/users', { params });
+const TrendingUpIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
 
-export const getUserById_hr = (id) =>
-  api.get(`/users/${id}`);
+const ScaleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="3" x2="12" y2="21" />
+    <path d="M5 6l7-3 7 3" />
+    <path d="M5 6l-2 9h4l-2-9z" /><path d="M19 6l-2 9h4l-2-9z" />
+    <path d="M5 21h14" />
+  </svg>
+);
 
-export const updateUserStatus = (id, status) =>
-  api.patch(`/users/${id}/status`, { status });
+const ShieldIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
 
-export const updateUserRole = (id, role) =>
-  api.patch(`/users/${id}/role`, { role });
+const LogIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="9" y1="13" x2="15" y2="13" /><line x1="9" y1="17" x2="15" y2="17" />
+  </svg>
+);
 
-export const updateUserProfile = (id, data) =>
-  api.patch(`/users/${id}`, data);
+const ClipboardIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+  </svg>
+);
 
-export const setUserPassword = (id, newPassword) =>
-  api.patch(`/users/${id}/password`, { newPassword });
+const SettingsIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  </svg>
+);
 
-// ── Events ────────────────────────────────────────────────────────────────────
-export const getEvents = () =>
-  api.get('/events');
+// Навигация для волонтёра
+const volunteerNavItems = [
+  { to: '/events', label: 'Мероприятия', Icon: CalendarIcon },
+  { to: '/rating', label: 'Рейтинг', Icon: TrophyIcon },
+  { to: '/strikes', label: 'Страйки', Icon: AlertIcon },
+  { to: '/statistics', label: 'Статистика', Icon: BarChartIcon },
+];
 
-export const getHrEvents = () =>
-  api.get('/events/hr');
+// Дополнительная навигация для HR
+const hrNavItems = [
+  { to: '/registration', label: 'Заявки', Icon: ClipboardIcon },
+  { to: '/analytics', label: 'Аналитика', Icon: TrendingUpIcon },
+  { to: '/appeals', label: 'Апелляции', Icon: ScaleIcon },
+  { to: '/hr/volunteers', label: 'Волонтёры', Icon: ListIcon },
+];
 
-export const getEventById = (id) =>
-  api.get(`/events/${id}`);
+// Навигация только для SUPER_ADMIN
+const adminNavItems = [
+  { to: '/admin/users', label: 'Пользователи', Icon: ShieldIcon },
+  { to: '/admin/logs', label: 'Журнал действий', Icon: LogIcon },
+];
 
-export const createEvent = (eventData) =>
-  api.post('/events', eventData);
+function NavItem({ to, label, Icon, badge, onClick }) {
+  return (
+    <li>
+      <NavLink
+        to={to}
+        onClick={onClick}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
+            isActive
+              ? 'bg-orange-50 text-primary border-l-4 border-primary pl-2'
+              : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+          }`
+        }
+      >
+        <Icon />
+        <span className="flex-1">{label}</span>
+        {badge && (
+          <span className="text-xs bg-primary text-white px-1.5 py-0.5 rounded font-semibold">
+            {badge}
+          </span>
+        )}
+      </NavLink>
+    </li>
+  );
+}
 
-export const updateEvent = (id, eventData) =>
-  api.put(`/events/${id}`, eventData);
+const XIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
 
-export const publishEvent = (id) =>
-  api.post(`/events/${id}/publish`);
+export default function Sidebar({ isOpen, onClose }) {
+  const { isHr, isSuperAdmin } = useAuth();
 
-export const cancelEvent = (id) =>
-  api.post(`/events/${id}/cancel`);
+  return (
+    <aside className={`fixed top-0 left-0 h-screen w-[240px] bg-sidebar border-r border-border flex flex-col z-50 transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      {/* Logo */}
+      <div className="flex items-center gap-3 px-5 py-5 border-b border-border">
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+          Ж
+        </div>
+        <span className="font-semibold text-text-primary text-sm leading-tight">
+          Ассамблея Жастары
+        </span>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="ml-auto p-1 text-text-secondary hover:text-text-primary rounded transition-colors"
+            aria-label="Закрыть меню"
+          >
+            <XIcon />
+          </button>
+        )}
+      </div>
 
-export const deleteEvent = (id) =>
-  api.delete(`/events/${id}`);
+      {/* Nav */}
+      <nav className="flex-1 py-3 overflow-y-auto">
+        <ul className="space-y-0.5 px-2">
+          {volunteerNavItems.map(item => (
+            <NavItem key={item.to} {...item} onClick={onClose} />
+          ))}
+        </ul>
 
-export const completeEvent = (id) =>
-  api.post(`/events/${id}/complete`);
+        {isHr && (
+          <>
+            <div className="mx-4 my-2 border-t border-border" />
+            <p className="px-4 py-1 text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+              HR-панель
+            </p>
+            <ul className="space-y-0.5 px-2">
+              {hrNavItems.map(item => (
+                <NavItem key={item.to} {...item} badge="HR" onClick={onClose} />
+              ))}
+            </ul>
+          </>
+        )}
 
-export const startEvent = (id) =>
-  api.post(`/events/${id}/start`);
+        {isSuperAdmin && (
+          <>
+            <div className="mx-4 my-2 border-t border-border" />
+            <p className="px-4 py-1 text-[10px] font-semibold text-text-muted uppercase tracking-wider">
+              Администрирование
+            </p>
+            <ul className="space-y-0.5 px-2">
+              {adminNavItems.map(item => (
+                <NavItem key={item.to} {...item} badge="ADMIN" onClick={onClose} />
+              ))}
+            </ul>
+          </>
+        )}
+      </nav>
 
-export const closeEvent = (id) =>
-  api.post(`/events/${id}/close`);
-
-export const getEventQr = (id) =>
-  api.get(`/events/${id}/qr`);
-
-// ── Event responses ───────────────────────────────────────────────────────────
-export const registerEvent = (id) =>
-  api.post(`/events/${id}/register`);
-
-export const unregisterEvent = (id) =>
-  api.delete(`/events/${id}/register`);
-
-export const getMyResponses = () =>
-  api.get('/events/my-responses');
-
-// ── Attendees ─────────────────────────────────────────────────────────────────
-export const getAttendees = (eventId) =>
-  api.get(`/events/${eventId}/attendees`);
-
-export const updateAttendeeHours = (eventId, userId, data) =>
-  api.patch(`/events/${eventId}/attendees/${userId}/hours`, data);
-
-export const checkinSelf = (eventId) =>
-  api.post(`/events/${eventId}/self-checkin`);
-
-export const checkinUser = (eventId, userId) =>
-  api.post(`/events/${eventId}/checkin`, { userId });
-
-// ── Volunteer hours ───────────────────────────────────────────────────────────
-export const getMyHours = () =>
-  api.get('/volunteers/me/hours');
-
-export const getMyHoursHistory = (params = {}) =>
-  api.get('/volunteers/me/hours/history', { params });
-
-export const adjustVolunteerHours = (volunteerId, data) =>
-  api.post(`/volunteers/${volunteerId}/hours/adjust`, data);
-
-// ── Rating ────────────────────────────────────────────────────────────────────
-export const getRating = () =>
-  api.get('/rating');
-
-// ── Registration ──────────────────────────────────────────────────────────────
-export const getPendingRequests = (params = {}) =>
-  api.get('/registration/pending', { params });
-
-export const getAllRequests = (params = {}) =>
-  api.get('/registration/all', { params });
-
-export const getRegistrationById = (id) =>
-  api.get(`/registration/${id}`);
-
-export const approveRegistration = (id) =>
-  api.post(`/registration/${id}/approve`);
-
-export const rejectRegistration = (id, comment) =>
-  api.post(`/registration/${id}/reject`, { comment });
-
-// ── Notifications ─────────────────────────────────────────────────────────────
-export const getNotifications = (params = {}) =>
-  api.get('/notifications/my', { params });
-
-export const getUnreadNotificationsCount = () =>
-  api.get('/notifications/my/unread-count');
-
-export const markNotificationRead = (id) =>
-  api.patch(`/notifications/${id}/read`);
-
-export const markAllNotificationsRead = () =>
-  api.post('/notifications/read-all');
-
-// ── Strikes ───────────────────────────────────────────────────────────────────
-export const getMyStrikes = () =>
-  api.get('/strikes/my');
-
-export const getVolunteerStrikes = (volunteerId) =>
-  api.get(`/strikes/volunteer/${volunteerId}`);
-
-export const createStrike = (volunteerId, data) =>
-  api.post(`/strikes/${volunteerId}`, data);
-
-export const revokeStrike = (strikeId) =>
-  api.delete(`/strikes/${strikeId}`);
-
-export const createAppeal = (strikeId, data) =>
-  api.post(`/strikes/${strikeId}/appeal`, data);
-
-export const getPendingAppeals = () =>
-  api.get('/strikes/appeals/pending');
-
-export const approveAppeal = (appealId) =>
-  api.post(`/strikes/appeals/${appealId}/approve`);
-
-export const rejectAppeal = (appealId, comment) =>
-  api.post(`/strikes/appeals/${appealId}/reject`, { comment });
-
-export default api;
+      {/* Settings */}
+      <div className="px-2 py-3 border-t border-border">
+        <NavLink
+          to="/settings"
+          onClick={onClose}
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-100 ${
+              isActive
+                ? 'bg-orange-50 text-primary border-l-4 border-primary pl-2'
+                : 'text-text-secondary hover:bg-gray-50 hover:text-text-primary'
+            }`
+          }
+        >
+          <SettingsIcon />
+          Настройки
+        </NavLink>
+      </div>
+    </aside>
+  );
+}

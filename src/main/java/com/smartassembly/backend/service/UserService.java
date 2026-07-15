@@ -6,6 +6,7 @@ import com.smartassembly.backend.dto.user.UserResponseDto;
 import com.smartassembly.backend.dto.user.UserUpdateRoleRequest;
 import com.smartassembly.backend.dto.user.UserUpdateStatusRequest;
 import com.smartassembly.backend.entity.User;
+import com.smartassembly.backend.enums.AuditAction;
 import com.smartassembly.backend.enums.UserRole;
 import com.smartassembly.backend.enums.UserStatus;
 import com.smartassembly.backend.exception.DuplicateEntityException;
@@ -32,6 +33,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
 
     @Transactional(readOnly = true)
     public Page<UserResponseDto> listUsers(
@@ -124,11 +126,13 @@ public class UserService {
             throw new RuntimeException("Access denied");
         }
 
+        UserStatus oldStatus = user.getStatus();
         UserStatus newStatus = UserStatus.valueOf(request.getStatus().name());
         user.setStatus(newStatus);
         // BANNED/INACTIVE должны реально блокировать вход, не только менять бейдж в таблице
         user.setIsActive(newStatus == UserStatus.ACTIVE);
         userRepository.save(user);
+        auditLogService.log(currentUser, AuditAction.STATUS_CHANGE, user, oldStatus + " → " + newStatus);
         return toDto(user);
     }
 
@@ -137,8 +141,10 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
 
+        UserRole oldRole = user.getRole();
         user.setRole(request.getRole());
         userRepository.save(user);
+        auditLogService.log(currentUser, AuditAction.ROLE_CHANGE, user, oldRole + " → " + request.getRole());
         return toDto(user);
     }
 
@@ -161,6 +167,7 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         userRepository.save(user);
+        auditLogService.log(currentUser, AuditAction.PROFILE_UPDATE, user, "данные профиля изменены");
         return toDto(user);
     }
 
@@ -172,5 +179,6 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         user.setPasswordSetAt(LocalDateTime.now());
         userRepository.save(user);
+        auditLogService.log(currentUser, AuditAction.PASSWORD_RESET, user, "пароль изменён администратором");
     }
 }

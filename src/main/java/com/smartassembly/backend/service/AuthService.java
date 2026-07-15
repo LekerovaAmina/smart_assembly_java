@@ -5,6 +5,7 @@ import com.smartassembly.backend.dto.request.VerifyOtpRequest;
 import com.smartassembly.backend.dto.response.AuthResponse;
 import com.smartassembly.backend.entity.OtpCode;
 import com.smartassembly.backend.entity.User;
+import com.smartassembly.backend.enums.AuditAction;
 import com.smartassembly.backend.exception.EntityNotFoundException;
 import com.smartassembly.backend.exception.InvalidCredentialsException;
 import com.smartassembly.backend.exception.UserNotApprovedException;
@@ -30,6 +31,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final SmsService smsService;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
@@ -50,6 +52,7 @@ public class AuthService {
 
         user.setLastActivity(LocalDateTime.now());
         userRepository.save(user);
+        auditLogService.log(user, AuditAction.LOGIN, user, "вход по email+паролю");
 
         return buildAuthResponse(user);
     }

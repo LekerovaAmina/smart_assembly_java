@@ -9,6 +9,7 @@ import com.smartassembly.backend.entity.Strike;
 import com.smartassembly.backend.entity.StrikeAppeal;
 import com.smartassembly.backend.entity.User;
 import com.smartassembly.backend.enums.AppealStatus;
+import com.smartassembly.backend.enums.StrikeSeverity;
 import com.smartassembly.backend.enums.UserRole;
 import com.smartassembly.backend.repository.EventRepository;
 import com.smartassembly.backend.repository.StrikeAppealRepository;
@@ -57,7 +58,7 @@ public class StrikeService {
                 .user(volunteer)
                 .event(event)
                 .reason(request.getReason().trim())
-                .severity(request.getSeverity())
+                .severity(StrikeSeverity.STRIKE)
                 .isActive(true)
                 .isAppealed(false)
                 .issuedBy(issuer)

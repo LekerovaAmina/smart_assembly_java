@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,14 @@ public interface EventResponseRepository extends JpaRepository<EventResponse, Lo
             "WHERE er.user.id = :userId AND e.status = :status")
     BigDecimal sumCalculatedHoursByUserIdAndEventStatus(
             @Param("userId") Long userId, @Param("status") EventStatus status);
+
+    // Часы за период (для рейтинга волонтёра месяца) — по дате самого мероприятия
+    @Query("SELECT COALESCE(SUM(er.calculatedHours), 0) FROM EventResponse er JOIN er.event e " +
+            "WHERE er.user.id = :userId AND e.status = :status " +
+            "AND e.eventDate BETWEEN :from AND :to")
+    BigDecimal sumCalculatedHoursByUserIdAndEventStatusAndDateRange(
+            @Param("userId") Long userId, @Param("status") EventStatus status,
+            @Param("from") LocalDate from, @Param("to") LocalDate to);
 
     @Query("SELECT er FROM EventResponse er JOIN er.event e " +
             "WHERE er.user.id = :userId AND e.status = :status ORDER BY e.eventDate DESC")

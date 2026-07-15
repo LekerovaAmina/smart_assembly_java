@@ -156,6 +156,25 @@ public class VolunteerHoursService {
         return buildHoursResponse(userId).getTotalHours();
     }
 
+    // ── Часы волонтёра за текущий месяц (для рейтинга "волонтёр месяца") ──────
+    @Transactional(readOnly = true)
+    public BigDecimal getCurrentMonthHoursForUser(Long userId) {
+        LocalDate today = LocalDate.now();
+        LocalDate monthStart = today.withDayOfMonth(1);
+        LocalDate monthEnd = today.withDayOfMonth(today.lengthOfMonth());
+
+        BigDecimal fromEvents = responseRepository.sumCalculatedHoursByUserIdAndEventStatusAndDateRange(
+                userId, EventStatus.COMPLETED, monthStart, monthEnd);
+        BigDecimal fromAdjustments = transactionRepository.sumHoursDeltaByVolunteerIdAndDateRange(
+                userId, monthStart.atStartOfDay(), monthEnd.atTime(LocalTime.MAX));
+
+        BigDecimal total = fromEvents.add(fromAdjustments);
+        if (total.compareTo(BigDecimal.ZERO) < 0) {
+            total = BigDecimal.ZERO;
+        }
+        return total.setScale(2, RoundingMode.HALF_UP);
+    }
+
     @Transactional(readOnly = true)
     public Page<VolunteerHourTransactionDto> getHoursHistory(
             Long volunteerId,

@@ -65,6 +65,14 @@ const ShieldIcon = () => (
   </svg>
 );
 
+const LogIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="9" y1="13" x2="15" y2="13" /><line x1="9" y1="17" x2="15" y2="17" />
+  </svg>
+);
+
 const ClipboardIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -82,7 +90,7 @@ const SettingsIcon = () => (
 // Навигация для волонтёра
 const volunteerNavItems = [
   { to: '/events', label: 'Мероприятия', Icon: CalendarIcon },
-  { to: '/rating', label: 'Рейтинг', Icon: TrophyIcon },
+  { to: '/rating', label: 'Волонтер месяца', Icon: TrophyIcon },
   { to: '/strikes', label: 'Страйки', Icon: AlertIcon },
   { to: '/statistics', label: 'Статистика', Icon: BarChartIcon },
 ];
@@ -98,6 +106,7 @@ const hrNavItems = [
 // Навигация только для SUPER_ADMIN
 const adminNavItems = [
   { to: '/admin/users', label: 'Пользователи', Icon: ShieldIcon },
+  { to: '/admin/logs', label: 'Журнал действий', Icon: LogIcon },
 ];
 
 function NavItem({ to, label, Icon, badge, onClick }) {
