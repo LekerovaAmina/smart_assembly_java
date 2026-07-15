@@ -340,6 +340,8 @@ export default function EventDetailPage() {
 
   const isActive = ['OPEN', 'CLOSED', 'IN_PROGRESS'].includes(event.status);
   const isCompleted = event.status === 'COMPLETED';
+  const isFull = (event.maxParticipants ?? 0) > 0
+    && (event.currentParticipants ?? 0) >= event.maxParticipants;
 
   return (
     <div className="relative">
@@ -467,10 +469,14 @@ export default function EventDetailPage() {
           )}
 
           {!isHr && event.status !== 'DRAFT' && (
-            <button onClick={handleRegister} disabled={actionLoading}
-              className={`px-5 py-2 rounded-btn text-sm font-medium transition-colors cursor-pointer ${
-                registered ? 'bg-gray-200 text-text-secondary hover:bg-gray-300' : 'bg-primary text-white hover:bg-primary-hover'}`}>
-              {registered ? 'Отменить участие' : 'Откликнуться'}
+            <button
+              onClick={handleRegister}
+              disabled={actionLoading || (!registered && isFull)}
+              className={`px-5 py-2 rounded-btn text-sm font-medium transition-colors ${
+                (!registered && isFull) ? 'bg-gray-100 text-text-muted cursor-not-allowed'
+                : registered ? 'bg-gray-200 text-text-secondary hover:bg-gray-300 cursor-pointer'
+                : 'bg-primary text-white hover:bg-primary-hover cursor-pointer'}`}>
+              {registered ? 'Отменить участие' : isFull ? 'Набор закрыт' : 'Откликнуться'}
             </button>
           )}
         </div>
@@ -581,6 +587,15 @@ export default function EventDetailPage() {
             <div className="bg-surface rounded-card border border-border p-4">
               <h3 className="text-sm font-semibold text-text-primary mb-2">Координатор</h3>
               <p className="text-sm text-text-secondary">{event.coordinatorName}</p>
+            </div>
+          )}
+
+          {!isHr && !registered && isFull && !isCompleted && event.status !== 'DRAFT' && (
+            <div className="bg-gray-50 border border-border rounded-card p-4">
+              <p className="text-sm font-semibold text-text-primary mb-1">Набор закрыт</p>
+              <p className="text-xs text-text-muted">
+                Мероприятия будут организовываться чаще, не пропускайте уведомлений
+              </p>
             </div>
           )}
 

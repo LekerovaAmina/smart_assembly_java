@@ -13,6 +13,7 @@ import HrVolunteersPage from './pages/HrVolunteersPage';
 import HrVolunteerDetailPage from './pages/HrVolunteerDetailPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminUserDetailPage from './pages/AdminUserDetailPage';
+import AdminLogsPage from './pages/AdminLogsPage';
 import StrikesPage from './pages/StrikesPage';
 import AppealsPage from './pages/AppealsPage';
 import StatisticsPage from './pages/StatisticsPage';
@@ -76,6 +77,7 @@ export default function App() {
             {/* ── Админ-панель (SUPER_ADMIN) ── */}
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
+            <Route path="/admin/logs" element={<AdminLogsPage />} />
 
             {/* ── Редиректы ── */}
             <Route path="/" element={<Navigate to="/events" replace />} />

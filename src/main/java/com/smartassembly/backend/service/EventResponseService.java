@@ -44,7 +44,7 @@ public class EventResponseService {
 
         // Проверяем лимит участников
         if (event.isFull()) {
-            throw new RuntimeException("Мест больше нет (набор полный)");
+            throw new RuntimeException("Набор закрыт. Мероприятия будут организовываться чаще, не пропускайте уведомлений");
         }
 
         EventResponse response = EventResponse.builder()
@@ -57,12 +57,10 @@ public class EventResponseService {
         responseRepository.save(response);
 
         // Увеличиваем счётчик участников
+        // ВАЖНО: мероприятие остаётся OPEN даже при заполненном наборе,
+        // чтобы оно не пропадало из списков (общего и "мои отклики") —
+        // запись просто блокируется через isFull() выше.
         event.setCurrentParticipants(event.getCurrentParticipants() + 1);
-
-        // Если набор заполнен — закрываем запись
-        if (event.isFull()) {
-            event.setStatus(EventStatus.CLOSED);
-        }
 
         eventRepository.save(event);
 
@@ -97,11 +95,6 @@ public class EventResponseService {
         // 3. ПЕРЕСЧИТЫВАЕМ реальное количество участников из таблицы откликов
         long realCount = responseRepository.countByEventId(eventId);
         event.setCurrentParticipants((int) realCount);
-
-        // 4. Проверяем статус
-        if (event.getStatus() == EventStatus.CLOSED && realCount < event.getMaxParticipants()) {
-            event.setStatus(EventStatus.OPEN);
-        }
 
         eventRepository.save(event);
 

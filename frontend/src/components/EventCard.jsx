@@ -100,6 +100,9 @@ export default function EventCard({ event, onUpdate }) {
 
   if (!event) return null;
 
+  const isFull = (event.maxParticipants ?? 0) > 0
+    && (event.currentParticipants ?? 0) >= event.maxParticipants;
+
   return (
     <>
       {toast.show && (
@@ -159,6 +162,10 @@ export default function EventCard({ event, onUpdate }) {
           >
             {loading ? 'Публикация...' : 'Опубликовать'}
           </button>
+        ) : !registered && isFull ? (
+          <p className="w-full py-2 rounded-btn text-xs text-center font-medium text-text-muted bg-gray-100 mt-auto">
+            Набор закрыт. Мероприятия будут организовываться чаще, не пропускайте уведомлений
+          </p>
         ) : (
           <button
             onClick={handleRegister}

@@ -35,6 +35,11 @@ const UserCircle = () => (
   </div>
 );
 
+const MONTH_NAMES = [
+  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
+  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
+];
+
 export default function RatingPage() {
   const { user: currentUser } = useAuth();
   const [volunteers, setVolunteers] = useState([]);
@@ -67,9 +72,14 @@ export default function RatingPage() {
 
   const myEntry = myPlace > 0 ? volunteers[myPlace - 1] : null;
 
+  const monthLabel = MONTH_NAMES[new Date().getMonth()];
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-text-primary mb-6">Рейтинг</h1>
+      <h1 className="text-2xl font-bold text-text-primary mb-1">Волонтёр месяца</h1>
+      <p className="text-sm text-text-muted mb-6">
+        Рейтинг по часам, отработанным в этом месяце ({monthLabel})
+      </p>
 
       <div className="grid grid-cols-3 gap-6">
         {/* Table */}
@@ -85,7 +95,7 @@ export default function RatingPage() {
               <div className="col-span-1 text-xs text-text-muted font-medium">Место</div>
               <div className="col-span-5 text-xs text-text-muted font-medium">Участник</div>
               <div className="col-span-4 text-xs text-text-muted font-medium">Роль</div>
-              <div className="col-span-2 text-xs text-text-muted font-medium text-right">Часы</div>
+              <div className="col-span-2 text-xs text-text-muted font-medium text-right">Часы (месяц)</div>
             </div>
 
             {loading ? (
@@ -144,7 +154,7 @@ export default function RatingPage() {
                       </div>
                       <div className="col-span-2 text-right">
                         <span className={`text-sm font-semibold ${isMe ? 'text-primary' : 'text-text-primary'}`}>
-                          {parseFloat(volunteer.totalHours ?? 0).toFixed(1)}ч
+                          {parseFloat(volunteer.monthlyHours ?? 0).toFixed(1)}ч
                         </span>
                       </div>
                     </div>
@@ -169,7 +179,7 @@ export default function RatingPage() {
                     {myPlace} место из {volunteers.length}
                   </p>
                   <p className="text-xs text-text-muted mt-0.5">
-                    {parseFloat(myEntry.totalHours ?? 0).toFixed(1)} часов всего
+                    {parseFloat(myEntry.monthlyHours ?? 0).toFixed(1)} часов за месяц
                   </p>
                 </div>
               </div>
@@ -179,7 +189,7 @@ export default function RatingPage() {
                   <p className="text-xs text-text-muted">
                     До {myPlace - 1} места:
                     <span className="font-semibold text-primary ml-1">
-                      {(parseFloat(volunteers[myPlace - 2]?.totalHours ?? 0) - parseFloat(myEntry.totalHours ?? 0)).toFixed(1)}ч
+                      {(parseFloat(volunteers[myPlace - 2]?.monthlyHours ?? 0) - parseFloat(myEntry.monthlyHours ?? 0)).toFixed(1)}ч
                     </span>
                   </p>
                 </div>
@@ -206,7 +216,7 @@ export default function RatingPage() {
                         </span>
                       </div>
                       <span className="text-xs font-semibold text-text-secondary">
-                        {parseFloat(v.totalHours ?? 0).toFixed(1)}ч
+                        {parseFloat(v.monthlyHours ?? 0).toFixed(1)}ч
                       </span>
                     </div>
                   );

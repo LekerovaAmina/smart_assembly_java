@@ -29,7 +29,7 @@ public class RatingController {
     private final VolunteerHoursService volunteerHoursService;
 
     /**
-     * Публичный рейтинг волонтёров отделения.
+     * Рейтинг "Волонтёр месяца" отделения — по часам, начисленным в текущем календарном месяце.
      * Доступен всем авторизованным пользователям (волонтёрам и HR).
      * Берём отделение из токена текущего пользователя.
      */
@@ -50,11 +50,12 @@ public class RatingController {
                             .lastName(u.getLastName())
                             .role(u.getRole().name())
                             .status(u.getStatus().name())
+                            .monthlyHours(volunteerHoursService.getCurrentMonthHoursForUser(u.getId()))
                             .totalHours(volunteerHoursService.getTotalHoursForUser(u.getId()))
                             .strikeCount((int) strikeCount)
                             .build();
                 })
-                .sorted((a, b) -> b.getTotalHours().compareTo(a.getTotalHours()))
+                .sorted((a, b) -> b.getMonthlyHours().compareTo(a.getMonthlyHours()))
                 .toList();
 
         return ResponseEntity.ok(entries);
@@ -71,6 +72,9 @@ public class RatingController {
         private String lastName;
         private String role;
         private String status;
+        // Часы за текущий месяц — основа рейтинга "Волонтёр месяца"
+        private java.math.BigDecimal monthlyHours;
+        // Часы за всё время — справочно
         private java.math.BigDecimal totalHours;
         private Integer strikeCount;
     }
